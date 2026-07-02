@@ -7,14 +7,16 @@ public class Item {
 
     private final String name;
     private final String description;
+    private final ItemType type;
 
     /**
      * Crea un nuovo oggetto.
      *
      * @param name nome dell'oggetto
      * @param description descrizione dell'oggetto
+     * @param type tipo dell'oggetto
      */
-    public Item(String name, String description) {
+    public Item(String name, String description, ItemType type) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Il nome non può essere vuoto.");
         }
@@ -23,8 +25,13 @@ public class Item {
             throw new IllegalArgumentException("La descrizione non può essere vuota.");
         }
 
+        if (type == null) {
+            throw new IllegalArgumentException("Il tipo dell'oggetto non può essere null.");
+        }
+
         this.name = name;
         this.description = description;
+        this.type = type;
     }
 
     /**
@@ -45,8 +52,17 @@ public class Item {
         return description;
     }
 
+    /**
+     * Restituisce il tipo dell'oggetto.
+     *
+     * @return il tipo dell'oggetto
+     */
+    public ItemType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
-        return name;
+        return name + " (" + type + ")";
     }
 }

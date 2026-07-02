@@ -1,6 +1,10 @@
 package it.unicam.cs.mpgc.rpg123465.events;
 
+import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
+import it.unicam.cs.mpgc.rpg123465.combat.CombatEngine;
+import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
+import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 
 /**
  * Evento in cui il giocatore affronta un nemico.
@@ -11,6 +15,13 @@ public class CombatEvent implements FloorEvent {
     private final String description;
     private final Enemy enemy;
 
+    /**
+     * Crea un nuovo evento di combattimento.
+     *
+     * @param title titolo dell'evento
+     * @param description descrizione dell'evento
+     * @param enemy nemico da affrontare
+     */
     public CombatEvent(String title, String description, Enemy enemy) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Il titolo non può essere vuoto.");
@@ -37,7 +48,41 @@ public class CombatEvent implements FloorEvent {
         return description;
     }
 
+    /**
+     * Restituisce il nemico associato all'evento.
+     *
+     * @return il nemico
+     */
     public Enemy getEnemy() {
         return enemy;
+    }
+
+    /**
+     * Avvia il combattimento contro il nemico.
+     *
+     * @param gameEngine motore della partita
+     */
+    @Override
+    public void execute(GameEngine gameEngine) {
+        if (gameEngine == null) {
+            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+        }
+
+        CombatEngine combatEngine = new CombatEngine();
+        CombatResult result = null;
+
+        while (result == null) {
+            result = combatEngine.executeTurn(
+                    gameEngine.getPlayer(),
+                    enemy,
+                    CombatAction.ATTACK
+            );
+        }
+
+        switch (result) {
+            case VICTORY -> System.out.println("Hai sconfitto " + enemy.getName() + "!");
+            case DEFEAT -> System.out.println("Sei stato sconfitto...");
+            case ESCAPE -> System.out.println("Sei riuscito a fuggire.");
+        }
     }
 }

@@ -10,7 +10,7 @@ import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
 import it.unicam.cs.mpgc.rpg123465.events.ItemEvent;
-
+import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
 import java.util.List;
 
 /**
@@ -68,14 +68,15 @@ public final class GameFactory {
                 new Floor(
                         3,
                         "Ansia",
-                        "Il tempo sembra accelerare e ogni passo pesa più del precedente.",
+                        "Il tempo sembra accelerare e ogni passo pesa piu del precedente.",
                         new ItemEvent(
                                 "Respiro Profondo",
                                 "Trovi un piccolo simbolo di calma interiore.",
                                 new Item(
-                                        "Respiro Profondo",
-                                        "Un ricordo di lucidità che aiuta a non cedere al panico."
-                                )
+                                    "Respiro Profondo",
+                                    "Un ricordo di lucidità che aiuta a non cedere al panico.",
+                                    ItemType.SYMBOLIC
+                            )
                         )
                 ),
                 new Floor(
@@ -84,7 +85,7 @@ public final class GameFactory {
                         "Un corridoio silenzioso riflette la sensazione di essere invisibile.",
                         new CombatEvent(
                                 "Scontro con la Solitudine",
-                                "Una presenza vuota tenta di convincerti che nessuno ti ascolterà.",
+                                "Una presenza vuota tenta di convincerti che nessuno ti ascoltera.",
                                 new Enemy(
                                         "Solitudine",
                                         new Stats(45, 10, 3),
@@ -99,16 +100,17 @@ public final class GameFactory {
                         new ItemEvent(
                                 "Scintilla di Speranza",
                                 "Raccogli una piccola luce calda.",
-                                new Item(
-                                        "Scintilla di Speranza",
-                                        "Una risorsa interiore che ricorda al giocatore perché continuare."
-                                )
+                               new Item(
+                                    "Scintilla di Speranza",
+                                    "Una risorsa interiore che ricorda al giocatore perché continuare.",
+                                    ItemType.SYMBOLIC
+                            )
                         )
                 ),
                 new Floor(
                         6,
                         "Alter Ego",
-                        "La cima della torre riflette tutto ciò che hai evitato.",
+                        "La cima della torre riflette tutto cio che hai evitato.",
                         new CombatEvent(
                                 "Confronto finale",
                                 "Il tuo Alter Ego ti attende in silenzio.",

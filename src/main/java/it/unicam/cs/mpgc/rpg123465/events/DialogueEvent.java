@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.events;
 
+import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,13 @@ public class DialogueEvent implements FloorEvent {
     private final String description;
     private final List<String> choices;
 
+    /**
+     * Crea un nuovo evento di dialogo.
+     *
+     * @param title titolo dell'evento
+     * @param description descrizione dell'evento
+     * @param choices scelte disponibili
+     */
     public DialogueEvent(String title, String description, List<String> choices) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Il titolo non può essere vuoto.");
@@ -39,7 +48,28 @@ public class DialogueEvent implements FloorEvent {
         return description;
     }
 
+    /**
+     * Restituisce le scelte disponibili.
+     *
+     * @return lista non modificabile delle scelte
+     */
     public List<String> getChoices() {
         return Collections.unmodifiableList(choices);
+    }
+
+    /**
+     * Esegue l'evento di dialogo.
+     * L'implementazione sarà completata quando verrà introdotto
+     * il sistema di dialoghi interattivi.
+     *
+     * @param gameEngine motore della partita
+     */
+    @Override
+    public void execute(GameEngine gameEngine) {
+        if (gameEngine == null) {
+            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+        }
+
+        // Implementazione futura.
     }
 }
