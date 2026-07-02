@@ -12,13 +12,8 @@ public class GameEngine {
     private final Player player;
     private final Tower tower;
     private int currentFloorIndex;
+    private boolean gameCompleted;
 
-    /**
-     * Crea un nuovo motore di gioco.
-     *
-     * @param player giocatore della partita
-     * @param tower torre da esplorare
-     */
     public GameEngine(Player player, Tower tower) {
         if (player == null) {
             throw new IllegalArgumentException("Il giocatore non può essere null.");
@@ -30,6 +25,7 @@ public class GameEngine {
         this.player = player;
         this.tower = tower;
         this.currentFloorIndex = 0;
+        this.gameCompleted = false;
     }
 
     public Player getPlayer() {
@@ -48,13 +44,28 @@ public class GameEngine {
         return tower.getFloor(currentFloorIndex);
     }
 
+    public void executeCurrentFloorEvent() {
+        getCurrentFloor().getEvent().execute(this);
+
+        if (isOnLastFloor() && player.isAlive()) {
+            gameCompleted = true;
+        }
+    }
+
+    public boolean isOnLastFloor() {
+        return currentFloorIndex == tower.getTotalFloors() - 1;
+    }
+
     public boolean isGameCompleted() {
-        return currentFloorIndex >= tower.getTotalFloors() - 1;
+        return gameCompleted;
     }
 
     public void advanceFloor() {
-        if (isGameCompleted()) {
+        if (gameCompleted) {
             throw new IllegalStateException("La partita è già completata.");
+        }
+        if (isOnLastFloor()) {
+            throw new IllegalStateException("Il giocatore si trova già all'ultimo piano.");
         }
 
         currentFloorIndex++;
