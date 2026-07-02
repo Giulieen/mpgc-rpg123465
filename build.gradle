@@ -3,8 +3,8 @@ plugins {
     id 'application'
 }
 
-group ='it.unicam.cs.mpgc.rpg123465'
-version = '1.0.0'
+group = 'it.unicam.cs.mpgc.rpg123465'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
