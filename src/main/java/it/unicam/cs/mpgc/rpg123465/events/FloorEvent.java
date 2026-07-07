@@ -7,24 +7,15 @@ import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
  */
 public interface FloorEvent {
 
-    /**
-     * Restituisce il titolo dell'evento.
-     *
-     * @return titolo dell'evento
-     */
     String getTitle();
 
-    /**
-     * Restituisce la descrizione narrativa dell'evento.
-     *
-     * @return descrizione dell'evento
-     */
     String getDescription();
 
     /**
      * Esegue l'evento modificando lo stato della partita.
      *
      * @param gameEngine motore della partita corrente
+     * @return risultato dell'evento
      */
-    void execute(GameEngine gameEngine);
+    EventResult execute(GameEngine gameEngine);
 }

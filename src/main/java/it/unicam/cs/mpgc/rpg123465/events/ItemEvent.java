@@ -60,11 +60,13 @@ public class ItemEvent implements FloorEvent {
      * @param gameEngine motore della partita
      */
     @Override
-    public void execute(GameEngine gameEngine) {
-        if (gameEngine == null) {
-            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
-        }
+    public EventResult execute(GameEngine gameEngine) {
+    if (gameEngine == null) {
+        throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+    }
 
-        gameEngine.getPlayer().addItem(item);
+    gameEngine.getPlayer().addItem(item);
+
+    return new EventResult("Hai ottenuto: " + item.getName());
     }
 }

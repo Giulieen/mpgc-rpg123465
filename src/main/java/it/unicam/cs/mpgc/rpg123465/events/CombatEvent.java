@@ -63,26 +63,26 @@ public class CombatEvent implements FloorEvent {
      * @param gameEngine motore della partita
      */
     @Override
-    public void execute(GameEngine gameEngine) {
-        if (gameEngine == null) {
-            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
-        }
+    public EventResult execute(GameEngine gameEngine) {
+    if (gameEngine == null) {
+        throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+    }
 
-        CombatEngine combatEngine = new CombatEngine();
-        CombatResult result = null;
+    CombatEngine combatEngine = new CombatEngine();
+    CombatResult result = null;
 
-        while (result == null) {
-            result = combatEngine.executeTurn(
-                    gameEngine.getPlayer(),
-                    enemy,
-                    CombatAction.ATTACK
-            );
-        }
+    while (result == null) {
+        result = combatEngine.executeTurn(
+                gameEngine.getPlayer(),
+                enemy,
+                CombatAction.ATTACK
+        );
+    }
 
-        switch (result) {
-            case VICTORY -> System.out.println("Hai sconfitto " + enemy.getName() + "!");
-            case DEFEAT -> System.out.println("Sei stato sconfitto...");
-            case ESCAPE -> System.out.println("Sei riuscito a fuggire.");
-        }
+    return switch (result) {
+        case VICTORY -> new EventResult("Hai sconfitto " + enemy.getName() + "!");
+        case DEFEAT -> new EventResult("Sei stato sconfitto...");
+        case ESCAPE -> new EventResult("Sei riuscito a fuggire.");
+        };
     }
 }

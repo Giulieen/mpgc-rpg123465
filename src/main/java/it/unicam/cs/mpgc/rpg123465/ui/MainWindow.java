@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.ui;
 
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.events.EventResult;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,6 +20,7 @@ public class MainWindow {
     private final Label floorLabel = new Label();
     private final Label descriptionLabel = new Label();
     private final Label eventLabel = new Label();
+    private final Label resultLabel = new Label();
 
     private final Button eventButton = new Button("Esegui evento");
     private final Button nextFloorButton = new Button("Prossimo piano");
@@ -46,6 +48,7 @@ public class MainWindow {
                 floorLabel,
                 descriptionLabel,
                 eventLabel,
+                resultLabel,
                 eventButton,
                 nextFloorButton
         );
@@ -60,8 +63,9 @@ public class MainWindow {
     }
 
     private void executeCurrentEvent() {
-        gameEngine.executeCurrentFloorEvent();
-        updateView();
+        EventResult result = gameEngine.executeCurrentFloorEvent();
+        resultLabel.setText("Risultato: " + result.getMessage());
+        updateButtons();
     }
 
     private void moveToNextFloor() {
@@ -78,7 +82,12 @@ public class MainWindow {
         floorLabel.setText("Piano: " + floor);
         descriptionLabel.setText(floor.getDescription());
         eventLabel.setText("Evento: " + floor.getEvent().getTitle());
+        resultLabel.setText("");
 
+        updateButtons();
+    }
+
+    private void updateButtons() {
         nextFloorButton.setDisable(gameEngine.isOnLastFloor() || !gameEngine.getPlayer().isAlive());
         eventButton.setDisable(gameEngine.isGameCompleted() || !gameEngine.getPlayer().isAlive());
     }

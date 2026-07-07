@@ -65,11 +65,11 @@ public class DialogueEvent implements FloorEvent {
      * @param gameEngine motore della partita
      */
     @Override
-    public void execute(GameEngine gameEngine) {
-        if (gameEngine == null) {
-            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
-        }
+    public EventResult execute(GameEngine gameEngine) {
+    if (gameEngine == null) {
+        throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+    }
 
-        // Implementazione futura.
+    return new EventResult("Hai riflettuto sulle scelte disponibili.");
     }
 }

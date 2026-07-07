@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.engine;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
+import it.unicam.cs.mpgc.rpg123465.events.EventResult;
 
 /**
  * Coordina lo stato principale della partita.
@@ -44,12 +45,18 @@ public class GameEngine {
         return tower.getFloor(currentFloorIndex);
     }
 
-    public void executeCurrentFloorEvent() {
-        getCurrentFloor().getEvent().execute(this);
+    /**
+     * Esegue l'evento associato al piano corrente.
+     *
+     * @return risultato dell'evento
+     */
+    public EventResult executeCurrentFloorEvent() {
+    EventResult result = getCurrentFloor().getEvent().execute(this);
 
-        if (isOnLastFloor() && player.isAlive()) {
-            gameCompleted = true;
+    if (isOnLastFloor() && player.isAlive()) {
+        gameCompleted = true;
         }
+     return result;
     }
 
     public boolean isOnLastFloor() {
