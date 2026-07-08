@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Implementazione di SaveManager basata su file binario.
@@ -30,6 +33,13 @@ public class FileSaveManager implements SaveManager {
     public void save(GameSave gameSave) throws IOException {
         if (gameSave == null) {
             throw new IllegalArgumentException("Il salvataggio non può essere null.");
+        }
+
+        Path path = Paths.get(filePath);
+        Path parent = path.getParent();
+
+        if (parent != null) {
+            Files.createDirectories(parent);
         }
 
         try (ObjectOutputStream outputStream =
