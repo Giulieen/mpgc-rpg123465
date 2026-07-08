@@ -226,13 +226,7 @@ public class MainWindow {
 
             gameEngine = GameFactory.createNewGame();
             gameEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
-
-            int currentHealth = gameEngine.getPlayer().getStats().getCurrentHealth();
-            int damageToApply = currentHealth - save.getCurrentHealth();
-
-            if (damageToApply > 0) {
-                gameEngine.getPlayer().takeDamage(damageToApply);
-            }
+            gameEngine.getPlayer().getStats().setCurrentHealth(save.getCurrentHealth());
 
             currentEnemy = null;
             executedFloors.clear();

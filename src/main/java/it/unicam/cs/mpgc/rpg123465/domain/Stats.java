@@ -116,6 +116,22 @@ public class Stats {
         currentHealth = maxHealth;
     }
 
+    /**
+     * Imposta i punti vita correnti a un valore specifico.
+     *
+     * @param value nuovo valore dei punti vita
+     * @throws IllegalArgumentException se il valore è negativo
+     * o superiore alla vita massima
+     */
+    public void setCurrentHealth(int value) {
+        if (value < 0 || value > maxHealth) {
+            throw new IllegalArgumentException(
+                    "I punti vita devono essere compresi tra 0 e la vita massima.");
+        }
+
+        this.currentHealth = value;
+    }
+
     @Override
     public String toString() {
         return "Stats{" +

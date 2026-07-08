@@ -62,6 +62,29 @@ class StatsTest {
     }
 
     @Test
+    void impostareLaVitaCorrenteAggiornaIlValore() {
+        Stats stats = new Stats(50, 10, 5);
+
+        stats.setCurrentHealth(25);
+
+        assertEquals(25, stats.getCurrentHealth());
+    }
+
+    @Test
+    void impostareLaVitaCorrenteOltreIlMassimoVieneRifiutato() {
+        Stats stats = new Stats(50, 10, 5);
+
+        assertThrows(IllegalArgumentException.class, () -> stats.setCurrentHealth(60));
+    }
+
+    @Test
+    void impostareLaVitaCorrenteNegativaVieneRifiutato() {
+        Stats stats = new Stats(50, 10, 5);
+
+        assertThrows(IllegalArgumentException.class, () -> stats.setCurrentHealth(-1));
+    }
+
+    @Test
     void laVitaMassimaNonPositivaVieneRifiutata() {
         assertThrows(IllegalArgumentException.class, () -> new Stats(0, 10, 5));
     }
