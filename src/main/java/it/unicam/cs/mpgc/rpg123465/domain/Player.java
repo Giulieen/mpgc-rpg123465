@@ -41,4 +41,42 @@ public class Player extends GameCharacter {
     public void addItem(Item item) {
         inventory.addItem(item);
     }
+
+    /**
+     * Verifica se il giocatore possiede almeno un oggetto curativo.
+     *
+     * @return {@code true} se è presente un oggetto di tipo curativo
+     */
+    public boolean hasHealingItem() {
+        return findHealingItem() != null;
+    }
+
+    /**
+     * Usa il primo oggetto curativo disponibile: ripristina la vita del
+     * giocatore in base alla potenza dell'oggetto e lo rimuove dall'inventario.
+     *
+     * @return l'oggetto utilizzato, oppure {@code null} se non ne era disponibile alcuno
+     */
+    public Item useHealingItem() {
+        Item healingItem = findHealingItem();
+
+        if (healingItem == null) {
+            return null;
+        }
+
+        heal(healingItem.getHealingPower());
+        inventory.removeItem(healingItem);
+
+        return healingItem;
+    }
+
+    private Item findHealingItem() {
+        for (Item item : inventory.getItems()) {
+            if (item.getType() == ItemType.HEALING) {
+                return item;
+            }
+        }
+
+        return null;
+    }
 }

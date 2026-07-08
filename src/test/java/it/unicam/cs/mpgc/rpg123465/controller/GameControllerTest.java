@@ -1,6 +1,9 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
+import it.unicam.cs.mpgc.rpg123465.domain.Item;
+import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
+import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
@@ -57,6 +60,33 @@ class GameControllerTest {
         String message = controller.executeCombatAction(CombatAction.ATTACK);
 
         assertEquals("Nessun combattimento attivo.", message);
+    }
+
+    @Test
+    void usareUnOggettoSenzaAverneVieneSegnalato() {
+        controller.executeStandardEvent();
+
+        String message = controller.executeCombatAction(CombatAction.USE_ITEM);
+
+        assertEquals("Non hai oggetti curativi da usare.", message);
+        assertTrue(controller.isCombatActive());
+    }
+
+    @Test
+    void usareUnOggettoCurativoLoConsuma() {
+        GameEngine engine = GameFactory.createNewGame();
+        engine.getPlayer().addItem(
+                new Item("Pozione di Lucidità", "Ripristina la calma.", ItemType.HEALING, 30));
+        SaveManager saveManager = new FileSaveManager(
+                cartellaTemporanea.resolve("uso.dat").toString());
+        GameController controller = new GameController(engine, saveManager);
+        controller.executeStandardEvent();
+
+        String message = controller.executeCombatAction(CombatAction.USE_ITEM);
+
+        assertTrue(message.startsWith("Usi Pozione di Lucidità"));
+        assertFalse(engine.getPlayer().hasHealingItem());
+        assertTrue(controller.isCombatActive());
     }
 
     @Test

@@ -74,6 +74,19 @@ class CombatEngineTest {
     }
 
     @Test
+    void usareUnOggettoFaReagireIlNemico() {
+        Player player = nuovoGiocatore(new Stats(100, 14, 5));
+        Enemy enemy = nuovoNemico(new Stats(100, 10, 3));
+        int vitaInizialeGiocatore = player.getStats().getCurrentHealth();
+
+        CombatResult result = combatEngine.executeTurn(player, enemy, CombatAction.USE_ITEM);
+
+        assertNull(result);
+        assertTrue(player.getStats().getCurrentHealth() < vitaInizialeGiocatore);
+        assertEquals(100, enemy.getStats().getCurrentHealth());
+    }
+
+    @Test
     void laFugaRestituisceEscape() {
         Player player = nuovoGiocatore(new Stats(100, 14, 5));
         Enemy enemy = nuovoNemico(new Stats(100, 10, 3));

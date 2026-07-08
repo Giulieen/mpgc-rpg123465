@@ -75,7 +75,8 @@ public final class GameFactory {
                                 new Item(
                                     "Respiro Profondo",
                                     "Un ricordo di lucidità che aiuta a non cedere al panico.",
-                                    ItemType.SYMBOLIC
+                                    ItemType.HEALING,
+                                    25
                             )
                         )
                 ),
@@ -103,7 +104,8 @@ public final class GameFactory {
                                new Item(
                                     "Scintilla di Speranza",
                                     "Una risorsa interiore che ricorda al giocatore perché continuare.",
-                                    ItemType.SYMBOLIC
+                                    ItemType.HEALING,
+                                    40
                             )
                         )
                 ),

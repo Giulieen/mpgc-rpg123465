@@ -5,6 +5,7 @@ import it.unicam.cs.mpgc.rpg123465.combat.CombatEngine;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
+import it.unicam.cs.mpgc.rpg123465.domain.Item;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
@@ -154,20 +155,45 @@ public class GameController {
             return "Nessun combattimento attivo.";
         }
 
-        CombatResult result = combatEngine.executeTurn(player(), currentEnemy, action);
+        if (action == CombatAction.USE_ITEM) {
+            return useHealingItem();
+        }
 
+        return resolveCombatOutcome(combatEngine.executeTurn(player(), currentEnemy, action));
+    }
+
+    private String useHealingItem() {
+        if (!player().hasHealingItem()) {
+            return "Non hai oggetti curativi da usare.";
+        }
+
+        Item used = player().useHealingItem();
+        String message = "Usi " + used.getName() + ": recuperi "
+                + used.getHealingPower() + " di lucidità.";
+
+        CombatResult reaction = combatEngine.executeTurn(player(), currentEnemy, CombatAction.USE_ITEM);
+
+        if (reaction == CombatResult.DEFEAT) {
+            currentEnemy = null;
+            return message + " Il nemico però ti travolge: sei stato sconfitto...";
+        }
+
+        return message;
+    }
+
+    private String resolveCombatOutcome(CombatResult result) {
         if (result == null) {
             return "Il combattimento continua.";
         }
 
-        String message = switch (result) {
-            case VICTORY -> "Hai sconfitto " + currentEnemy.getName() + "!";
+        String enemyName = currentEnemy.getName();
+        currentEnemy = null;
+
+        return switch (result) {
+            case VICTORY -> "Hai sconfitto " + enemyName + "!";
             case DEFEAT -> "Sei stato sconfitto...";
             case ESCAPE -> "Sei riuscito a fuggire.";
         };
-
-        currentEnemy = null;
-        return message;
     }
 
     /**

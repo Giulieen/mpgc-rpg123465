@@ -22,40 +22,39 @@ public class CombatEngine {
             throw new IllegalArgumentException("I parametri non possono essere null.");
         }
 
-        switch (action) {
+        return switch (action) {
+            case ATTACK -> resolveAttack(player, enemy);
+            // L'oggetto viene usato dal controller: qui il turno prosegue con la reazione del nemico.
+            case USE_ITEM -> resolveEnemyReaction(player, enemy);
+            case ESCAPE -> CombatResult.ESCAPE;
+        };
+    }
 
-            case ATTACK -> {
+    private CombatResult resolveAttack(Player player, Enemy enemy) {
+        int playerDamage = Math.max(
+                1,
+                player.getStats().getAttack() - enemy.getStats().getDefense()
+        );
 
-                int playerDamage = Math.max(
-                        1,
-                        player.getStats().getAttack() - enemy.getStats().getDefense()
-                );
+        enemy.takeDamage(playerDamage);
 
-                enemy.takeDamage(playerDamage);
+        if (!enemy.isAlive()) {
+            return CombatResult.VICTORY;
+        }
 
-                if (!enemy.isAlive()) {
-                    return CombatResult.VICTORY;
-                }
+        return resolveEnemyReaction(player, enemy);
+    }
 
-                int enemyDamage = Math.max(
-                        1,
-                        enemy.getStats().getAttack() - player.getStats().getDefense()
-                );
+    private CombatResult resolveEnemyReaction(Player player, Enemy enemy) {
+        int enemyDamage = Math.max(
+                1,
+                enemy.getStats().getAttack() - player.getStats().getDefense()
+        );
 
-                player.takeDamage(enemyDamage);
+        player.takeDamage(enemyDamage);
 
-                if (!player.isAlive()) {
-                    return CombatResult.DEFEAT;
-                }
-            }
-
-            case ESCAPE -> {
-                return CombatResult.ESCAPE;
-            }
-
-            case USE_ITEM -> {
-                // Implementazione futura.
-            }
+        if (!player.isAlive()) {
+            return CombatResult.DEFEAT;
         }
 
         return null;

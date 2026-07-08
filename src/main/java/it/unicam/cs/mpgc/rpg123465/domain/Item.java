@@ -8,6 +8,18 @@ public class Item {
     private final String name;
     private final String description;
     private final ItemType type;
+    private final int healingPower;
+
+    /**
+     * Crea un nuovo oggetto privo di potere curativo.
+     *
+     * @param name nome dell'oggetto
+     * @param description descrizione dell'oggetto
+     * @param type tipo dell'oggetto
+     */
+    public Item(String name, String description, ItemType type) {
+        this(name, description, type, 0);
+    }
 
     /**
      * Crea un nuovo oggetto.
@@ -15,8 +27,10 @@ public class Item {
      * @param name nome dell'oggetto
      * @param description descrizione dell'oggetto
      * @param type tipo dell'oggetto
+     * @param healingPower quantità di vita ripristinata quando l'oggetto viene
+     * usato (0 se l'oggetto non è curativo)
      */
-    public Item(String name, String description, ItemType type) {
+    public Item(String name, String description, ItemType type, int healingPower) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Il nome non può essere vuoto.");
         }
@@ -29,9 +43,14 @@ public class Item {
             throw new IllegalArgumentException("Il tipo dell'oggetto non può essere null.");
         }
 
+        if (healingPower < 0) {
+            throw new IllegalArgumentException("La potenza curativa non può essere negativa.");
+        }
+
         this.name = name;
         this.description = description;
         this.type = type;
+        this.healingPower = healingPower;
     }
 
     /**
@@ -59,6 +78,15 @@ public class Item {
      */
     public ItemType getType() {
         return type;
+    }
+
+    /**
+     * Restituisce la quantità di vita ripristinata dall'oggetto.
+     *
+     * @return la potenza curativa (0 se l'oggetto non è curativo)
+     */
+    public int getHealingPower() {
+        return healingPower;
     }
 
     @Override
