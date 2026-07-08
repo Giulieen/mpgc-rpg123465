@@ -1,8 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.events;
 
-import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
-import it.unicam.cs.mpgc.rpg123465.combat.CombatEngine;
-import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 
@@ -58,31 +55,19 @@ public class CombatEvent implements FloorEvent {
     }
 
     /**
-     * Avvia il combattimento contro il nemico.
+     * Avvia il combattimento senza risolverlo automaticamente.
      *
      * @param gameEngine motore della partita
+     * @return risultato descrittivo dell'avvio del combattimento
      */
     @Override
     public EventResult execute(GameEngine gameEngine) {
-    if (gameEngine == null) {
-        throw new IllegalArgumentException("Il motore di gioco non può essere null.");
-    }
+        if (gameEngine == null) {
+            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+        }
 
-    CombatEngine combatEngine = new CombatEngine();
-    CombatResult result = null;
-
-    while (result == null) {
-        result = combatEngine.executeTurn(
-                gameEngine.getPlayer(),
-                enemy,
-                CombatAction.ATTACK
+        return new EventResult(
+                "Il combattimento contro " + enemy.getName() + " ha inizio."
         );
-    }
-
-    return switch (result) {
-        case VICTORY -> new EventResult("Hai sconfitto " + enemy.getName() + "!");
-        case DEFEAT -> new EventResult("Sei stato sconfitto...");
-        case ESCAPE -> new EventResult("Sei riuscito a fuggire.");
-        };
     }
 }
