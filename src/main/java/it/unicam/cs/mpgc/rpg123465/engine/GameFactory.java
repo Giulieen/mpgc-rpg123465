@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.domain.Stats;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
+import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
 import it.unicam.cs.mpgc.rpg123465.events.ItemEvent;
 import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
@@ -62,7 +63,24 @@ public final class GameFactory {
                         new DialogueEvent(
                                 "La voce della Rabbia",
                                 "Una voce ti chiede se vuoi reagire con forza o cercare controllo.",
-                                List.of("Reagisci con forza", "Respira e osserva")
+                                List.of(
+                                        new DialogueChoice(
+                                                "Reagisci con forza",
+                                                "Colpisci alla cieca: la rabbia ti consuma e perdi 10 di lucidità.",
+                                                -10
+                                        ),
+                                        new DialogueChoice(
+                                                "Respira e osserva",
+                                                "Respiri e ritrovi controllo: recuperi 5 di lucidità e trovi un Momento di Calma.",
+                                                5,
+                                                new Item(
+                                                        "Momento di Calma",
+                                                        "Un istante di quiete che puoi richiamare nei momenti difficili.",
+                                                        ItemType.HEALING,
+                                                        15
+                                                )
+                                        )
+                                )
                         )
                 ),
                 new Floor(

@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.controller;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
 import it.unicam.cs.mpgc.rpg123465.domain.Item;
 import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
+import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
@@ -99,11 +100,14 @@ class GameControllerTest {
     }
 
     @Test
-    void laSceltaDiForzaRiduceLaVitaDelGiocatore() {
+    void unaSceltaDiDialogoApplicaIlSuoEffetto() {
         int vitaIniziale = controller.getPlayerCurrentHealth();
+        DialogueChoice scelta = new DialogueChoice(
+                "Reagisci con forza", "La rabbia ti consuma.", -10);
 
-        controller.resolveDialogueChoice("Reagisci con forza");
+        String message = controller.resolveDialogueChoice(scelta);
 
+        assertEquals("La rabbia ti consuma.", message);
         assertEquals(vitaIniziale - 10, controller.getPlayerCurrentHealth());
         assertTrue(controller.isCurrentEventExecuted());
     }

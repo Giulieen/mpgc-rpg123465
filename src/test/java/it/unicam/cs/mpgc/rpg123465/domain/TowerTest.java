@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.domain;
 
+import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
 import it.unicam.cs.mpgc.rpg123465.events.FloorEvent;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,10 @@ class TowerTest {
         FloorEvent event = new DialogueEvent(
                 "Bivio",
                 "Una voce ti pone una domanda.",
-                List.of("Sì", "No")
+                List.of(
+                        new DialogueChoice("Sì", "Hai accettato.", 0),
+                        new DialogueChoice("No", "Hai rifiutato.", 0)
+                )
         );
         return new Floor(numero, "Piano " + numero, "Descrizione del piano.", event);
     }

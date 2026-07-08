@@ -10,12 +10,14 @@ import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
+import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.EventResult;
 import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -98,6 +100,15 @@ public class GameController {
         return executedFloors.contains(gameEngine.getCurrentFloorIndex());
     }
 
+    /**
+     * Restituisce gli oggetti attualmente posseduti dal giocatore.
+     *
+     * @return lista non modificabile degli oggetti nell'inventario
+     */
+    public List<Item> getInventoryItems() {
+        return player().getInventory().getItems();
+    }
+
     // ---------------------------------------------------------------------
     // Comandi (modificano lo stato e restituiscono un messaggio per la vista)
     // ---------------------------------------------------------------------
@@ -126,20 +137,12 @@ public class GameController {
      * @param choice scelta effettuata dal giocatore
      * @return messaggio descrittivo dell'esito
      */
-    public String resolveDialogueChoice(String choice) {
+    public String resolveDialogueChoice(DialogueChoice choice) {
         if (choice == null) {
             throw new IllegalArgumentException("La scelta non può essere null.");
         }
 
-        String message;
-        if (choice.toLowerCase().contains("forza")) {
-            player().takeDamage(10);
-            message = "Hai reagito con forza, ma la rabbia ti consuma. Perdi 10 punti vita.";
-        } else {
-            player().heal(10);
-            message = "Respiri, osservi e ritrovi controllo. Recuperi 10 punti vita.";
-        }
-
+        String message = choice.applyTo(player());
         markCurrentEventExecuted();
         return message;
     }
@@ -167,15 +170,23 @@ public class GameController {
             return "Non hai oggetti curativi da usare.";
         }
 
-        Item used = player().useHealingItem();
-        String message = "Usi " + used.getName() + ": recuperi "
-                + used.getHealingPower() + " di lucidità.";
+        String enemyName = currentEnemy.getName();
 
+        int healthBeforeUse = player().getStats().getCurrentHealth();
+        Item used = player().useHealingItem();
+        int recovered = player().getStats().getCurrentHealth() - healthBeforeUse;
+
+        int healthBeforeReaction = player().getStats().getCurrentHealth();
         CombatResult reaction = combatEngine.executeTurn(player(), currentEnemy, CombatAction.USE_ITEM);
+        int damageTaken = healthBeforeReaction - player().getStats().getCurrentHealth();
+
+        String message = "Usi " + used.getName() + ": recuperi " + recovered
+                + " di lucidità. " + enemyName + " contrattacca: perdi "
+                + damageTaken + " di lucidità.";
 
         if (reaction == CombatResult.DEFEAT) {
             currentEnemy = null;
-            return message + " Il nemico però ti travolge: sei stato sconfitto...";
+            return message + " Sei stato sconfitto...";
         }
 
         return message;

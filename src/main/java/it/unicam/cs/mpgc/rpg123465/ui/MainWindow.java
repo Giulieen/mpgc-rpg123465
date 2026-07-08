@@ -4,16 +4,22 @@ import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
+import it.unicam.cs.mpgc.rpg123465.domain.Item;
+import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,7 +27,7 @@ import java.util.Optional;
  * <p>
  * Si occupa esclusivamente della presentazione: costruisce i componenti,
  * inoltra le azioni dell'utente al {@link GameController} e aggiorna le
- * etichette leggendo lo stato esposto dal controller.
+ * etichette e l'inventario leggendo lo stato esposto dal controller.
  */
 public class MainWindow {
 
@@ -34,6 +40,8 @@ public class MainWindow {
     private final Label playerHealthLabel = new Label();
     private final Label enemyHealthLabel = new Label();
 
+    private final ListView<String> inventoryView = new ListView<>();
+
     private final Button eventButton = new Button("Esegui evento");
     private final Button nextFloorButton = new Button("Prossimo piano");
     private final Button attackButton = new Button("Attacca");
@@ -41,6 +49,8 @@ public class MainWindow {
     private final Button escapeButton = new Button("Fuggi");
     private final Button saveButton = new Button("Salva");
     private final Button loadButton = new Button("Carica");
+
+    private boolean gameEndShown = false;
 
     public MainWindow(GameController controller) {
         if (controller == null) {
@@ -61,6 +71,10 @@ public class MainWindow {
         HBox combatActions = new HBox(10, attackButton, useItemButton, escapeButton);
         HBox saveActions = new HBox(10, saveButton, loadButton);
 
+        Label inventoryTitle = new Label("Inventario");
+        inventoryTitle.setStyle("-fx-font-weight: bold;");
+        inventoryView.setPrefHeight(120);
+
         eventButton.setOnAction(event -> onExecuteEvent());
         nextFloorButton.setOnAction(event -> onNextFloor());
         attackButton.setOnAction(event -> onCombatAction(CombatAction.ATTACK));
@@ -79,12 +93,14 @@ public class MainWindow {
                 resultLabel,
                 mainActions,
                 combatActions,
+                inventoryTitle,
+                inventoryView,
                 saveActions
         );
 
         updateView();
 
-        Scene scene = new Scene(root, 760, 520);
+        Scene scene = new Scene(root, 760, 640);
 
         stage.setTitle("Tower of Self RPG");
         stage.setScene(scene);
@@ -100,7 +116,7 @@ public class MainWindow {
         Floor floor = controller.getCurrentFloor();
 
         if (floor.getEvent() instanceof DialogueEvent dialogueEvent) {
-            Optional<String> choice = askDialogueChoice(dialogueEvent);
+            Optional<DialogueChoice> choice = askDialogueChoice(dialogueEvent);
 
             if (choice.isEmpty()) {
                 resultLabel.setText("Hai esitato davanti alla scelta.");
@@ -115,12 +131,10 @@ public class MainWindow {
         refresh();
     }
 
-    private Optional<String> askDialogueChoice(DialogueEvent dialogueEvent) {
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(
-                dialogueEvent.getChoices().get(0),
-                dialogueEvent.getChoices()
-        );
+    private Optional<DialogueChoice> askDialogueChoice(DialogueEvent dialogueEvent) {
+        List<DialogueChoice> choices = dialogueEvent.getChoices();
 
+        ChoiceDialog<DialogueChoice> dialog = new ChoiceDialog<>(choices.get(0), choices);
         dialog.setTitle(dialogueEvent.getTitle());
         dialog.setHeaderText(dialogueEvent.getDescription());
         dialog.setContentText("Scegli come reagire:");
@@ -144,6 +158,7 @@ public class MainWindow {
 
     private void onLoad() {
         String message = controller.loadGame();
+        gameEndShown = false;
         updateView();
         resultLabel.setText(message);
     }
@@ -161,12 +176,14 @@ public class MainWindow {
 
     private void refresh() {
         updateHealthLabels();
+        updateInventory();
         updateButtons();
+        checkGameEnd();
     }
 
     private void updateHealthLabels() {
         playerHealthLabel.setText(
-                "Vita giocatore: " +
+                "Lucidità: " +
                         controller.getPlayerCurrentHealth() +
                         "/" +
                         controller.getPlayerMaxHealth()
@@ -180,12 +197,22 @@ public class MainWindow {
             enemyHealthLabel.setText(
                     "Nemico: " +
                             enemy.getName() +
-                            " - Vita: " +
+                            " - Intensità: " +
                             enemy.getStats().getCurrentHealth() +
                             "/" +
                             enemy.getStats().getMaxHealth()
             );
         }
+    }
+
+    private void updateInventory() {
+        List<String> entries = new ArrayList<>();
+
+        for (Item item : controller.getInventoryItems()) {
+            entries.add(item.getName() + " — " + item.getType());
+        }
+
+        inventoryView.getItems().setAll(entries);
     }
 
     private void updateButtons() {
@@ -204,5 +231,45 @@ public class MainWindow {
         attackButton.setDisable(!combatActive || playerDead);
         useItemButton.setDisable(!combatActive || playerDead);
         escapeButton.setDisable(!combatActive || playerDead);
+    }
+
+    /**
+     * Mostra un avviso di fine partita (sconfitta o vittoria) una sola volta e
+     * disabilita i pulsanti di gioco. Il pulsante "Carica" resta attivo per
+     * permettere di riprendere una partita salvata.
+     */
+    private void checkGameEnd() {
+        if (gameEndShown) {
+            return;
+        }
+
+        if (!controller.isPlayerAlive()) {
+            gameEndShown = true;
+            disableGameButtons();
+            showAlert(Alert.AlertType.ERROR, "Game Over",
+                    "La tua lucidità si è spenta: la torre ti ha sopraffatto.");
+        } else if (controller.isGameCompleted() && !controller.isCombatActive()) {
+            gameEndShown = true;
+            disableGameButtons();
+            showAlert(Alert.AlertType.INFORMATION, "Vittoria",
+                    "Hai raggiunto la cima e affrontato il tuo Alter Ego: sei diventato integro.");
+        }
+    }
+
+    private void disableGameButtons() {
+        eventButton.setDisable(true);
+        nextFloorButton.setDisable(true);
+        attackButton.setDisable(true);
+        useItemButton.setDisable(true);
+        escapeButton.setDisable(true);
+        saveButton.setDisable(true);
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

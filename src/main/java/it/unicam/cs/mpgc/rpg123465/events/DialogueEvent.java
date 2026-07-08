@@ -13,7 +13,7 @@ public class DialogueEvent implements FloorEvent {
 
     private final String title;
     private final String description;
-    private final List<String> choices;
+    private final List<DialogueChoice> choices;
 
     /**
      * Crea un nuovo evento di dialogo.
@@ -22,7 +22,7 @@ public class DialogueEvent implements FloorEvent {
      * @param description descrizione dell'evento
      * @param choices scelte disponibili
      */
-    public DialogueEvent(String title, String description, List<String> choices) {
+    public DialogueEvent(String title, String description, List<DialogueChoice> choices) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Il titolo non può essere vuoto.");
         }
@@ -53,7 +53,7 @@ public class DialogueEvent implements FloorEvent {
      *
      * @return lista non modificabile delle scelte
      */
-    public List<String> getChoices() {
+    public List<DialogueChoice> getChoices() {
         return Collections.unmodifiableList(choices);
     }
 
