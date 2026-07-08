@@ -1,5 +1,9 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
+import it.unicam.cs.mpgc.rpg123465.challenge.Challenge;
+import it.unicam.cs.mpgc.rpg123465.challenge.ChallengeManager;
+import it.unicam.cs.mpgc.rpg123465.challenge.ChallengeQuestion;
+import it.unicam.cs.mpgc.rpg123465.challenge.ConfrontationResolver;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatEngine;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
@@ -9,9 +13,11 @@ import it.unicam.cs.mpgc.rpg123465.domain.Item;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.engine.GameState;
 import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.EventResult;
+import it.unicam.cs.mpgc.rpg123465.events.ItemEvent;
 import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 
@@ -31,10 +37,14 @@ import java.util.Set;
 public class GameController {
 
     private final CombatEngine combatEngine = new CombatEngine();
+    private final ChallengeManager challengeManager = new ChallengeManager();
+    private final ConfrontationResolver confrontationResolver = new ConfrontationResolver();
     private final SaveManager saveManager;
 
     private GameEngine gameEngine;
     private Enemy currentEnemy;
+    private ChallengeQuestion currentQuestion;
+    private GameState state = GameState.EXPLORING;
     private final Set<Integer> executedFloors = new HashSet<>();
 
     /**
@@ -101,6 +111,24 @@ public class GameController {
     }
 
     /**
+     * Restituisce lo stato corrente del flusso di gioco.
+     *
+     * @return stato corrente
+     */
+    public GameState getState() {
+        return state;
+    }
+
+    /**
+     * Indica se esiste una partita salvata da poter caricare.
+     *
+     * @return {@code true} se un salvataggio è disponibile
+     */
+    public boolean hasSavedGame() {
+        return saveManager.exists();
+    }
+
+    /**
      * Restituisce gli oggetti attualmente posseduti dal giocatore.
      *
      * @return lista non modificabile degli oggetti nell'inventario
@@ -125,10 +153,30 @@ public class GameController {
 
         if (floor.getEvent() instanceof CombatEvent combatEvent) {
             currentEnemy = combatEvent.getEnemy();
+            state = GameState.COMBAT;
+        } else if (floor.getEvent() instanceof ItemEvent) {
+            state = GameState.ITEM;
+        } else {
+            state = GameState.EXPLORING;
         }
 
         markCurrentEventExecuted();
+        refreshTerminalState();
         return "Risultato: " + result.getMessage();
+    }
+
+    /**
+     * Segnala l'inizio di un'interazione di dialogo.
+     */
+    public void beginDialogue() {
+        state = GameState.DIALOGUE;
+    }
+
+    /**
+     * Annulla l'interazione di dialogo in corso, tornando all'esplorazione.
+     */
+    public void abortDialogue() {
+        state = GameState.EXPLORING;
     }
 
     /**
@@ -144,6 +192,8 @@ public class GameController {
 
         String message = choice.applyTo(player());
         markCurrentEventExecuted();
+        state = GameState.EXPLORING;
+        refreshTerminalState();
         return message;
     }
 
@@ -163,6 +213,51 @@ public class GameController {
         }
 
         return resolveCombatOutcome(combatEngine.executeTurn(player(), currentEnemy, action));
+    }
+
+    /**
+     * Indica se sul piano corrente, durante il combattimento, è disponibile
+     * un confronto interiore con il nemico.
+     *
+     * @return {@code true} se il confronto è possibile
+     */
+    public boolean isConfrontationAvailable() {
+        return currentEnemy != null
+                && challengeManager.getChallengeForFloor(currentFloorNumber()).isPresent();
+    }
+
+    /**
+     * Avvia un confronto proponendo una domanda del piano corrente.
+     *
+     * @return domanda da mostrare al giocatore
+     * @throws IllegalStateException se non è disponibile alcun confronto
+     */
+    public ChallengeQuestion startConfrontation() {
+        Challenge challenge = challengeManager.getChallengeForFloor(currentFloorNumber())
+                .orElseThrow(() -> new IllegalStateException("Nessun confronto disponibile."));
+
+        currentQuestion = challenge.nextQuestion();
+        return currentQuestion;
+    }
+
+    /**
+     * Risolve il confronto in corso applicando l'effetto della risposta scelta.
+     *
+     * @param answerIndex indice della risposta scelta
+     * @return messaggio descrittivo dell'esito
+     * @throws IllegalStateException se non c'è un confronto in corso
+     */
+    public String resolveConfrontation(int answerIndex) {
+        if (currentQuestion == null) {
+            throw new IllegalStateException("Nessun confronto in corso.");
+        }
+        if (currentEnemy == null) {
+            return "Nessun combattimento attivo.";
+        }
+
+        String message = confrontationResolver.resolve(currentQuestion, answerIndex, currentEnemy);
+        currentQuestion = null;
+        return message;
     }
 
     private String useHealingItem() {
@@ -186,6 +281,7 @@ public class GameController {
 
         if (reaction == CombatResult.DEFEAT) {
             currentEnemy = null;
+            refreshTerminalState();
             return message + " Sei stato sconfitto...";
         }
 
@@ -197,13 +293,22 @@ public class GameController {
             return "Il combattimento continua.";
         }
 
-        String enemyName = currentEnemy.getName();
         currentEnemy = null;
 
         return switch (result) {
-            case VICTORY -> "Hai sconfitto " + enemyName + "!";
-            case DEFEAT -> "Sei stato sconfitto...";
-            case ESCAPE -> "Sei riuscito a fuggire.";
+            case VICTORY -> {
+                // La vittoria completa la partita solo se era l'ultima prova.
+                state = gameEngine.isGameCompleted() ? GameState.VICTORY : GameState.EXPLORING;
+                yield "La Paura si dissolve.";
+            }
+            case DEFEAT -> {
+                state = GameState.GAME_OVER;
+                yield "Sei stato sconfitto...";
+            }
+            case ESCAPE -> {
+                state = GameState.EXPLORING;
+                yield "Sei riuscito a fuggire.";
+            }
         };
     }
 
@@ -216,6 +321,7 @@ public class GameController {
         }
 
         currentEnemy = null;
+        state = GameState.EXPLORING;
     }
 
     /**
@@ -248,12 +354,14 @@ public class GameController {
         try {
             GameSave save = saveManager.load();
 
-            gameEngine = GameFactory.createNewGame();
+            gameEngine = GameFactory.createNewGame(save.getPlayerName());
             gameEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
             player().getStats().setCurrentHealth(save.getCurrentHealth());
 
             currentEnemy = null;
             executedFloors.clear();
+            state = GameState.EXPLORING;
+            refreshTerminalState();
 
             return "Partita caricata correttamente.";
         } catch (IOException | ClassNotFoundException e) {
@@ -261,8 +369,24 @@ public class GameController {
         }
     }
 
+    /**
+     * Forza gli stati terminali (sconfitta o vittoria) quando le relative
+     * condizioni sono soddisfatte, così da centralizzarne la logica.
+     */
+    private void refreshTerminalState() {
+        if (!player().isAlive()) {
+            state = GameState.GAME_OVER;
+        } else if (gameEngine.isGameCompleted() && currentEnemy == null) {
+            state = GameState.VICTORY;
+        }
+    }
+
     private void markCurrentEventExecuted() {
         executedFloors.add(gameEngine.getCurrentFloorIndex());
+    }
+
+    private int currentFloorNumber() {
+        return gameEngine.getCurrentFloor().getNumber();
     }
 
     private Player player() {

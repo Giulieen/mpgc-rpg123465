@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.engine;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,10 +22,11 @@ class GameFactoryTest {
     }
 
     @Test
-    void laTorreContieneAlmenoUnPiano() {
+    void laTorreContieneSoloIlPrimoPiano() {
         Tower tower = GameFactory.createNewGame().getTower();
 
-        assertTrue(tower.getTotalFloors() > 0);
+        assertEquals(1, tower.getTotalFloors());
+        assertEquals("Paura del Fallimento", tower.getFloor(0).getName());
     }
 
     @Test

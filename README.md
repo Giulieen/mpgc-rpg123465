@@ -2,40 +2,40 @@
 
 Tower of Self è un progetto Java sviluppato per l'esame di Metodologie di Programmazione / Modellazione e Gestione della Conoscenza.
 
-Il progetto consiste in un RPG psicologico a turni in cui il giocatore esplora una torre lineare composta da piani simbolici. Ogni piano rappresenta un aspetto della mente o della personalità e può contenere combattimenti, dialoghi o oggetti. L'obiettivo finale è raggiungere la cima della torre e affrontare il proprio Alter Ego.
+Il progetto consiste in un RPG psicologico a turni in cui il giocatore esplora una torre composta da piani simbolici, ognuno legato a un aspetto della mente. La versione attuale è **focalizzata sul Piano 1 — Paura del Fallimento**, completo e rifinito. I piani successivi (Rabbia, Ansia, Solitudine, Speranza, Alter Ego) sono previsti e **temporaneamente sospesi** per concentrare lo sviluppo su un singolo piano ben giocabile.
+
+La documentazione dettagliata (responsabilità delle classi, organizzazione dei dati, meccanismi di estensione) è disponibile nella **Wiki** del repository.
 
 ---
 
 ## Stato del progetto
 
-🚧 In sviluppo
-
-Versione corrente: **0.1.0**
+🚧 In sviluppo attivo — focalizzato sul **Piano 1**
 
 ---
 
 ## Funzionalità implementate
 
-- Configurazione progetto Gradle
-- Architettura a package
-- Modello del dominio
-- Torre composta da piani
-- Sistema base di combattimento
-- Eventi dei piani
-- Motore della partita
-- Factory per la creazione di una nuova partita
+- Menu iniziale con inserimento del nome del giocatore e introduzione narrativa
+- Modello del dominio (personaggi, statistiche, oggetti, inventario)
+- Piano 1 completo e giocabile: combattimento a turni contro la Paura del Fallimento
+- Meccanica "Confrontati": un dialogo con la Paura che modifica il combattimento (bonus/malus)
+- Uso di oggetti curativi durante il combattimento
+- Stato del flusso di gioco (`GameState`) che guida l'interfaccia
+- Persistenza tramite serializzazione (salvataggio e caricamento)
+- Interfaccia grafica JavaFX con tema dedicato (CSS)
+- Separazione della logica dalla vista tramite pattern MVC
+- Suite di test automatici con JUnit 5
 
 ---
 
 ## Funzionalità previste
 
-- Loop completo della partita
-- Utilizzo degli oggetti
-- Dialoghi interattivi
-- Salvataggio e caricamento partita
-- Interfaccia grafica
-- Test automatici
-- Documentazione finale
+- Reintroduzione dei piani successivi (Rabbia, Ansia, Solitudine, Speranza, Alter Ego)
+- Estensione della meccanica "Confrontati" agli altri piani
+- Persistenza dell'inventario e di uno stato di gioco più ricco
+- Ulteriori viste (es. web, mobile) sopra lo stesso controller
+- Persistenza alternativa (XML, database)
 
 ---
 
@@ -43,15 +43,18 @@ Versione corrente: **0.1.0**
 
 - [x] Configurazione del progetto
 - [x] Modello del dominio
-- [x] Sistema base di combattimento
-- [x] Struttura della torre
-- [x] Eventi della torre
+- [x] Sistema di combattimento
+- [x] Struttura della torre ed eventi
 - [x] Motore di gioco
-- [ ] Loop della partita
-- [ ] Persistenza
-- [ ] Interfaccia grafica
-- [ ] Test
-- [ ] Documentazione finale
+- [x] Persistenza (serializzazione)
+- [x] Interfaccia grafica (JavaFX)
+- [x] Separazione MVC
+- [x] Menu iniziale e introduzione narrativa
+- [x] Meccanica "Confrontati" (package challenge)
+- [x] Rifinitura del Piano 1
+- [x] Test automatici (JUnit 5)
+- [ ] Reintroduzione dei piani successivi
+- [ ] Documentazione completa nella Wiki
 
 ---
 
@@ -94,17 +97,39 @@ Versione corrente: **0.1.0**
 
 ---
 
+## Test
+
+```bash
+./gradlew test
+```
+
+---
+
 ## Struttura del progetto
 
 ```text
 it.unicam.cs.mpgc.rpg123465
 │
-├── combat
-├── domain
-├── engine
-├── events
-└── MainApp
+├── domain        // modello: personaggi, statistiche, oggetti, torre, piani
+├── events        // eventi dei piani (combattimento, dialogo, oggetto)
+├── combat        // logica del combattimento a turni
+├── challenge     // meccanica "Confrontati" (domande e bonus/malus)
+├── engine        // motore della partita, factory e stato di gioco
+├── persistence   // salvataggio/caricamento tramite serializzazione
+├── controller    // GameController: fa da tramite tra vista e modello (MVC)
+├── ui            // schermate JavaFX (menu, intro, gioco)
+└── MainApp       // entry point e navigazione tra schermate
 ```
+
+---
+
+## Architettura
+
+Il progetto segue il pattern **MVC (Model-View-Controller)**:
+
+- **Model** — i package `domain`, `events`, `combat`, `challenge`, `engine` e `persistence` contengono la logica di gioco e non dipendono da alcuna libreria grafica.
+- **Controller** — `GameController` coordina eventi, combattimento e persistenza, esponendo alla vista solo messaggi e dati in sola lettura. Non dipende da JavaFX, quindi è riutilizzabile da viste diverse e testabile senza avviare la GUI.
+- **View** — `MainWindow` si occupa solo della presentazione e inoltra le azioni dell'utente al controller.
 
 ---
 
@@ -112,17 +137,9 @@ it.unicam.cs.mpgc.rpg123465
 
 - Java 21
 - Gradle
-- Git
-- GitHub
-- JUnit 5 (configurato)
-
----
-
-## Package principale
-
-```text
-it.unicam.cs.mpgc.rpg123465
-```
+- JavaFX
+- JUnit 5
+- Git e GitHub
 
 ---
 

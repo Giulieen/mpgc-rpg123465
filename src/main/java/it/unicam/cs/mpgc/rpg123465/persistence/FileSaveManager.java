@@ -55,4 +55,9 @@ public class FileSaveManager implements SaveManager {
             return (GameSave) inputStream.readObject();
         }
     }
+
+    @Override
+    public boolean exists() {
+        return Files.exists(Paths.get(filePath));
+    }
 }

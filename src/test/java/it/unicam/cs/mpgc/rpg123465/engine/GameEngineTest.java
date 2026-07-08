@@ -30,10 +30,9 @@ class GameEngineTest {
     }
 
     @Test
-    void avanzareDiPianoIncrementaLIndice() {
-        gameEngine.advanceFloor();
-
-        assertEquals(1, gameEngine.getCurrentFloorIndex());
+    void laTorreContieneUnSoloPiano() {
+        assertEquals(1, gameEngine.getTower().getTotalFloors());
+        assertTrue(gameEngine.isOnLastFloor());
     }
 
     @Test
@@ -67,9 +66,9 @@ class GameEngineTest {
 
     @Test
     void ripristinareUnoStatoValidoAggiornaIlPianoCorrente() {
-        gameEngine.restoreState(3, false);
+        gameEngine.restoreState(0, false);
 
-        assertEquals(3, gameEngine.getCurrentFloorIndex());
+        assertEquals(0, gameEngine.getCurrentFloorIndex());
         assertFalse(gameEngine.isGameCompleted());
     }
 
