@@ -1,18 +1,10 @@
 package it.unicam.cs.mpgc.rpg123465.ui;
 
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
-import it.unicam.cs.mpgc.rpg123465.combat.CombatEngine;
-import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
+import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
-import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
-import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
-import it.unicam.cs.mpgc.rpg123465.events.EventResult;
-import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
-import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
-import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,20 +14,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
+/**
+ * Vista principale dell'applicazione.
+ * <p>
+ * Si occupa esclusivamente della presentazione: costruisce i componenti,
+ * inoltra le azioni dell'utente al {@link GameController} e aggiorna le
+ * etichette leggendo lo stato esposto dal controller.
+ */
 public class MainWindow {
 
-    private GameEngine gameEngine;
-    private Enemy currentEnemy;
-
-    private final Set<Integer> executedFloors = new HashSet<>();
-
-    private final CombatEngine combatEngine = new CombatEngine();
-    private final SaveManager saveManager = new FileSaveManager("saves/save.dat");
+    private final GameController controller;
 
     private final Label floorLabel = new Label();
     private final Label descriptionLabel = new Label();
@@ -52,12 +42,12 @@ public class MainWindow {
     private final Button saveButton = new Button("Salva");
     private final Button loadButton = new Button("Carica");
 
-    public MainWindow(GameEngine gameEngine) {
-        if (gameEngine == null) {
-            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
+    public MainWindow(GameController controller) {
+        if (controller == null) {
+            throw new IllegalArgumentException("Il controller non può essere null.");
         }
 
-        this.gameEngine = gameEngine;
+        this.controller = controller;
     }
 
     public void show(Stage stage) {
@@ -71,13 +61,13 @@ public class MainWindow {
         HBox combatActions = new HBox(10, attackButton, useItemButton, escapeButton);
         HBox saveActions = new HBox(10, saveButton, loadButton);
 
-        eventButton.setOnAction(event -> executeCurrentEvent());
-        nextFloorButton.setOnAction(event -> moveToNextFloor());
-        attackButton.setOnAction(event -> executeCombatAction(CombatAction.ATTACK));
-        useItemButton.setOnAction(event -> executeCombatAction(CombatAction.USE_ITEM));
-        escapeButton.setOnAction(event -> executeCombatAction(CombatAction.ESCAPE));
-        saveButton.setOnAction(event -> saveGame());
-        loadButton.setOnAction(event -> loadGame());
+        eventButton.setOnAction(event -> onExecuteEvent());
+        nextFloorButton.setOnAction(event -> onNextFloor());
+        attackButton.setOnAction(event -> onCombatAction(CombatAction.ATTACK));
+        useItemButton.setOnAction(event -> onCombatAction(CombatAction.USE_ITEM));
+        escapeButton.setOnAction(event -> onCombatAction(CombatAction.ESCAPE));
+        saveButton.setOnAction(event -> onSave());
+        loadButton.setOnAction(event -> onLoad());
 
         root.getChildren().addAll(
                 title,
@@ -101,32 +91,31 @@ public class MainWindow {
         stage.show();
     }
 
-    private void executeCurrentEvent() {
-        Floor floor = gameEngine.getCurrentFloor();
-
-        if (executedFloors.contains(gameEngine.getCurrentFloorIndex())) {
+    private void onExecuteEvent() {
+        if (controller.isCurrentEventExecuted()) {
             resultLabel.setText("Hai già affrontato l'evento di questo piano.");
             return;
         }
 
-        if (floor.getEvent() instanceof DialogueEvent dialogueEvent) {
-            executeDialogueEvent(dialogueEvent);
-        } else {
-            EventResult result = gameEngine.executeCurrentFloorEvent();
-            resultLabel.setText("Risultato: " + result.getMessage());
+        Floor floor = controller.getCurrentFloor();
 
-            if (floor.getEvent() instanceof CombatEvent combatEvent) {
-                currentEnemy = combatEvent.getEnemy();
+        if (floor.getEvent() instanceof DialogueEvent dialogueEvent) {
+            Optional<String> choice = askDialogueChoice(dialogueEvent);
+
+            if (choice.isEmpty()) {
+                resultLabel.setText("Hai esitato davanti alla scelta.");
+                return;
             }
+
+            resultLabel.setText(controller.resolveDialogueChoice(choice.get()));
+        } else {
+            resultLabel.setText(controller.executeStandardEvent());
         }
 
-        executedFloors.add(gameEngine.getCurrentFloorIndex());
-
-        updateButtons();
-        updateHealthLabels();
+        refresh();
     }
 
-    private void executeDialogueEvent(DialogueEvent dialogueEvent) {
+    private Optional<String> askDialogueChoice(DialogueEvent dialogueEvent) {
         ChoiceDialog<String> dialog = new ChoiceDialog<>(
                 dialogueEvent.getChoices().get(0),
                 dialogueEvent.getChoices()
@@ -136,116 +125,41 @@ public class MainWindow {
         dialog.setHeaderText(dialogueEvent.getDescription());
         dialog.setContentText("Scegli come reagire:");
 
-        Optional<String> choice = dialog.showAndWait();
-
-        if (choice.isEmpty()) {
-            resultLabel.setText("Hai esitato davanti alla scelta.");
-            return;
-        }
-
-        applyDialogueChoice(choice.get());
+        return dialog.showAndWait();
     }
 
-    private void applyDialogueChoice(String choice) {
-        if (choice.toLowerCase().contains("forza")) {
-            gameEngine.getPlayer().takeDamage(10);
-            resultLabel.setText("Hai reagito con forza, ma la rabbia ti consuma. Perdi 10 punti vita.");
-        } else {
-            gameEngine.getPlayer().heal(10);
-            resultLabel.setText("Respiri, osservi e ritrovi controllo. Recuperi 10 punti vita.");
-        }
+    private void onCombatAction(CombatAction action) {
+        resultLabel.setText(controller.executeCombatAction(action));
+        refresh();
     }
 
-    private void executeCombatAction(CombatAction action) {
-        if (currentEnemy == null) {
-            resultLabel.setText("Nessun combattimento attivo.");
-            return;
-        }
-
-        CombatResult result = combatEngine.executeTurn(
-                gameEngine.getPlayer(),
-                currentEnemy,
-                action
-        );
-
-        if (result == null) {
-            resultLabel.setText("Il combattimento continua.");
-        } else {
-            handleCombatResult(result);
-        }
-
-        updateButtons();
-        updateHealthLabels();
-    }
-
-    private void handleCombatResult(CombatResult result) {
-        switch (result) {
-            case VICTORY -> {
-                resultLabel.setText("Hai sconfitto " + currentEnemy.getName() + "!");
-                currentEnemy = null;
-            }
-            case DEFEAT -> {
-                resultLabel.setText("Sei stato sconfitto...");
-                currentEnemy = null;
-            }
-            case ESCAPE -> {
-                resultLabel.setText("Sei riuscito a fuggire.");
-                currentEnemy = null;
-            }
-        }
-    }
-
-    private void moveToNextFloor() {
-        if (!gameEngine.isGameCompleted()) {
-            gameEngine.advanceFloor();
-        }
-
-        currentEnemy = null;
+    private void onNextFloor() {
+        controller.advanceFloor();
         updateView();
     }
 
-    private void saveGame() {
-        try {
-            GameSave save = new GameSave(
-                    gameEngine.getPlayer().getName(),
-                    gameEngine.getCurrentFloorIndex(),
-                    gameEngine.getPlayer().getStats().getCurrentHealth(),
-                    gameEngine.isGameCompleted()
-            );
-
-            saveManager.save(save);
-            resultLabel.setText("Partita salvata correttamente.");
-        } catch (IOException e) {
-            resultLabel.setText("Errore durante il salvataggio: " + e.getMessage());
-        }
+    private void onSave() {
+        resultLabel.setText(controller.saveGame());
     }
 
-    private void loadGame() {
-        try {
-            GameSave save = saveManager.load();
-
-            gameEngine = GameFactory.createNewGame();
-            gameEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
-            gameEngine.getPlayer().getStats().setCurrentHealth(save.getCurrentHealth());
-
-            currentEnemy = null;
-            executedFloors.clear();
-
-            updateView();
-            resultLabel.setText("Partita caricata correttamente.");
-        } catch (IOException | ClassNotFoundException e) {
-            resultLabel.setText("Errore durante il caricamento: " + e.getMessage());
-        }
+    private void onLoad() {
+        String message = controller.loadGame();
+        updateView();
+        resultLabel.setText(message);
     }
 
     private void updateView() {
-        Floor floor = gameEngine.getCurrentFloor();
+        Floor floor = controller.getCurrentFloor();
 
         floorLabel.setText("Piano: " + floor);
         descriptionLabel.setText(floor.getDescription());
         eventLabel.setText("Evento: " + floor.getEvent().getTitle());
         resultLabel.setText("");
 
+        refresh();
+    }
+
+    private void refresh() {
         updateHealthLabels();
         updateButtons();
     }
@@ -253,36 +167,38 @@ public class MainWindow {
     private void updateHealthLabels() {
         playerHealthLabel.setText(
                 "Vita giocatore: " +
-                        gameEngine.getPlayer().getStats().getCurrentHealth() +
+                        controller.getPlayerCurrentHealth() +
                         "/" +
-                        gameEngine.getPlayer().getStats().getMaxHealth()
+                        controller.getPlayerMaxHealth()
         );
 
-        if (currentEnemy == null) {
+        Enemy enemy = controller.getCurrentEnemy();
+
+        if (enemy == null) {
             enemyHealthLabel.setText("Nemico: nessuno");
         } else {
             enemyHealthLabel.setText(
                     "Nemico: " +
-                            currentEnemy.getName() +
+                            enemy.getName() +
                             " - Vita: " +
-                            currentEnemy.getStats().getCurrentHealth() +
+                            enemy.getStats().getCurrentHealth() +
                             "/" +
-                            currentEnemy.getStats().getMaxHealth()
+                            enemy.getStats().getMaxHealth()
             );
         }
     }
 
     private void updateButtons() {
-        boolean playerDead = !gameEngine.getPlayer().isAlive();
-        boolean combatActive = currentEnemy != null;
-        boolean eventAlreadyExecuted = executedFloors.contains(gameEngine.getCurrentFloorIndex());
+        boolean playerDead = !controller.isPlayerAlive();
+        boolean combatActive = controller.isCombatActive();
+        boolean eventAlreadyExecuted = controller.isCurrentEventExecuted();
 
         nextFloorButton.setDisable(
-                combatActive || gameEngine.isOnLastFloor() || playerDead || !eventAlreadyExecuted
+                combatActive || controller.isOnLastFloor() || playerDead || !eventAlreadyExecuted
         );
 
         eventButton.setDisable(
-                combatActive || gameEngine.isGameCompleted() || playerDead || eventAlreadyExecuted
+                combatActive || controller.isGameCompleted() || playerDead || eventAlreadyExecuted
         );
 
         attackButton.setDisable(!combatActive || playerDead);
