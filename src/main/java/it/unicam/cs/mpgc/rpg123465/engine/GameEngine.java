@@ -51,12 +51,13 @@ public class GameEngine {
      * @return risultato dell'evento
      */
     public EventResult executeCurrentFloorEvent() {
-    EventResult result = getCurrentFloor().getEvent().execute(this);
+        EventResult result = getCurrentFloor().getEvent().execute(this);
 
-    if (isOnLastFloor() && player.isAlive()) {
-        gameCompleted = true;
+        if (isOnLastFloor() && player.isAlive()) {
+            gameCompleted = true;
         }
-     return result;
+
+        return result;
     }
 
     public boolean isOnLastFloor() {
@@ -76,5 +77,20 @@ public class GameEngine {
         }
 
         currentFloorIndex++;
+    }
+
+    /**
+     * Ripristina lo stato principale della partita.
+     *
+     * @param currentFloorIndex indice del piano corrente
+     * @param gameCompleted indica se la partita è completata
+     */
+    public void restoreState(int currentFloorIndex, boolean gameCompleted) {
+        if (currentFloorIndex < 0 || currentFloorIndex >= tower.getTotalFloors()) {
+            throw new IllegalArgumentException("Indice del piano non valido.");
+        }
+
+        this.currentFloorIndex = currentFloorIndex;
+        this.gameCompleted = gameCompleted;
     }
 }

@@ -12,6 +12,7 @@ public class GameSave implements Serializable {
     private final String playerName;
     private final int currentFloor;
     private final int currentHealth;
+    private final boolean gameCompleted;
 
     /**
      * Crea un nuovo salvataggio.
@@ -19,11 +20,17 @@ public class GameSave implements Serializable {
      * @param playerName nome del giocatore
      * @param currentFloor piano corrente
      * @param currentHealth punti vita correnti
+     * @param gameCompleted indica se la partita è stata completata
      */
-    public GameSave(String playerName, int currentFloor, int currentHealth) {
+    public GameSave(String playerName,
+                    int currentFloor,
+                    int currentHealth,
+                    boolean gameCompleted) {
+
         this.playerName = playerName;
         this.currentFloor = currentFloor;
         this.currentHealth = currentHealth;
+        this.gameCompleted = gameCompleted;
     }
 
     public String getPlayerName() {
@@ -36,5 +43,9 @@ public class GameSave implements Serializable {
 
     public int getCurrentHealth() {
         return currentHealth;
+    }
+
+    public boolean isGameCompleted() {
+        return gameCompleted;
     }
 }

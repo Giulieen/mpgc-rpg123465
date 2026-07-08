@@ -95,7 +95,8 @@ public class MainWindow {
             GameSave save = new GameSave(
                     gameEngine.getPlayer().getName(),
                     gameEngine.getCurrentFloorIndex(),
-                    gameEngine.getPlayer().getStats().getCurrentHealth()
+                    gameEngine.getPlayer().getStats().getCurrentHealth(),
+                    gameEngine.isGameCompleted()
             );
 
             saveManager.save(save);
@@ -110,10 +111,7 @@ public class MainWindow {
             GameSave save = saveManager.load();
 
             gameEngine = GameFactory.createNewGame();
-
-            while (gameEngine.getCurrentFloorIndex() < save.getCurrentFloor()) {
-                gameEngine.advanceFloor();
-            }
+            gameEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
 
             int currentHealth = gameEngine.getPlayer().getStats().getCurrentHealth();
             int damageToApply = currentHealth - save.getCurrentHealth();
