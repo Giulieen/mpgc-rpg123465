@@ -1,34 +1,34 @@
 package it.unicam.cs.mpgc.rpg123465.ui;
 
+import it.unicam.cs.mpgc.rpg123465.challenge.ChallengeQuestion;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.domain.Item;
+import it.unicam.cs.mpgc.rpg123465.engine.GameState;
+import it.unicam.cs.mpgc.rpg123465.events.CombatEvent;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
+import it.unicam.cs.mpgc.rpg123465.events.ItemEvent;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Vista principale dell'applicazione.
- * <p>
- * Si occupa esclusivamente della presentazione: costruisce i componenti,
- * inoltra le azioni dell'utente al {@link GameController} e aggiorna le
- * etichette e l'inventario leggendo lo stato esposto dal controller.
- */
 public class MainWindow {
 
     private final GameController controller;
@@ -40,71 +40,109 @@ public class MainWindow {
     private final Label playerHealthLabel = new Label();
     private final Label enemyHealthLabel = new Label();
 
+    private final ProgressBar playerHealthBar = new ProgressBar(1);
+    private final ProgressBar enemyHealthBar = new ProgressBar(0);
     private final ListView<String> inventoryView = new ListView<>();
 
-    private final Button eventButton = new Button("Esegui evento");
-    private final Button nextFloorButton = new Button("Prossimo piano");
+    private final Button eventButton = new Button();
     private final Button attackButton = new Button("Attacca");
+    private final Button confrontButton = new Button("Confrontati");
     private final Button useItemButton = new Button("Usa oggetto");
     private final Button escapeButton = new Button("Fuggi");
     private final Button saveButton = new Button("Salva");
     private final Button loadButton = new Button("Carica");
 
+    private VBox enemyPanel;
+    private VBox mainActionsPanel;
+    private VBox combatPanel;
     private boolean gameEndShown = false;
 
     public MainWindow(GameController controller) {
         if (controller == null) {
             throw new IllegalArgumentException("Il controller non può essere null.");
         }
-
         this.controller = controller;
     }
 
-    public void show(Stage stage) {
-        VBox root = new VBox(15);
-        root.setPadding(new Insets(20));
+    public Parent createView() {
+        registerActions();
 
         Label title = new Label("Tower of Self");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title");
 
-        HBox mainActions = new HBox(10, eventButton, nextFloorButton);
-        HBox combatActions = new HBox(10, attackButton, useItemButton, escapeButton);
-        HBox saveActions = new HBox(10, saveButton, loadButton);
+        descriptionLabel.setWrapText(true);
+        resultLabel.setWrapText(true);
 
-        Label inventoryTitle = new Label("Inventario");
-        inventoryTitle.setStyle("-fx-font-weight: bold;");
-        inventoryView.setPrefHeight(120);
+        playerHealthBar.setMaxWidth(Double.MAX_VALUE);
+        enemyHealthBar.setMaxWidth(Double.MAX_VALUE);
+        playerHealthBar.getStyleClass().add("player-health");
+        enemyHealthBar.getStyleClass().add("enemy-health");
 
+        inventoryView.setPrefHeight(130);
+
+        VBox floorPanel = panel("Piano", floorLabel, eventLabel, descriptionLabel);
+        VBox playerPanel = panel("Giocatore", playerHealthLabel, playerHealthBar);
+        enemyPanel = panel("Nemico", enemyHealthLabel, enemyHealthBar);
+
+        HBox statusRow = statusRow(playerPanel, enemyPanel);
+
+        mainActionsPanel = panel("Azioni principali", new HBox(10, eventButton));
+        combatPanel = panel("Azioni di combattimento",
+                new HBox(10, attackButton, confrontButton, useItemButton, escapeButton));
+
+        VBox content = new VBox(
+                15,
+                title,
+                floorPanel,
+                statusRow,
+                panel("Inventario", inventoryView),
+                panel("Messaggi", resultLabel),
+                mainActionsPanel,
+                combatPanel,
+                panel("Salvataggio", new HBox(10, saveButton, loadButton))
+        );
+
+        content.setPadding(new Insets(20));
+        content.getStyleClass().add("content");
+
+        updateView();
+
+        ScrollPane scroll = new ScrollPane(content);
+        scroll.setFitToWidth(true);
+        scroll.getStyleClass().add("root-scroll");
+
+        return scroll;
+    }
+
+    private void registerActions() {
         eventButton.setOnAction(event -> onExecuteEvent());
-        nextFloorButton.setOnAction(event -> onNextFloor());
         attackButton.setOnAction(event -> onCombatAction(CombatAction.ATTACK));
+        confrontButton.setOnAction(event -> onConfront());
         useItemButton.setOnAction(event -> onCombatAction(CombatAction.USE_ITEM));
         escapeButton.setOnAction(event -> onCombatAction(CombatAction.ESCAPE));
         saveButton.setOnAction(event -> onSave());
         loadButton.setOnAction(event -> onLoad());
+    }
 
-        root.getChildren().addAll(
-                title,
-                floorLabel,
-                descriptionLabel,
-                eventLabel,
-                playerHealthLabel,
-                enemyHealthLabel,
-                resultLabel,
-                mainActions,
-                combatActions,
-                inventoryTitle,
-                inventoryView,
-                saveActions
-        );
+    private VBox panel(String header, Node... content) {
+        Label sectionHeader = new Label(header);
+        sectionHeader.getStyleClass().add("section-header");
 
-        updateView();
+        VBox box = new VBox(8, sectionHeader);
+        box.getStyleClass().add("panel");
+        box.getChildren().addAll(content);
 
-        Scene scene = new Scene(root, 760, 640);
+        return box;
+    }
 
-        stage.setTitle("Tower of Self RPG");
-        stage.setScene(scene);
-        stage.show();
+    private HBox statusRow(VBox playerPanel, VBox enemyPanel) {
+        playerPanel.setMaxWidth(Double.MAX_VALUE);
+        enemyPanel.setMaxWidth(Double.MAX_VALUE);
+
+        HBox.setHgrow(playerPanel, Priority.ALWAYS);
+        HBox.setHgrow(enemyPanel, Priority.ALWAYS);
+
+        return new HBox(15, playerPanel, enemyPanel);
     }
 
     private void onExecuteEvent() {
@@ -116,16 +154,40 @@ public class MainWindow {
         Floor floor = controller.getCurrentFloor();
 
         if (floor.getEvent() instanceof DialogueEvent dialogueEvent) {
-            Optional<DialogueChoice> choice = askDialogueChoice(dialogueEvent);
+            handleDialogue(dialogueEvent);
+            return;
+        }
 
-            if (choice.isEmpty()) {
-                resultLabel.setText("Hai esitato davanti alla scelta.");
-                return;
-            }
+        if (floor.getEvent() instanceof CombatEvent && floor.getNumber() == 1) {
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "La Paura del Fallimento",
+                    """
+                    Una figura emerge lentamente dall'ombra.
 
-            resultLabel.setText(controller.resolveDialogueChoice(choice.get()));
+                    Ha il tuo volto.
+
+                    "E se non fossi abbastanza?"
+
+                    Il confronto ha inizio.
+                    """
+            );
+        }
+
+        resultLabel.setText(controller.executeStandardEvent());
+        refresh();
+    }
+
+    private void handleDialogue(DialogueEvent dialogueEvent) {
+        controller.beginDialogue();
+
+        Optional<DialogueChoice> choice = askDialogueChoice(dialogueEvent);
+
+        if (choice.isEmpty()) {
+            controller.abortDialogue();
+            resultLabel.setText("Hai esitato davanti alla scelta.");
         } else {
-            resultLabel.setText(controller.executeStandardEvent());
+            resultLabel.setText(controller.resolveDialogueChoice(choice.get()));
         }
 
         refresh();
@@ -147,9 +209,28 @@ public class MainWindow {
         refresh();
     }
 
-    private void onNextFloor() {
-        controller.advanceFloor();
-        updateView();
+    private void onConfront() {
+        ChallengeQuestion question = controller.startConfrontation();
+        Optional<Integer> answer = askConfrontation(question);
+
+        if (answer.isEmpty()) {
+            resultLabel.setText("Eviti lo sguardo della Paura. Il combattimento continua.");
+        } else {
+            resultLabel.setText(controller.resolveConfrontation(answer.get()));
+        }
+
+        refresh();
+    }
+
+    private Optional<Integer> askConfrontation(ChallengeQuestion question) {
+        List<String> answers = question.answers();
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(answers.get(0), answers);
+        dialog.setTitle("Confronto");
+        dialog.setHeaderText(question.question());
+        dialog.setContentText("Cosa rispondi?");
+
+        return dialog.showAndWait().map(answers::indexOf);
     }
 
     private void onSave() {
@@ -160,49 +241,86 @@ public class MainWindow {
         String message = controller.loadGame();
         gameEndShown = false;
         updateView();
-        resultLabel.setText(message);
+        resultLabel.setText(message + "\n\n" + getInitialInstruction());
     }
 
     private void updateView() {
         Floor floor = controller.getCurrentFloor();
 
         floorLabel.setText("Piano: " + floor);
+        eventLabel.setText(getNarrativeEventLabel());
         descriptionLabel.setText(floor.getDescription());
-        eventLabel.setText("Evento: " + floor.getEvent().getTitle());
-        resultLabel.setText("");
+
+        eventButton.setText(getEventButtonText());
+        resultLabel.setText(getInitialInstruction());
 
         refresh();
     }
 
+    private String getNarrativeEventLabel() {
+        Floor floor = controller.getCurrentFloor();
+
+        if (floor.getEvent() instanceof CombatEvent) {
+            return "Prova: confronto interiore";
+        }
+        if (floor.getEvent() instanceof DialogueEvent) {
+            return "Prova: scelta interiore";
+        }
+        if (floor.getEvent() instanceof ItemEvent) {
+            return "Prova: scoperta";
+        }
+
+        return "Prova della Torre";
+    }
+
+    private String getEventButtonText() {
+        return "Affronta la Paura";
+    }
+
+    private String getInitialInstruction() {
+        return """
+                La Torre è silenziosa.
+
+                Davanti a te senti una presenza.
+                Qualcosa ti osserva dall'ombra.
+
+                Premi "Affronta la Paura" per iniziare la prova.
+                """;
+    }
+
     private void refresh() {
-        updateHealthLabels();
+        updateStatus();
         updateInventory();
-        updateButtons();
+        updateActions();
         checkGameEnd();
     }
 
-    private void updateHealthLabels() {
-        playerHealthLabel.setText(
-                "Lucidità: " +
-                        controller.getPlayerCurrentHealth() +
-                        "/" +
-                        controller.getPlayerMaxHealth()
-        );
+    private void updateStatus() {
+        int current = controller.getPlayerCurrentHealth();
+        int max = controller.getPlayerMaxHealth();
+
+        playerHealthLabel.setText("Lucidità: " + current + "/" + max);
+        playerHealthBar.setProgress(healthRatio(current, max));
 
         Enemy enemy = controller.getCurrentEnemy();
+        boolean hasEnemy = enemy != null;
 
-        if (enemy == null) {
-            enemyHealthLabel.setText("Nemico: nessuno");
+        enemyPanel.setVisible(hasEnemy);
+        enemyPanel.setManaged(hasEnemy);
+
+        if (hasEnemy) {
+            int enemyCurrent = enemy.getStats().getCurrentHealth();
+            int enemyMax = enemy.getStats().getMaxHealth();
+
+            enemyHealthLabel.setText(enemy.getName() + " — Intensità: " + enemyCurrent + "/" + enemyMax);
+            enemyHealthBar.setProgress(healthRatio(enemyCurrent, enemyMax));
         } else {
-            enemyHealthLabel.setText(
-                    "Nemico: " +
-                            enemy.getName() +
-                            " - Intensità: " +
-                            enemy.getStats().getCurrentHealth() +
-                            "/" +
-                            enemy.getStats().getMaxHealth()
-            );
+            enemyHealthBar.setProgress(0);
         }
+    }
+
+    private double healthRatio(int current, int max) {
+        return max <= 0 ? 0 : (double) current / max;
     }
 
     private void updateInventory() {
@@ -215,54 +333,53 @@ public class MainWindow {
         inventoryView.getItems().setAll(entries);
     }
 
-    private void updateButtons() {
-        boolean playerDead = !controller.isPlayerAlive();
-        boolean combatActive = controller.isCombatActive();
-        boolean eventAlreadyExecuted = controller.isCurrentEventExecuted();
+    private void updateActions() {
+        GameState state = controller.getState();
 
-        nextFloorButton.setDisable(
-                combatActive || controller.isOnLastFloor() || playerDead || !eventAlreadyExecuted
-        );
+        boolean exploring = state == GameState.EXPLORING;
+        boolean combat = state == GameState.COMBAT;
+        boolean terminal = state == GameState.VICTORY || state == GameState.GAME_OVER;
 
-        eventButton.setDisable(
-                combatActive || controller.isGameCompleted() || playerDead || eventAlreadyExecuted
-        );
+        boolean canRunEvent = exploring && !controller.isCurrentEventExecuted();
 
-        attackButton.setDisable(!combatActive || playerDead);
-        useItemButton.setDisable(!combatActive || playerDead);
-        escapeButton.setDisable(!combatActive || playerDead);
+        setManagedVisible(eventButton, canRunEvent);
+        setManagedVisible(mainActionsPanel, canRunEvent);
+
+        setManagedVisible(attackButton, combat);
+        setManagedVisible(confrontButton, combat && controller.isConfrontationAvailable());
+        setManagedVisible(useItemButton, combat);
+        setManagedVisible(escapeButton, combat);
+        setManagedVisible(combatPanel, combat);
+
+        saveButton.setDisable(terminal);
     }
 
-    /**
-     * Mostra un avviso di fine partita (sconfitta o vittoria) una sola volta e
-     * disabilita i pulsanti di gioco. Il pulsante "Carica" resta attivo per
-     * permettere di riprendere una partita salvata.
-     */
+    private void setManagedVisible(Node node, boolean value) {
+        node.setVisible(value);
+        node.setManaged(value);
+    }
+
     private void checkGameEnd() {
         if (gameEndShown) {
             return;
         }
 
-        if (!controller.isPlayerAlive()) {
+        if (controller.getState() == GameState.GAME_OVER) {
             gameEndShown = true;
-            disableGameButtons();
-            showAlert(Alert.AlertType.ERROR, "Game Over",
-                    "La tua lucidità si è spenta: la torre ti ha sopraffatto.");
-        } else if (controller.isGameCompleted() && !controller.isCombatActive()) {
+            showAlert(
+                    Alert.AlertType.ERROR,
+                    "Game Over",
+                    "La Torre non ti ha sconfitto per sempre. Ogni caduta può diventare un nuovo inizio."
+            );
+        } else if (controller.getState() == GameState.VICTORY) {
             gameEndShown = true;
-            disableGameButtons();
-            showAlert(Alert.AlertType.INFORMATION, "Vittoria",
-                    "Hai raggiunto la cima e affrontato il tuo Alter Ego: sei diventato integro.");
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "La Paura si dissolve",
+                    "La Paura si dissolve. Non hai cancellato il fallimento: "
+                            + "hai imparato a non farti definire da esso."
+            );
         }
-    }
-
-    private void disableGameButtons() {
-        eventButton.setDisable(true);
-        nextFloorButton.setDisable(true);
-        attackButton.setDisable(true);
-        useItemButton.setDisable(true);
-        escapeButton.setDisable(true);
-        saveButton.setDisable(true);
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {

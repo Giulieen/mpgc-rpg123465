@@ -23,4 +23,11 @@ public interface SaveManager {
      * @throws ClassNotFoundException se il file contiene dati non compatibili
      */
     GameSave load() throws IOException, ClassNotFoundException;
+
+    /**
+     * Verifica se è presente una partita salvata.
+     *
+     * @return {@code true} se esiste un salvataggio da poter caricare
+     */
+    boolean exists();
 }

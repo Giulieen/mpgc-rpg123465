@@ -1,11 +1,13 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
+import it.unicam.cs.mpgc.rpg123465.challenge.ChallengeQuestion;
 import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
 import it.unicam.cs.mpgc.rpg123465.domain.Item;
 import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
 import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.engine.GameState;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,20 +115,7 @@ class GameControllerTest {
     }
 
     @Test
-    void avanzareDiPianoAzzeraIlCombattimento() {
-        controller.executeStandardEvent();
-        assertTrue(controller.isCombatActive());
-
-        controller.advanceFloor();
-
-        assertFalse(controller.isCombatActive());
-        assertEquals(2, controller.getCurrentFloor().getNumber());
-    }
-
-    @Test
     void salvareECaricareRipristinaIlPianoCorrente() {
-        controller.advanceFloor();
-        controller.advanceFloor();
         assertEquals("Partita salvata correttamente.", controller.saveGame());
 
         GameController altro = new GameController(
@@ -135,6 +124,72 @@ class GameControllerTest {
 
         assertEquals("Partita caricata correttamente.", altro.loadGame());
         assertEquals(controller.getCurrentFloor().getNumber(), altro.getCurrentFloor().getNumber());
+    }
+
+    @Test
+    void sconfiggereLaPauraPortaAllaVittoria() {
+        controller.executeStandardEvent();
+
+        while (controller.isCombatActive()) {
+            controller.executeCombatAction(CombatAction.ATTACK);
+        }
+
+        assertEquals(GameState.VICTORY, controller.getState());
+    }
+
+    @Test
+    void fuggireNonPortaAllaVittoria() {
+        controller.executeStandardEvent();
+
+        controller.executeCombatAction(CombatAction.ESCAPE);
+
+        assertEquals(GameState.EXPLORING, controller.getState());
+    }
+
+    @Test
+    void unaNuovaPartitaEInStatoEsplorazione() {
+        assertEquals(GameState.EXPLORING, controller.getState());
+    }
+
+    @Test
+    void eseguireUnCombattimentoPortaInStatoCombat() {
+        controller.executeStandardEvent();
+
+        assertEquals(GameState.COMBAT, controller.getState());
+    }
+
+    @Test
+    void risolvereUnDialogoRiportaInEsplorazione() {
+        controller.beginDialogue();
+        assertEquals(GameState.DIALOGUE, controller.getState());
+
+        controller.resolveDialogueChoice(new DialogueChoice("Scelta", "Effetto.", 0));
+
+        assertEquals(GameState.EXPLORING, controller.getState());
+    }
+
+    @Test
+    void ilConfrontoNonEDisponibilePrimaDelCombattimento() {
+        assertFalse(controller.isConfrontationAvailable());
+    }
+
+    @Test
+    void ilConfrontoEDisponibileDuranteIlPrimoCombattimento() {
+        controller.executeStandardEvent();
+
+        assertTrue(controller.isConfrontationAvailable());
+    }
+
+    @Test
+    void unaRispostaCostruttivaIndebolisceIlNemicoSenzaTerminareIlCombattimento() {
+        controller.executeStandardEvent();
+        ChallengeQuestion question = controller.startConfrontation();
+        int vitaNemicoPrima = controller.getCurrentEnemy().getStats().getCurrentHealth();
+
+        controller.resolveConfrontation(question.constructiveAnswerIndex());
+
+        assertEquals(vitaNemicoPrima - 5, controller.getCurrentEnemy().getStats().getCurrentHealth());
+        assertTrue(controller.isCombatActive());
     }
 
     @Test
