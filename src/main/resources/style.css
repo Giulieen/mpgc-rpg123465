@@ -1,128 +1,375 @@
-/*
- * Tema grafico di Tower of Self RPG.
- * Palette scura dai toni viola/notte, coerente con l'atmosfera psicologica.
- * Nessuna immagine esterna: solo colori.
- */
-
 .root {
-    -fx-background-color: #14111f;
-    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
-    -fx-font-size: 13px;
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #111111;
 }
 
-.root-scroll,
-.root-scroll > .viewport {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
+/* =====================================================
+   MENU PRINCIPALE
+   ===================================================== */
+
+.menu-root {
+
+    -fx-background-image: url("images/tower.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+
+    -fx-background-color: #000000;
 }
+
+.menu-dark-overlay {
+    -fx-fill: rgba(0,0,0,0.58);
+}
+
+.fog-layer {
+
+    -fx-background-color:
+        radial-gradient(center 42% 55%, radius 20%, rgba(255,255,255,0.32), transparent),
+        radial-gradient(center 58% 66%, radius 18%, rgba(255,255,255,0.26), transparent),
+        radial-gradient(center 50% 44%, radius 16%, rgba(255,255,255,0.20), transparent);
+
+    -fx-opacity: 0.55;
+}
+
+.menu-card {
+
+    -fx-background-color: transparent;
+    -fx-max-width: 820;
+}
+
+.menu-title {
+
+    -fx-font-family: "Georgia";
+    -fx-font-size: 58px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #f4c76b;
+
+    -fx-effect:
+        dropshadow(gaussian,
+        rgba(0,0,0,0.95),
+        12,
+        0.6,
+        0,
+        4);
+}
+
+.menu-subtitle {
+
+    -fx-font-family: "Cormorant Garamond", "Georgia", serif;
+
+    -fx-font-size: 24px;
+
+    -fx-font-style: italic;
+
+    -fx-text-fill: #f1eadf;
+
+    -fx-text-alignment: center;
+
+    -fx-alignment: center;
+
+    -fx-line-spacing: 4px;
+
+    -fx-effect:
+        dropshadow(gaussian,
+        rgba(0,0,0,0.95),
+        8,
+        0.4,
+        0,
+        2);
+}
+
+.narrative {
+
+    -fx-font-family: "Inter","Segoe UI",sans-serif;
+
+    -fx-font-size:17px;
+
+    -fx-text-fill:#eeeeee;
+
+    -fx-line-spacing:6px;
+
+    -fx-alignment:center;
+}
+
+.name-field {
+
+    -fx-font-family:"Georgia";
+
+    -fx-font-size:16px;
+
+    -fx-background-color:rgba(10,8,6,0.75);
+
+    -fx-text-fill:#f4e6c1;
+
+    -fx-prompt-text-fill:#b9a77b;
+
+    -fx-border-color:#b8862b;
+
+    -fx-border-width:1.5;
+
+    -fx-border-radius:8;
+
+    -fx-background-radius:8;
+
+    -fx-padding:11 16 11 16;
+
+    -fx-alignment:center-left;
+}
+
+.menu-button {
+
+    -fx-font-family:"Georgia";
+
+    -fx-font-size:17px;
+
+    -fx-font-weight:bold;
+
+    -fx-background-color:rgba(20,14,8,0.82);
+
+    -fx-text-fill:#f4c76b;
+
+    -fx-border-color:#c28a2c;
+
+    -fx-border-width:2;
+
+    -fx-border-radius:8;
+
+    -fx-background-radius:8;
+
+    -fx-padding:12 34;
+
+    -fx-cursor:hand;
+
+    -fx-effect:
+        dropshadow(
+            gaussian,
+            rgba(0,0,0,0.75),
+            12,
+            0.4,
+            0,
+            4
+        );
+}
+
+.menu-button:hover {
+
+    -fx-background-color:rgba(70,42,14,0.92);
+
+    -fx-text-fill:#ffe6a3;
+}
+
+.menu-button:pressed {
+
+    -fx-background-color:rgba(10,7,4,0.95);
+}
+
+/* =====================================================
+   GIOCO
+   ===================================================== */
 
 .content {
-    -fx-background-color: #14111f;
+    -fx-background-color: transparent;
 }
 
-/* Titolo principale */
-.title {
-    -fx-font-size: 30px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #c9b3ff;
-    -fx-padding: 0 0 6 0;
-}
-
-/* Pannelli delle sezioni */
 .panel {
-    -fx-background-color: #221c36;
-    -fx-background-radius: 10;
-    -fx-border-color: #3d3560;
-    -fx-border-radius: 10;
-    -fx-border-width: 1;
-    -fx-padding: 14;
+
+    -fx-background-color:rgba(35,35,35,0.90);
+
+    -fx-background-radius:12;
+
+    -fx-padding:15;
+
+    -fx-border-color:#666666;
+
+    -fx-border-radius:12;
 }
 
 .section-header {
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #a99bd6;
+
+    -fx-font-size:17px;
+
+    -fx-font-weight:bold;
+
+    -fx-text-fill:white;
 }
 
-/* Testo narrativo delle schermate iniziali */
-.narrative {
-    -fx-font-size: 15px;
-    -fx-text-fill: #cfc6ea;
-    -fx-line-spacing: 4px;
-}
-
-/* Testo generico */
 .label {
-    -fx-text-fill: #e8e3f5;
+
+    -fx-text-fill:white;
 }
 
-/* Barre della vita */
-.progress-bar {
-    -fx-pref-height: 18px;
-}
-
-.progress-bar > .track {
-    -fx-background-color: #2f2846;
-    -fx-background-radius: 6;
-}
-
-.progress-bar > .bar {
-    -fx-background-radius: 6;
-    -fx-padding: 6;
-}
-
-.player-health {
-    -fx-accent: #5fbf7f;
-}
-
-.enemy-health {
-    -fx-accent: #d0596b;
-}
-
-/* Inventario */
-.list-view {
-    -fx-background-color: #1b1630;
-    -fx-control-inner-background: #1b1630;
-    -fx-background-radius: 8;
-    -fx-border-color: #3d3560;
-    -fx-border-radius: 8;
-}
-
-.list-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: #ddd6f2;
-    -fx-padding: 6 10;
-}
-
-.list-cell:filled:selected {
-    -fx-background-color: #4a3f7a;
-    -fx-text-fill: #ffffff;
-}
-
-.list-cell:filled:hover {
-    -fx-background-color: #2f2846;
-}
-
-/* Pulsanti */
 .button {
-    -fx-background-color: #4a3f7a;
-    -fx-text-fill: #f0ecff;
+
+    -fx-background-radius:8;
+
+    -fx-font-weight:bold;
+
+    -fx-cursor:hand;
+}
+
+.progress-bar {
+
+    -fx-accent:#4caf50;
+}
+
+.list-view {
+
+    -fx-background-color:#303030;
+
+    -fx-control-inner-background:#303030;
+
+    -fx-text-fill:white;
+}
+
+.scroll-pane {
+
+    -fx-background:transparent;
+}
+
+.scroll-pane > .viewport {
+
+    -fx-background-color:transparent;
+}
+
+/* =====================================================
+   INTRODUZIONE (bosco + cancello)
+   ===================================================== */
+
+.intro-root {
+    -fx-background-color: #000000;
+}
+
+.intro-dark {
+    -fx-fill: rgba(0,0,0,0.42);
+}
+
+.intro-panel {
+
+    -fx-background-color: transparent;
+
+    -fx-max-width: 760;
+}
+
+.intro-text {
+
+    -fx-font-family: "Cormorant Garamond", "Georgia", serif;
+
+    -fx-font-size: 26px;
+
+    -fx-text-fill: #ece7df;
+
+    -fx-text-alignment: center;
+
+    -fx-alignment: center;
+
+    -fx-line-spacing: 6px;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.9), 8, 0.4, 0, 2);
+}
+
+/* =====================================================
+   SCENA PAURA (incontri della Torre)
+   ===================================================== */
+
+.fear-root {
+    -fx-background-color: #000000;
+}
+
+.fear-dark {
+    -fx-fill: rgba(0,0,0,0.38);
+}
+
+.fear-panel {
+    -fx-background-color: transparent;
+}
+
+.fear-title {
+
+    -fx-font-family: "Georgia";
+
+    -fx-font-size: 30px;
+
     -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
+
+    -fx-text-fill: #f4c76b;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.92), 10, 0.5, 0, 3);
 }
 
-.button:hover {
-    -fx-background-color: #5d4f97;
+.fear-text {
+
+    -fx-font-family: "Cormorant Garamond", "Georgia", serif;
+
+    -fx-font-size: 21px;
+
+    -fx-text-fill: #ece7df;
+
+    -fx-text-alignment: center;
+
+    -fx-alignment: center;
+
+    -fx-line-spacing: 5px;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.95), 8, 0.5, 0, 2);
 }
 
-.button:pressed {
-    -fx-background-color: #3b3163;
+.fear-effects {
+
+    -fx-font-family: "Georgia";
+
+    -fx-font-size: 15px;
+
+    -fx-text-fill: #d8c07a;
+
+    -fx-alignment: center;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.85), 5, 0.3, 0, 1);
 }
 
-.button:disabled {
-    -fx-background-color: #2a2440;
-    -fx-text-fill: #7c749a;
-    -fx-opacity: 1;
+.fear-memory {
+
+    -fx-font-family: "Cormorant Garamond", "Georgia", serif;
+
+    -fx-font-style: italic;
+
+    -fx-font-size: 18px;
+
+    -fx-text-fill: #c9b892;
+
+    -fx-text-alignment: center;
+
+    -fx-alignment: center;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.9), 6, 0.4, 0, 2);
+}
+
+/* Barra di stato in cima alle schermate di gioco */
+
+.header-bar {
+
+    -fx-background-color: rgba(0,0,0,0.58);
+
+    -fx-padding: 12 24 12 24;
+
+    -fx-border-color: transparent transparent #6b5a2e transparent;
+
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-value {
+
+    -fx-font-family: "Georgia";
+
+    -fx-font-size: 15px;
+
+    -fx-text-fill: #ece7df;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(0,0,0,0.8), 4, 0.3, 0, 1);
 }

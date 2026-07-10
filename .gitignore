@@ -45,3 +45,6 @@ bin/
 saves/
 logs/
 *.log
+
+# Copie originali degli asset prima delle elaborazioni (solo backup locale)
+audio-originali/

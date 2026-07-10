@@ -81,6 +81,15 @@ public class GameController {
         return player().getStats().getMaxHealth();
     }
 
+    /**
+     * Restituisce il nome del giocatore.
+     *
+     * @return nome del giocatore
+     */
+    public String getPlayerName() {
+        return player().getName();
+    }
+
     public boolean isPlayerAlive() {
         return player().isAlive();
     }
