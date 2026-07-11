@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.fear;
 
 import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
+import it.unicam.cs.mpgc.rpg123465.domain.Attitude;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public final class FearEncounters {
                                 "Metti trappole e veleno in ogni angolo",
                                 "Ne cadono a decine... ma da ogni crepa ne escono altri. "
                                         + "La stanza non si svuota mai.",
-                                -10, +20, Attitude.COLPISCI,
+                                -10, +20, Attitude.AGGREDISCI,
                                 List.of(
                                         SoundCue.now("/audio/mousetrap-snap.mp3", 0.60),
                                         new SoundCue("/audio/chimeris-laugh.mp3", 0.65, 0.7)),
@@ -44,7 +45,7 @@ public final class FearEncounters {
                                 "Accendi la torcia e falli fuggire",
                                 "Si disperdono negli angoli. Ma appena la luce cala, li "
                                         + "senti ancora: grattano nel buio.",
-                                -2, -12, Attitude.CONTIENI,
+                                -2, -12, Attitude.FUGGI,
                                 List.of(
                                         SoundCue.now("/audio/torch-whoosh.mp3", 0.70),
                                         // Lo sciame è registrato piano: lo alzo quasi al massimo.
@@ -56,7 +57,7 @@ public final class FearEncounters {
                                 "Resta fermo al buio e respira",
                                 "Il ribrezzo ti sale in gola. Non ti muovi. A poco a poco "
                                         + "i topi ti girano intorno senza toccarti, e si placano.",
-                                0, -18, Attitude.TOLLERI,
+                                0, -18, Attitude.RESISTI,
                                 List.of(SoundCue.now("/audio/rumble.mp3", 0.75)),
                                 true),
                         // Accogliere ti lascia più forte di come sei entrato.

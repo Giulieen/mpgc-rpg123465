@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.fear;
 
 import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
+import it.unicam.cs.mpgc.rpg123465.domain.Attitude;
 
 import java.util.List;
 

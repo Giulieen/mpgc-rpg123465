@@ -8,7 +8,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import it.unicam.cs.mpgc.rpg123465.fear.Attitude;
+import it.unicam.cs.mpgc.rpg123465.domain.Attitude;
+import it.unicam.cs.mpgc.rpg123465.domain.MindState;
 import it.unicam.cs.mpgc.rpg123465.fear.FearChoice;
 import it.unicam.cs.mpgc.rpg123465.fear.FearEncounter;
 import javafx.geometry.Insets;
@@ -34,11 +35,9 @@ import javafx.scene.shape.Rectangle;
  */
 public class FearEncounterScreen {
 
-    private static final int MAX_LUCIDITA = 100;
-    private static final int MAX_STRESS = 100;
-
     private final FearEncounter encounter;
     private final GameController controller;
+    private final MindState mind;
     private final Runnable onComplete;
     private final StackPane root = new StackPane();
     private final HeaderBar header;
@@ -49,9 +48,6 @@ public class FearEncounterScreen {
     private Region fog;
     private PauseTransition tremorTimer;
 
-    private int lucidita = MAX_LUCIDITA;
-    private int stress;
-
     public FearEncounterScreen(FearEncounter encounter,
                                GameController controller,
                                Runnable onComplete) {
@@ -60,9 +56,13 @@ public class FearEncounterScreen {
         }
         this.encounter = encounter;
         this.controller = controller;
+        this.mind = controller.getMind();
         this.onComplete = onComplete;
         this.header = new HeaderBar(controller.getPlayerName());
-        this.stress = encounter.initialStress();
+
+        // La stanza incute tensione, che si somma a quella che ci si porta
+        // dietro dai piani precedenti.
+        this.mind.enterRoom(encounter.initialStress());
     }
 
     public Parent createView() {
@@ -191,8 +191,8 @@ public class FearEncounterScreen {
     }
 
     private void updateHeader() {
-        header.setLucidita(lucidita, MAX_LUCIDITA);
-        header.setStress(stress, MAX_STRESS);
+        header.setLucidita(mind.getLucidita(), MindState.MAX);
+        header.setStress(mind.getStress(), MindState.MAX);
     }
 
     // --- Contenuto ----------------------------------------------------------
@@ -224,8 +224,9 @@ public class FearEncounterScreen {
             tremorBurst();
         }
 
-        lucidita = clamp(lucidita + choice.lucidityDelta());
-        stress = clamp(stress + choice.stressDelta());
+        // Il dominio applica la reazione e la ricorda per sempre: è da qui che
+        // nascera' l'alter ego finale.
+        mind.apply(choice.lucidityDelta(), choice.stressDelta(), choice.attitude());
         updateHeader();
 
         Label reaction = paragraph(choice.reaction());
@@ -266,9 +267,9 @@ public class FearEncounterScreen {
 
     private String chimerisMemory(Attitude attitude) {
         return switch (attitude) {
-            case COLPISCI -> "Chimeris ha visto la tua violenza. Non la dimenticherà.";
-            case CONTIENI -> "Chimeris ti ha visto scacciare ciò che temi. Tornerà a grattare.";
-            case TOLLERI -> "Chimeris ti ha visto resistere. La paura perde un po' della sua presa.";
+            case AGGREDISCI -> "Chimeris ha visto la tua violenza. Non la dimenticherà.";
+            case FUGGI -> "Chimeris ti ha visto scacciare ciò che temi. Tornerà a grattare.";
+            case RESISTI -> "Chimeris ti ha visto resistere. La paura perde un po' della sua presa.";
             case ACCOGLI -> "Chimeris ti ha visto accogliere. Questa paura non lo nutrirà più.";
         };
     }
@@ -304,9 +305,5 @@ public class FearEncounterScreen {
         rectangle.widthProperty().bind(root.widthProperty());
         rectangle.heightProperty().bind(root.heightProperty());
         return rectangle;
-    }
-
-    private int clamp(int value) {
-        return Math.max(0, Math.min(MAX_LUCIDITA, value));
     }
 }

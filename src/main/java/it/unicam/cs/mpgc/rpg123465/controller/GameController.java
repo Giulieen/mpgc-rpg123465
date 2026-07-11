@@ -10,6 +10,7 @@ import it.unicam.cs.mpgc.rpg123465.combat.CombatResult;
 import it.unicam.cs.mpgc.rpg123465.domain.Enemy;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.domain.Item;
+import it.unicam.cs.mpgc.rpg123465.domain.MindState;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
@@ -88,6 +89,27 @@ public class GameController {
      */
     public String getPlayerName() {
         return player().getName();
+    }
+
+    /**
+     * Restituisce lo stato interiore del giocatore: Lucidità, Stress e la
+     * memoria delle reazioni alle paure, da cui nascerà l'alter ego finale.
+     * <p>
+     * È condiviso: le schermate lo leggono e lo modificano, così il gioco
+     * ricorda il percorso da un piano all'altro.
+     *
+     * @return stato interiore del giocatore
+     */
+    public MindState getMind() {
+        return player().getMind();
+    }
+
+    /**
+     * Concede il respiro fra un piano e l'altro: si recupera parte della
+     * Lucidità e si scarica parte dello Stress, ma le conseguenze restano.
+     */
+    public void restBetweenFloors() {
+        player().getMind().rest();
     }
 
     public boolean isPlayerAlive() {
@@ -344,7 +366,8 @@ public class GameController {
                     player().getName(),
                     gameEngine.getCurrentFloorIndex(),
                     player().getStats().getCurrentHealth(),
-                    gameEngine.isGameCompleted()
+                    gameEngine.isGameCompleted(),
+                    player().getMind()
             );
 
             saveManager.save(save);
@@ -366,6 +389,10 @@ public class GameController {
             gameEngine = GameFactory.createNewGame(save.getPlayerName());
             gameEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
             player().getStats().setCurrentHealth(save.getCurrentHealth());
+
+            // Ripristina il percorso interiore: senza, l'alter ego finale non
+            // rifletterebbe le scelte fatte prima del salvataggio.
+            player().getMind().restoreFrom(save.getMindState());
 
             currentEnemy = null;
             executedFloors.clear();

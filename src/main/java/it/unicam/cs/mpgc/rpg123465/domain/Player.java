@@ -7,6 +7,9 @@ public class Player extends GameCharacter {
 
     private final Inventory inventory;
 
+    /** Ciò che la Torre gli fa, e ciò che le sue scelte lo stanno facendo diventare. */
+    private final MindState mind = new MindState();
+
     /**
      * Crea un nuovo giocatore.
      *
@@ -31,6 +34,16 @@ public class Player extends GameCharacter {
      */
     public Inventory getInventory() {
         return inventory;
+    }
+
+    /**
+     * Restituisce lo stato interiore del giocatore: Lucidità, Stress e la
+     * memoria di come ha reagito alle paure.
+     *
+     * @return stato interiore del giocatore
+     */
+    public MindState getMind() {
+        return mind;
     }
 
     /**
