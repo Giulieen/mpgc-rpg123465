@@ -2,16 +2,18 @@ package it.unicam.cs.mpgc.rpg123465;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
+import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
-import it.unicam.cs.mpgc.rpg123465.fear.FearEncounters;
+import it.unicam.cs.mpgc.rpg123465.fear.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.ui.AlterEgoScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.FearEncounterScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
-import it.unicam.cs.mpgc.rpg123465.ui.MainWindow;
 import it.unicam.cs.mpgc.rpg123465.ui.StartMenu;
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
@@ -22,10 +24,10 @@ import java.net.URL;
 /**
  * Entry point dell'applicazione Tower of Self.
  * <p>
- * Coordina la navigazione tra le schermate (menu iniziale, introduzione,
- * schermata di gioco) riutilizzando un'unica scena di cui sostituisce la
- * radice. Ogni schermata è una vista indipendente: la logica di gioco resta
- * nel controller e nel modello.
+ * Coordina la navigazione tra le schermate (menu, introduzione, piani della
+ * Torre, rivelazione dell'alter ego) riutilizzando un'unica scena di cui
+ * sostituisce la radice. Ogni schermata è una vista indipendente: la logica di
+ * gioco resta nel controller e nel modello.
  */
 public class MainApp extends Application {
 
@@ -50,7 +52,6 @@ public class MainApp extends Application {
                 "/audio/torch-whoosh.mp3",
                 "/audio/rumble.mp3",
                 "/audio/scratching.mp3",
-                // Non ancora presenti: verranno saltati finché non li aggiungi.
                 "/audio/chimeris-laugh.mp3",
                 "/audio/rats-many.mp3");
 
@@ -69,23 +70,18 @@ public class MainApp extends Application {
         stage.show();
     }
 
+    // --- Navigazione fra le schermate ---------------------------------------
+
     private void showStartMenu() {
+        Sound.stopAll();
         StartMenu menu = new StartMenu(this::startNewGame, this::loadGame);
         scene.setRoot(menu.createView());
     }
 
     private void startNewGame(String playerName) {
         GameController controller = createController(playerName);
-        IntroScreen intro = new IntroScreen(() -> showFearFloor(controller));
+        IntroScreen intro = new IntroScreen(() -> showCurrentFloor(controller));
         scene.setRoot(intro.createView());
-    }
-
-    private void showFearFloor(GameController controller) {
-        FearEncounterScreen encounter = new FearEncounterScreen(
-                FearEncounters.topi(),
-                controller,
-                () -> showMainGame(controller));
-        scene.setRoot(encounter.createView());
     }
 
     private void loadGame() {
@@ -98,12 +94,62 @@ public class MainApp extends Application {
         }
 
         controller.loadGame();
-        showMainGame(controller);
+
+        if (controller.isGameCompleted()) {
+            showAlterEgo(controller);
+        } else {
+            showCurrentFloor(controller);
+        }
     }
 
-    private void showMainGame(GameController controller) {
-        scene.setRoot(new MainWindow(controller).createView());
+    /**
+     * Mostra il piano su cui si trova il giocatore, scegliendo la schermata
+     * adatta al contenuto di quel piano.
+     */
+    private void showCurrentFloor(GameController controller) {
+        FloorContent content = controller.getCurrentFloor().getContent();
+        scene.setRoot(viewFor(content, controller));
     }
+
+    /**
+     * Costruisce la vista adatta a un contenuto di piano.
+     * <p>
+     * Oggi la Torre conosce un solo tipo di contenuto, l'incontro con una
+     * paura; quando se ne aggiungeranno altri (una stanza da esplorare, una
+     * fuga a tempo) basterà riconoscerli qui.
+     */
+    private Parent viewFor(FloorContent content, GameController controller) {
+        if (content instanceof FearEncounter encounter) {
+            return new FearEncounterScreen(
+                    encounter,
+                    controller,
+                    () -> onFloorCompleted(controller)).createView();
+        }
+
+        throw new IllegalStateException(
+                "Nessuna schermata sa mostrare questo contenuto: " + content.getClass());
+    }
+
+    /**
+     * Il piano è stato affrontato: si salgono le scale (recuperando il fiato) e
+     * si prosegue, oppure la Torre è finita e Chimeris si rivela.
+     */
+    private void onFloorCompleted(GameController controller) {
+        controller.climbToNextFloor();
+
+        if (controller.isGameCompleted()) {
+            showAlterEgo(controller);
+        } else {
+            showCurrentFloor(controller);
+        }
+    }
+
+    private void showAlterEgo(GameController controller) {
+        AlterEgoScreen finale = new AlterEgoScreen(controller.getMind(), this::showStartMenu);
+        scene.setRoot(finale.createView());
+    }
+
+    // --- Supporto ------------------------------------------------------------
 
     private GameController createController(String playerName) {
         GameEngine engine = GameFactory.createNewGame(playerName);

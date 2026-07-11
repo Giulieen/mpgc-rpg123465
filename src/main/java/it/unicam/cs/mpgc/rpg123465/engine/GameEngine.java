@@ -3,10 +3,13 @@ package it.unicam.cs.mpgc.rpg123465.engine;
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
-import it.unicam.cs.mpgc.rpg123465.events.EventResult;
 
 /**
- * Coordina lo stato principale della partita.
+ * Coordina la salita della Torre: a che piano si trova il giocatore e quando il
+ * cammino è concluso.
+ * <p>
+ * Non sa nulla di come le paure vengano affrontate: quella è materia del
+ * contenuto di ciascun piano. Qui si tiene soltanto il filo del percorso.
  */
 public class GameEngine {
 
@@ -15,6 +18,13 @@ public class GameEngine {
     private int currentFloorIndex;
     private boolean gameCompleted;
 
+    /**
+     * Crea un nuovo motore di gioco.
+     *
+     * @param player giocatore
+     * @param tower torre da salire
+     * @throws IllegalArgumentException se un parametro è null
+     */
     public GameEngine(Player player, Tower tower) {
         if (player == null) {
             throw new IllegalArgumentException("Il giocatore non può essere null.");
@@ -29,61 +39,82 @@ public class GameEngine {
         this.gameCompleted = false;
     }
 
+    /**
+     * Restituisce il giocatore.
+     *
+     * @return giocatore
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Restituisce la torre.
+     *
+     * @return torre
+     */
     public Tower getTower() {
         return tower;
     }
 
+    /**
+     * Restituisce l'indice del piano corrente.
+     *
+     * @return indice del piano corrente, a partire da zero
+     */
     public int getCurrentFloorIndex() {
         return currentFloorIndex;
     }
 
+    /**
+     * Restituisce il piano su cui si trova il giocatore.
+     *
+     * @return piano corrente
+     */
     public Floor getCurrentFloor() {
         return tower.getFloor(currentFloorIndex);
     }
 
     /**
-     * Esegue l'evento associato al piano corrente.
+     * Verifica se il giocatore è sull'ultimo piano della Torre.
      *
-     * @return risultato dell'evento
+     * @return {@code true} se non ci sono altri piani sopra
      */
-    public EventResult executeCurrentFloorEvent() {
-        EventResult result = getCurrentFloor().getEvent().execute(this);
-
-        if (isOnLastFloor() && player.isAlive()) {
-            gameCompleted = true;
-        }
-
-        return result;
-    }
-
     public boolean isOnLastFloor() {
         return currentFloorIndex == tower.getTotalFloors() - 1;
     }
 
+    /**
+     * Verifica se la Torre è stata salita fino in cima.
+     *
+     * @return {@code true} se la partita è conclusa
+     */
     public boolean isGameCompleted() {
         return gameCompleted;
     }
 
-    public void advanceFloor() {
+    /**
+     * Sale al piano successivo, una volta affrontato quello corrente. Se il
+     * piano era l'ultimo, la Torre è conclusa.
+     */
+    public void climb() {
         if (gameCompleted) {
-            throw new IllegalStateException("La partita è già completata.");
-        }
-        if (isOnLastFloor()) {
-            throw new IllegalStateException("Il giocatore si trova già all'ultimo piano.");
+            return;
         }
 
-        currentFloorIndex++;
+        if (isOnLastFloor()) {
+            gameCompleted = true;
+        } else {
+            currentFloorIndex++;
+        }
     }
 
     /**
-     * Ripristina lo stato principale della partita.
+     * Ripristina il punto della salita raggiunto in una partita salvata.
      *
      * @param currentFloorIndex indice del piano corrente
-     * @param gameCompleted indica se la partita è completata
+     * @param gameCompleted indica se la partita era già conclusa
+     * @throws IllegalArgumentException se l'indice del piano non è valido
      */
     public void restoreState(int currentFloorIndex, boolean gameCompleted) {
         if (currentFloorIndex < 0 || currentFloorIndex >= tower.getTotalFloors()) {

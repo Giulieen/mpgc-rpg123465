@@ -1,5 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.fear;
 
+import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
+
 import java.util.List;
 
 /**
@@ -18,5 +20,5 @@ public record FearEncounter(
         String backgroundResource,
         String situation,
         int initialStress,
-        List<FearChoice> choices) {
+        List<FearChoice> choices) implements FloorContent {
 }

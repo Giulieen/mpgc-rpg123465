@@ -1,13 +1,9 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.challenge.ChallengeQuestion;
-import it.unicam.cs.mpgc.rpg123465.combat.CombatAction;
-import it.unicam.cs.mpgc.rpg123465.domain.Item;
-import it.unicam.cs.mpgc.rpg123465.domain.ItemType;
-import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.domain.AlterEgo;
+import it.unicam.cs.mpgc.rpg123465.domain.Attitude;
+import it.unicam.cs.mpgc.rpg123465.domain.MindState;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
-import it.unicam.cs.mpgc.rpg123465.engine.GameState;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +14,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,162 +32,10 @@ class GameControllerTest {
     void setUp() {
         SaveManager saveManager = new FileSaveManager(
                 cartellaTemporanea.resolve("save.dat").toString());
-        controller = new GameController(GameFactory.createNewGame(), saveManager);
+        controller = new GameController(GameFactory.createNewGame("Giulia"), saveManager);
     }
 
-    @Test
-    void eseguireIlPrimoEventoAvviaIlCombattimento() {
-        assertFalse(controller.isCombatActive());
-
-        controller.executeStandardEvent();
-
-        assertTrue(controller.isCombatActive());
-        assertTrue(controller.isCurrentEventExecuted());
-    }
-
-    @Test
-    void unTurnoNonRisolutivoLasciaIlCombattimentoAttivo() {
-        controller.executeStandardEvent();
-
-        String message = controller.executeCombatAction(CombatAction.ATTACK);
-
-        assertEquals("Il combattimento continua.", message);
-        assertTrue(controller.isCombatActive());
-    }
-
-    @Test
-    void unAzioneDiCombattimentoSenzaNemicoVieneSegnalata() {
-        String message = controller.executeCombatAction(CombatAction.ATTACK);
-
-        assertEquals("Nessun combattimento attivo.", message);
-    }
-
-    @Test
-    void usareUnOggettoSenzaAverneVieneSegnalato() {
-        controller.executeStandardEvent();
-
-        String message = controller.executeCombatAction(CombatAction.USE_ITEM);
-
-        assertEquals("Non hai oggetti curativi da usare.", message);
-        assertTrue(controller.isCombatActive());
-    }
-
-    @Test
-    void usareUnOggettoCurativoLoConsuma() {
-        GameEngine engine = GameFactory.createNewGame();
-        engine.getPlayer().addItem(
-                new Item("Pozione di Lucidità", "Ripristina la calma.", ItemType.HEALING, 30));
-        SaveManager saveManager = new FileSaveManager(
-                cartellaTemporanea.resolve("uso.dat").toString());
-        GameController controller = new GameController(engine, saveManager);
-        controller.executeStandardEvent();
-
-        String message = controller.executeCombatAction(CombatAction.USE_ITEM);
-
-        assertTrue(message.startsWith("Usi Pozione di Lucidità"));
-        assertFalse(engine.getPlayer().hasHealingItem());
-        assertTrue(controller.isCombatActive());
-    }
-
-    @Test
-    void laFugaTerminaIlCombattimento() {
-        controller.executeStandardEvent();
-
-        controller.executeCombatAction(CombatAction.ESCAPE);
-
-        assertFalse(controller.isCombatActive());
-    }
-
-    @Test
-    void unaSceltaDiDialogoApplicaIlSuoEffetto() {
-        int vitaIniziale = controller.getPlayerCurrentHealth();
-        DialogueChoice scelta = new DialogueChoice(
-                "Reagisci con forza", "La rabbia ti consuma.", -10);
-
-        String message = controller.resolveDialogueChoice(scelta);
-
-        assertEquals("La rabbia ti consuma.", message);
-        assertEquals(vitaIniziale - 10, controller.getPlayerCurrentHealth());
-        assertTrue(controller.isCurrentEventExecuted());
-    }
-
-    @Test
-    void salvareECaricareRipristinaIlPianoCorrente() {
-        assertEquals("Partita salvata correttamente.", controller.saveGame());
-
-        GameController altro = new GameController(
-                GameFactory.createNewGame(),
-                new FileSaveManager(cartellaTemporanea.resolve("save.dat").toString()));
-
-        assertEquals("Partita caricata correttamente.", altro.loadGame());
-        assertEquals(controller.getCurrentFloor().getNumber(), altro.getCurrentFloor().getNumber());
-    }
-
-    @Test
-    void sconfiggereLaPauraPortaAllaVittoria() {
-        controller.executeStandardEvent();
-
-        while (controller.isCombatActive()) {
-            controller.executeCombatAction(CombatAction.ATTACK);
-        }
-
-        assertEquals(GameState.VICTORY, controller.getState());
-    }
-
-    @Test
-    void fuggireNonPortaAllaVittoria() {
-        controller.executeStandardEvent();
-
-        controller.executeCombatAction(CombatAction.ESCAPE);
-
-        assertEquals(GameState.EXPLORING, controller.getState());
-    }
-
-    @Test
-    void unaNuovaPartitaEInStatoEsplorazione() {
-        assertEquals(GameState.EXPLORING, controller.getState());
-    }
-
-    @Test
-    void eseguireUnCombattimentoPortaInStatoCombat() {
-        controller.executeStandardEvent();
-
-        assertEquals(GameState.COMBAT, controller.getState());
-    }
-
-    @Test
-    void risolvereUnDialogoRiportaInEsplorazione() {
-        controller.beginDialogue();
-        assertEquals(GameState.DIALOGUE, controller.getState());
-
-        controller.resolveDialogueChoice(new DialogueChoice("Scelta", "Effetto.", 0));
-
-        assertEquals(GameState.EXPLORING, controller.getState());
-    }
-
-    @Test
-    void ilConfrontoNonEDisponibilePrimaDelCombattimento() {
-        assertFalse(controller.isConfrontationAvailable());
-    }
-
-    @Test
-    void ilConfrontoEDisponibileDuranteIlPrimoCombattimento() {
-        controller.executeStandardEvent();
-
-        assertTrue(controller.isConfrontationAvailable());
-    }
-
-    @Test
-    void unaRispostaCostruttivaIndebolisceIlNemicoSenzaTerminareIlCombattimento() {
-        controller.executeStandardEvent();
-        ChallengeQuestion question = controller.startConfrontation();
-        int vitaNemicoPrima = controller.getCurrentEnemy().getStats().getCurrentHealth();
-
-        controller.resolveConfrontation(question.constructiveAnswerIndex());
-
-        assertEquals(vitaNemicoPrima - 5, controller.getCurrentEnemy().getStats().getCurrentHealth());
-        assertTrue(controller.isCombatActive());
-    }
+    // --- Costruzione ---------------------------------------------------------
 
     @Test
     void costruttoreConParametriNullVieneRifiutato() {
@@ -201,5 +46,110 @@ class GameControllerTest {
                 () -> new GameController(null, saveManager));
         assertThrows(IllegalArgumentException.class,
                 () -> new GameController(GameFactory.createNewGame(), null));
+    }
+
+    // --- Salita della Torre --------------------------------------------------
+
+    @Test
+    void laPartitaIniziaSulPrimoPianoENonEConclusa() {
+        assertEquals("I Topi", controller.getCurrentFloor().getName());
+        assertNotNull(controller.getCurrentFloor().getContent());
+        assertFalse(controller.isGameCompleted());
+    }
+
+    @Test
+    void affrontatoLUnicoPianoLaTorreEConclusa() {
+        controller.climbToNextFloor();
+
+        assertTrue(controller.isGameCompleted());
+    }
+
+    @Test
+    void salireLeScaleRecuperaSoloInParte() {
+        MindState mente = controller.getMind();
+        mente.apply(-45, +70, Attitude.AGGREDISCI);   // lucidita' 55, stress 70
+
+        controller.climbToNextFloor();
+
+        // Le scale danno respiro (+20 lucidita', -25 stress), non guarigione.
+        assertEquals(75, mente.getLucidita());
+        assertEquals(45, mente.getStress());
+    }
+
+    // --- Stato del giocatore -------------------------------------------------
+
+    @Test
+    void ilControllerEsponeIlNomeELaMenteDelGiocatore() {
+        assertEquals("Giulia", controller.getPlayerName());
+        assertEquals(MindState.MAX, controller.getMind().getLucidita());
+        assertEquals(0, controller.getMind().getStress());
+    }
+
+    @Test
+    void laMenteEsposaEQuellaDelGiocatore() {
+        controller.getMind().apply(-10, +20, Attitude.AGGREDISCI);
+
+        // La vista modifica lo stesso stato che il dominio conserva: e' cosi'
+        // che il gioco ricorda il percorso da un piano all'altro.
+        assertEquals(90, controller.getMind().getLucidita());
+        assertEquals(20, controller.getMind().getStress());
+        assertEquals(1, controller.getMind().count(Attitude.AGGREDISCI));
+    }
+
+    @Test
+    void lAlterEgoNasceDalleScelteCompiute() {
+        assertEquals(AlterEgo.RIFLESSO, controller.getAlterEgo());
+
+        for (int i = 0; i < 4; i++) {
+            controller.getMind().apply(0, 0, Attitude.FUGGI);
+        }
+
+        assertEquals(AlterEgo.OMBRA, controller.getAlterEgo());
+    }
+
+    // --- Persistenza ---------------------------------------------------------
+
+    @Test
+    void senzaSalvataggiNonCEPartitaDaCaricare() {
+        assertFalse(controller.hasSavedGame());
+    }
+
+    @Test
+    void salvareRendeLaPartitaCaricabile() {
+        controller.saveGame();
+
+        assertTrue(controller.hasSavedGame());
+    }
+
+    @Test
+    void ilPercorsoInterioreSopravviveAlCicloDiSalvataggio() {
+        controller.getMind().apply(-30, +45, Attitude.AGGREDISCI);
+        controller.getMind().apply(0, 0, Attitude.AGGREDISCI);
+        controller.getMind().apply(0, 0, Attitude.AGGREDISCI);
+        controller.saveGame();
+
+        controller.loadGame();
+
+        assertEquals(70, controller.getMind().getLucidita());
+        assertEquals(45, controller.getMind().getStress());
+        assertEquals(3, controller.getMind().count(Attitude.AGGREDISCI));
+        // Il percorso e' intatto: l'alter ego resta quello che era.
+        assertEquals(AlterEgo.BESTIA, controller.getAlterEgo());
+    }
+
+    @Test
+    void ilNomeDelGiocatoreSopravviveAlCicloDiSalvataggio() {
+        controller.saveGame();
+
+        controller.loadGame();
+
+        assertEquals("Giulia", controller.getPlayerName());
+    }
+
+    @Test
+    void caricareSenzaSalvataggioRestituisceUnErrore() {
+        String esito = controller.loadGame();
+
+        assertTrue(esito.startsWith("Errore durante il caricamento"));
     }
 }

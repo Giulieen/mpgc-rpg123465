@@ -1,8 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.domain;
 
-import it.unicam.cs.mpgc.rpg123465.events.DialogueChoice;
-import it.unicam.cs.mpgc.rpg123465.events.DialogueEvent;
-import it.unicam.cs.mpgc.rpg123465.events.FloorEvent;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,33 +8,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Test della classe {@link Tower}.
+ * Test della struttura della Torre e dei suoi piani.
  */
 class TowerTest {
 
-    private Floor nuovoPiano(int numero) {
-        FloorEvent event = new DialogueEvent(
-                "Bivio",
-                "Una voce ti pone una domanda.",
-                List.of(
-                        new DialogueChoice("Sì", "Hai accettato.", 0),
-                        new DialogueChoice("No", "Hai rifiutato.", 0)
-                )
-        );
-        return new Floor(numero, "Piano " + numero, "Descrizione del piano.", event);
+    /** Un contenuto di piano qualunque, per provare la struttura. */
+    private record ContenutoDiProva(String title) implements FloorContent {
+    }
+
+    private Floor nuovoPiano(int numero, String nome) {
+        return new Floor(numero, nome, new ContenutoDiProva("Prova"));
     }
 
     @Test
     void laTorreRestituisceIlNumeroCorrettoDiPiani() {
-        Tower tower = new Tower(List.of(nuovoPiano(1), nuovoPiano(2)));
+        Tower tower = new Tower(List.of(nuovoPiano(1, "I Topi"), nuovoPiano(2, "Il Buio")));
 
         assertEquals(2, tower.getTotalFloors());
     }
 
     @Test
     void ilPianoRichiestoCorrispondeAllIndice() {
-        Floor primo = nuovoPiano(1);
-        Tower tower = new Tower(List.of(primo, nuovoPiano(2)));
+        Floor primo = nuovoPiano(1, "I Topi");
+        Tower tower = new Tower(List.of(primo, nuovoPiano(2, "Il Buio")));
 
         assertEquals(primo, tower.getFloor(0));
     }
@@ -49,16 +42,36 @@ class TowerTest {
 
     @Test
     void unIndiceNonValidoVieneRifiutato() {
-        Tower tower = new Tower(List.of(nuovoPiano(1)));
+        Tower tower = new Tower(List.of(nuovoPiano(1, "I Topi")));
 
         assertThrows(IllegalArgumentException.class, () -> tower.getFloor(5));
     }
 
     @Test
     void laListaDeiPianiNonEModificabile() {
-        Tower tower = new Tower(List.of(nuovoPiano(1)));
+        Tower tower = new Tower(List.of(nuovoPiano(1, "I Topi")));
         List<Floor> piani = tower.getFloors();
 
-        assertThrows(UnsupportedOperationException.class, () -> piani.add(nuovoPiano(2)));
+        assertThrows(UnsupportedOperationException.class,
+                () -> piani.add(nuovoPiano(2, "Il Buio")));
+    }
+
+    @Test
+    void unPianoCustodisceIlProprioContenuto() {
+        FloorContent contenuto = new ContenutoDiProva("I Topi");
+        Floor piano = new Floor(1, "I Topi", contenuto);
+
+        assertEquals(1, piano.getNumber());
+        assertEquals("I Topi", piano.getName());
+        assertEquals(contenuto, piano.getContent());
+    }
+
+    @Test
+    void unPianoMalFormatoVieneRifiutato() {
+        FloorContent contenuto = new ContenutoDiProva("Prova");
+
+        assertThrows(IllegalArgumentException.class, () -> new Floor(0, "I Topi", contenuto));
+        assertThrows(IllegalArgumentException.class, () -> new Floor(1, " ", contenuto));
+        assertThrows(IllegalArgumentException.class, () -> new Floor(1, "I Topi", null));
     }
 }
