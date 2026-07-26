@@ -28,24 +28,24 @@ public final class FearEncounters {
                         + "muoversi.",
                 45,
                 List.of(
-                        // La violenza non risolve, e Chimeris se ne nutre: scatta la
-                        // trappola, e subito dopo lui ride.
+                        // Scendere alla violenza costa la mente, non il corpo: e
+                        // Chimeris se ne nutre, e ride.
                         new FearChoice(
                                 "Metti trappole e veleno in ogni angolo",
                                 "Ne cadono a decine... ma da ogni crepa ne escono altri. "
                                         + "La stanza non si svuota mai.",
-                                -10, +20, Attitude.AGGREDISCI,
+                                0, -10, +20, Attitude.AGGREDISCI,
                                 List.of(
                                         SoundCue.now("/audio/mousetrap-snap.mp3", 0.60),
                                         new SoundCue("/audio/chimeris-laugh.mp3", 0.65, 0.7)),
                                 false),
-                        // Scacciare dà sollievo immediato: il prezzo lo riscuote Chimeris,
-                        // dopo. La fiammata, lo sciame che fugge, poi il grattare nel buio.
+                        // Scacciare dà sollievo immediato, ma chi mette in fuga una
+                        // creatura in trappola scopre le spalle: qui paga il corpo.
                         new FearChoice(
                                 "Accendi la torcia e falli fuggire",
-                                "Si disperdono negli angoli. Ma appena la luce cala, li "
-                                        + "senti ancora: grattano nel buio.",
-                                -2, -12, Attitude.FUGGI,
+                                "Fuggono in ogni direzione. Uno, stretto fra te e il muro, "
+                                        + "ti azzanna la caviglia prima di sparire nel buio.",
+                                8, -2, -12, Attitude.FUGGI,
                                 List.of(
                                         SoundCue.now("/audio/torch-whoosh.mp3", 0.70),
                                         // Lo sciame è registrato piano: lo alzo quasi al massimo.
@@ -57,7 +57,7 @@ public final class FearEncounters {
                                 "Resta fermo al buio e respira",
                                 "Il ribrezzo ti sale in gola. Non ti muovi. A poco a poco "
                                         + "i topi ti girano intorno senza toccarti, e si placano.",
-                                0, -18, Attitude.RESISTI,
+                                0, 0, -18, Attitude.RESISTI,
                                 List.of(SoundCue.now("/audio/rumble.mp3", 0.75)),
                                 true),
                         // Accogliere ti lascia più forte di come sei entrato.
@@ -66,7 +66,7 @@ public final class FearEncounters {
                                 "Un topolino si ferma, annusa, prende il pane dalla tua "
                                         + "mano. Per un istante non fa più paura: è solo "
                                         + "piccolo, e affamato.",
-                                +5, -30, Attitude.ACCOGLI,
+                                0, +5, -30, Attitude.ACCOGLI,
                                 List.of(SoundCue.now("/audio/squeak.mp3", 0.70)),
                                 false)));
     }

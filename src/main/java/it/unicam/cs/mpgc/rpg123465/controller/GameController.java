@@ -132,6 +132,26 @@ public class GameController {
         return player().getStats().getMaxHealth();
     }
 
+    /**
+     * Ferisce il giocatore: alcune reazioni lasciano un segno sul corpo, non
+     * soltanto sulla mente.
+     *
+     * @param damage ferite riportate
+     */
+    public void woundPlayer(int damage) {
+        player().takeDamage(damage);
+    }
+
+    /**
+     * Verifica se il giocatore ha ceduto, nel corpo o nella mente: la Vita
+     * esaurita o la Lucidità perduta fermano allo stesso modo la salita.
+     *
+     * @return {@code true} se non è più in grado di proseguire
+     */
+    public boolean isDefeated() {
+        return !player().isAlive() || player().getMind().isSopraffatto();
+    }
+
     // ---------------------------------------------------------------------
     // Persistenza
     // ---------------------------------------------------------------------

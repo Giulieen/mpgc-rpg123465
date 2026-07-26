@@ -23,24 +23,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.util.function.Consumer;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Schermata di un incontro con una paura.
+ * Scena in cui si affronta una paura scegliendo come reagire.
  * <p>
- * Mostra la scena (sfondo + nebbia), la situazione e le reazioni possibili.
- * Alla scelta applica gli effetti su Lucidità e Stress, racconta la
- * conseguenza e ricorda che Chimeris ha memorizzato l'atteggiamento, poi
- * lascia proseguire.
+ * Mostra la stanza (sfondo + nebbia), la situazione e le reazioni possibili.
+ * Alla scelta applica il prezzo su corpo e mente, racconta la conseguenza e
+ * ricorda che Chimeris ha memorizzato l'atteggiamento, poi lascia proseguire.
  */
-public class FearEncounterScreen {
+public class FearEncounterScreen implements FloorScene {
 
     private final FearEncounter encounter;
     private final GameController controller;
     private final MindState mind;
-    private final Runnable onComplete;
     private final StackPane root = new StackPane();
     private final HeaderBar header;
+
+    private Consumer<SceneOutcome> onFinished;
 
     private Region headerView;
     private ImageView background;
@@ -48,16 +50,20 @@ public class FearEncounterScreen {
     private Region fog;
     private PauseTransition tremorTimer;
 
-    public FearEncounterScreen(FearEncounter encounter,
-                               GameController controller,
-                               Runnable onComplete) {
-        if (encounter == null || controller == null || onComplete == null) {
+    /**
+     * Crea la scena di un incontro con una paura.
+     *
+     * @param encounter la paura da affrontare
+     * @param controller controller della partita
+     * @throws IllegalArgumentException se un parametro è null
+     */
+    public FearEncounterScreen(FearEncounter encounter, GameController controller) {
+        if (encounter == null || controller == null) {
             throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
         this.encounter = encounter;
         this.controller = controller;
         this.mind = controller.getMind();
-        this.onComplete = onComplete;
         this.header = new HeaderBar(controller.getPlayerName());
 
         // La stanza incute tensione, che si somma a quella che ci si porta
@@ -65,7 +71,9 @@ public class FearEncounterScreen {
         this.mind.enterRoom(encounter.initialStress());
     }
 
-    public Parent createView() {
+    @Override
+    public Parent createView(Consumer<SceneOutcome> onFinished) {
+        this.onFinished = onFinished;
         root.getStyleClass().add("fear-root");
 
         startAmbience();
@@ -191,6 +199,7 @@ public class FearEncounterScreen {
     }
 
     private void updateHeader() {
+        header.setVita(controller.getPlayerCurrentHealth(), controller.getPlayerMaxHealth());
         header.setLucidita(mind.getLucidita(), MindState.MAX);
         header.setStress(mind.getStress(), MindState.MAX);
     }
@@ -225,8 +234,11 @@ public class FearEncounterScreen {
         }
 
         // Il dominio applica la reazione e la ricorda per sempre: è da qui che
-        // nascera' l'alter ego finale.
+        // nascerà l'alter ego finale.
         mind.apply(choice.lucidityDelta(), choice.stressDelta(), choice.attitude());
+        if (choice.hurts()) {
+            controller.woundPlayer(choice.damage());
+        }
         updateHeader();
 
         Label reaction = paragraph(choice.reaction());
@@ -243,16 +255,25 @@ public class FearEncounterScreen {
         next.getStyleClass().add("menu-button");
         next.setOnAction(event -> {
             stopTremors();
-            onComplete.run();
+            onFinished.accept(SceneOutcome.AVANTI);
         });
 
         showCenter(panel(reaction, effects, memory, next));
     }
 
-    /** Rende leggibile l'effetto della scelta, es. "Lucidità ±0 · Stress −18". */
+    /**
+     * Rende leggibile il prezzo della scelta, es. "Vita −8 · Lucidità −2 ·
+     * Stress −12". Le ferite compaiono solo quando ci sono state.
+     */
     private String describeEffects(FearChoice choice) {
-        return "Lucidità " + signed(choice.lucidityDelta())
+        String effetti = "Lucidità " + signed(choice.lucidityDelta())
                 + "     ·     Stress " + signed(choice.stressDelta());
+
+        if (choice.hurts()) {
+            effetti = "Vita " + signed(-choice.damage()) + "     ·     " + effetti;
+        }
+
+        return effetti;
     }
 
     private String signed(int delta) {
