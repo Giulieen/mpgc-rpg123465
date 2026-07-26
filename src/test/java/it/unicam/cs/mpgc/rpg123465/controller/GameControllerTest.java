@@ -97,6 +97,32 @@ class GameControllerTest {
     }
 
     @Test
+    void ferireIlGiocatoreGliToglieVita() {
+        int vitaIniziale = controller.getPlayerCurrentHealth();
+
+        controller.woundPlayer(8);
+
+        assertEquals(vitaIniziale - 8, controller.getPlayerCurrentHealth());
+        assertFalse(controller.isDefeated());
+    }
+
+    @Test
+    void siCedeQuandoIlCorpoNonRegge() {
+        controller.woundPlayer(controller.getPlayerMaxHealth());
+
+        assertTrue(controller.isDefeated());
+    }
+
+    @Test
+    void siCedeAncheQuandoEIlLaMenteACedere() {
+        // Vita intatta, ma Lucidita' esaurita: la Torre ferma comunque.
+        controller.getMind().apply(-MindState.MAX, 0, Attitude.FUGGI);
+
+        assertEquals(controller.getPlayerMaxHealth(), controller.getPlayerCurrentHealth());
+        assertTrue(controller.isDefeated());
+    }
+
+    @Test
     void lAlterEgoNasceDalleScelteCompiute() {
         assertEquals(AlterEgo.RIFLESSO, controller.getAlterEgo());
 

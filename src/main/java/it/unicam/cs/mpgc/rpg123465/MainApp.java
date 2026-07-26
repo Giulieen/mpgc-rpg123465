@@ -10,16 +10,18 @@ import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import it.unicam.cs.mpgc.rpg123465.ui.AlterEgoScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.FearEncounterScreen;
+import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
+import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
 import it.unicam.cs.mpgc.rpg123465.ui.StartMenu;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.List;
 
 /**
  * Entry point dell'applicazione Tower of Self.
@@ -103,31 +105,34 @@ public class MainApp extends Application {
     }
 
     /**
-     * Mostra il piano su cui si trova il giocatore, scegliendo la schermata
-     * adatta al contenuto di quel piano.
+     * Avvia il piano su cui si trova il giocatore, attraversandone le scene una
+     * dopo l'altra.
      */
     private void showCurrentFloor(GameController controller) {
         FloorContent content = controller.getCurrentFloor().getContent();
-        scene.setRoot(viewFor(content, controller));
+
+        new SceneFlow(
+                scenesFor(content, controller),
+                scene::setRoot,
+                () -> onFloorCompleted(controller)
+        ).start();
     }
 
     /**
-     * Costruisce la vista adatta a un contenuto di piano.
+     * Compone le scene che formano un piano.
      * <p>
      * Oggi la Torre conosce un solo tipo di contenuto, l'incontro con una
-     * paura; quando se ne aggiungeranno altri (una stanza da esplorare, una
-     * fuga a tempo) basterà riconoscerli qui.
+     * paura, che si risolve in un'unica scena. I piani successivi ne
+     * alterneranno più d'una — l'arrivo, la scelta, la prova — e basterà
+     * elencarle qui.
      */
-    private Parent viewFor(FloorContent content, GameController controller) {
+    private List<FloorScene> scenesFor(FloorContent content, GameController controller) {
         if (content instanceof FearEncounter encounter) {
-            return new FearEncounterScreen(
-                    encounter,
-                    controller,
-                    () -> onFloorCompleted(controller)).createView();
+            return List.of(new FearEncounterScreen(encounter, controller));
         }
 
         throw new IllegalStateException(
-                "Nessuna schermata sa mostrare questo contenuto: " + content.getClass());
+                "Nessuna scena sa mostrare questo contenuto: " + content.getClass());
     }
 
     /**
