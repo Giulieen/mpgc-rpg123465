@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg123465.ui;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
+import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.ui.support.ScrollingBackground;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
