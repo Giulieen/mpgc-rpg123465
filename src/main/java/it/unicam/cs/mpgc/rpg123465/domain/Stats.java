@@ -1,38 +1,31 @@
 package it.unicam.cs.mpgc.rpg123465.domain;
 
 /**
- * Rappresenta le statistiche principali di un'entità del gioco.
+ * Le statistiche fisiche di un'entità del gioco: quanta vita ha, e quanta ne
+ * resta.
+ * <p>
+ * Nella Torre non si combatte: le paure si affrontano con l'atteggiamento, non
+ * con l'attacco. Ciò che il corpo può ancora sopportare vive qui; ciò che la
+ * mente può ancora sopportare vive nel {@link MindState}.
  */
 public class Stats {
 
     private final int maxHealth;
     private int currentHealth;
-    private final int attack;
-    private final int defense;
 
     /**
-     * Crea un nuovo insieme di statistiche.
+     * Crea un nuovo insieme di statistiche, con la vita al massimo.
      *
      * @param maxHealth punti vita massimi
-     * @param attack valore di attacco
-     * @param defense valore di difesa
-     * @throws IllegalArgumentException se uno dei parametri non è valido
+     * @throws IllegalArgumentException se la vita massima non è positiva
      */
-    public Stats(int maxHealth, int attack, int defense) {
+    public Stats(int maxHealth) {
         if (maxHealth <= 0) {
             throw new IllegalArgumentException("La vita massima deve essere positiva.");
-        }
-        if (attack < 0) {
-            throw new IllegalArgumentException("L'attacco non può essere negativo.");
-        }
-        if (defense < 0) {
-            throw new IllegalArgumentException("La difesa non può essere negativa.");
         }
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
-        this.attack = attack;
-        this.defense = defense;
     }
 
     /**
@@ -54,24 +47,6 @@ public class Stats {
     }
 
     /**
-     * Restituisce il valore di attacco.
-     *
-     * @return il valore di attacco
-     */
-    public int getAttack() {
-        return attack;
-    }
-
-    /**
-     * Restituisce il valore di difesa.
-     *
-     * @return il valore di difesa
-     */
-    public int getDefense() {
-        return defense;
-    }
-
-    /**
      * Verifica se l'entità è ancora in vita.
      *
      * @return {@code true} se i punti vita sono maggiori di zero,
@@ -82,7 +57,7 @@ public class Stats {
     }
 
     /**
-     * Applica un danno ai punti vita.
+     * Applica un danno ai punti vita, senza mai scendere sotto lo zero.
      *
      * @param amount quantità di danno da infliggere
      * @throws IllegalArgumentException se il danno è negativo
@@ -96,7 +71,7 @@ public class Stats {
     }
 
     /**
-     * Ripristina una quantità di punti vita.
+     * Ripristina una quantità di punti vita, senza mai superare il massimo.
      *
      * @param amount quantità di cura
      * @throws IllegalArgumentException se la cura è negativa
@@ -110,14 +85,8 @@ public class Stats {
     }
 
     /**
-     * Ripristina completamente i punti vita.
-     */
-    public void restoreHealth() {
-        currentHealth = maxHealth;
-    }
-
-    /**
-     * Imposta i punti vita correnti a un valore specifico.
+     * Imposta i punti vita correnti a un valore specifico: serve a rimettere in
+     * piedi il giocatore al checkpoint, o a ricaricare una partita salvata.
      *
      * @param value nuovo valore dei punti vita
      * @throws IllegalArgumentException se il valore è negativo
@@ -134,11 +103,6 @@ public class Stats {
 
     @Override
     public String toString() {
-        return "Stats{" +
-                "maxHealth=" + maxHealth +
-                ", currentHealth=" + currentHealth +
-                ", attack=" + attack +
-                ", defense=" + defense +
-                '}';
+        return "Stats{currentHealth=" + currentHealth + ", maxHealth=" + maxHealth + '}';
     }
 }

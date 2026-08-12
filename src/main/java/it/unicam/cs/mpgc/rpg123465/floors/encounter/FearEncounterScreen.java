@@ -1,0 +1,363 @@
+package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+
+import it.unicam.cs.mpgc.rpg123465.audio.Sound;
+import it.unicam.cs.mpgc.rpg123465.controller.GameController;
+import it.unicam.cs.mpgc.rpg123465.domain.MindState;
+import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
+import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.ui.support.ScreenShake;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+
+import java.util.function.Consumer;
+
+/**
+ * Scena del Piano I.
+ *
+ * Mostra un dilemma "Preferiresti" con due sole risposte.
+ * Il tratto associato alla risposta viene registrato internamente,
+ * senza essere mostrato al giocatore.
+ */
+public class FearEncounterScreen implements FloorScene {
+
+    private final FearEncounter encounter;
+    private final GameController controller;
+    private final MindState mind;
+    private final StackPane root = new StackPane();
+    private final HeaderBar header;
+    private final Runnable onExit;
+
+    private Consumer<SceneOutcome> onFinished;
+
+    private Region headerView;
+    private ImageView background;
+    private Rectangle dark;
+    private Region fog;
+    private ScreenShake shake;
+
+    private boolean entered;
+    private boolean answered;
+
+    public FearEncounterScreen(
+            FearEncounter encounter,
+            GameController controller
+    ) {
+        this(
+                encounter,
+                controller,
+                null,
+                null
+        );
+    }
+
+    public FearEncounterScreen(
+            FearEncounter encounter,
+            GameController controller,
+            Runnable onSave
+    ) {
+        this(
+                encounter,
+                controller,
+                onSave,
+                null
+        );
+    }
+
+    public FearEncounterScreen(
+            FearEncounter encounter,
+            GameController controller,
+            Runnable onSave,
+            Runnable onExit
+    ) {
+        if (encounter == null || controller == null) {
+            throw new IllegalArgumentException(
+                    "Gli argomenti non possono essere null."
+            );
+        }
+
+        this.encounter = encounter;
+        this.controller = controller;
+        this.mind = controller.getMind();
+        this.onExit = onExit;
+
+        this.header = new HeaderBar(
+                controller.getPlayerName(),
+                onSave,
+                onExit == null
+                        ? null
+                        : this::exitLevel
+        );
+    }
+
+    @Override
+    public Parent createView(
+            Consumer<SceneOutcome> onFinished
+    ) {
+        if (onFinished == null) {
+            throw new IllegalArgumentException(
+                    "Il callback di fine scena non può essere null."
+            );
+        }
+
+        this.onFinished = onFinished;
+
+        root.getStyleClass().add("fear-root");
+
+        if (!entered) {
+            mind.enterRoom(
+                    encounter.initialStress()
+            );
+            entered = true;
+        }
+
+        startAmbience();
+
+        background = SceneFx.cover(
+                root,
+                encounter.backgroundResource()
+        );
+
+        dark = darkOverlay();
+
+        fog = new FogOverlay(
+                0.5
+        ).createView();
+
+        headerView = header.createView();
+
+        header.setProva(
+                encounter.title()
+        );
+
+        updateHeader();
+
+        shake = new ScreenShake(
+                background
+        );
+
+        shake.startAmbient();
+
+        showCenter(
+                dilemmaView()
+        );
+
+        return root;
+    }
+
+    private void startAmbience() {
+        Sound.stopAll();
+
+        Sound.loop(
+                "/audio/ambience-topi.mp3",
+                0.35
+        );
+
+        Sound.loop(
+                "/audio/fire-crackle.mp3",
+                0.22
+        );
+
+        Sound.play(
+                "/audio/scurrying.mp3",
+                0.5
+        );
+
+        Sound.occasional(
+                "/audio/squeak.mp3",
+                0.4,
+                5,
+                14
+        );
+    }
+
+    private void showCenter(Node center) {
+        root.getChildren().setAll(
+                background,
+                dark,
+                fog,
+                center,
+                headerView
+        );
+
+        StackPane.setAlignment(
+                center,
+                Pos.CENTER
+        );
+
+        StackPane.setMargin(
+                center,
+                new Insets(
+                        90,
+                        40,
+                        60,
+                        40
+                )
+        );
+
+        StackPane.setAlignment(
+                headerView,
+                Pos.TOP_CENTER
+        );
+    }
+
+    private void updateHeader() {
+        header.setVita(
+                controller.getPlayerCurrentHealth(),
+                controller.getPlayerMaxHealth()
+        );
+
+        header.setLucidita(
+                mind.getLucidita(),
+                MindState.MAX
+        );
+
+        header.setStress(
+                mind.getStress(),
+                MindState.MAX
+        );
+    }
+
+    private VBox dilemmaView() {
+        Label title =
+                new Label(
+                        encounter.title()
+                );
+
+        title.getStyleClass().add(
+                "fear-title"
+        );
+
+        Label question =
+                SceneFx.paragraph(
+                        encounter.situation()
+                );
+
+        VBox buttons =
+                new VBox(12);
+
+        buttons.setAlignment(
+                Pos.CENTER
+        );
+
+        for (FearChoice choice : encounter.choices()) {
+            Button button =
+                    new Button(
+                            choice.label()
+                    );
+
+            button.getStyleClass().add(
+                    "menu-button"
+            );
+
+            button.setMaxWidth(
+                    Double.MAX_VALUE
+            );
+
+            button.setOnAction(
+                    event -> choose(choice)
+            );
+
+            buttons.getChildren().add(
+                    button
+            );
+        }
+
+        return panel(
+                title,
+                question,
+                buttons
+        );
+    }
+
+    private void choose(FearChoice choice) {
+        if (answered) {
+            return;
+        }
+
+        answered = true;
+
+        /*
+         * Il giocatore non vede il tratto associato.
+         * La risposta contribuisce soltanto al profilo finale.
+         */
+        mind.registerTrait(
+                choice.trait()
+        );
+
+        updateHeader();
+        cleanup();
+
+        onFinished.accept(
+                SceneOutcome.AVANTI
+        );
+    }
+
+    private VBox panel(Node... children) {
+        VBox box =
+                new VBox(
+                        22,
+                        children
+                );
+
+        box.setAlignment(
+                Pos.CENTER
+        );
+
+        box.setMaxWidth(
+                760
+        );
+
+        box.getStyleClass().add(
+                "fear-panel"
+        );
+
+        return box;
+    }
+
+    private Rectangle darkOverlay() {
+        Rectangle rectangle =
+                new Rectangle();
+
+        rectangle.getStyleClass().add(
+                "fear-dark"
+        );
+
+        rectangle.widthProperty().bind(
+                root.widthProperty()
+        );
+
+        rectangle.heightProperty().bind(
+                root.heightProperty()
+        );
+
+        return rectangle;
+    }
+
+    private void exitLevel() {
+        cleanup();
+
+        if (onExit != null) {
+            onExit.run();
+        }
+    }
+
+    private void cleanup() {
+        if (shake != null) {
+            shake.stop();
+        }
+
+        Sound.stopAll();
+    }
+}

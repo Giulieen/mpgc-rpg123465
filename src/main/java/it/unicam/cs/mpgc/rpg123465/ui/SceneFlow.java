@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Incatena le scene di un piano, mostrandole una dopo l'altra.
- * <p>
- * Sa soltanto due cose: come far vedere una scena e cosa fare quando il piano
- * è superato. Non conosce il contenuto delle scene né la logica di gioco, così
- * lo stesso meccanismo regge un piano di sole domande e uno tutto d'azione.
+ * Incatena le scene di un piano mostrandole una dopo l'altra.
  */
 public class SceneFlow {
 
@@ -22,48 +18,65 @@ public class SceneFlow {
     private int current;
 
     /**
-     * Crea la sequenza di un piano.
-     *
-     * @param scenes scene da attraversare, in ordine
-     * @param display come mostrare la vista di una scena
-     * @param onFloorCompleted azione da eseguire quando l'ultima scena è
-     *                         superata
-     * @throws IllegalArgumentException se le scene mancano o un parametro è null
+     * @param scenes scene del piano
+     * @param display operazione che mostra una vista
+     * @param onFloorCompleted operazione eseguita alla fine del piano
      */
-    public SceneFlow(List<FloorScene> scenes,
-                     Consumer<Parent> display,
-                     Runnable onFloorCompleted) {
+    public SceneFlow(
+            List<FloorScene> scenes,
+            Consumer<Parent> display,
+            Runnable onFloorCompleted
+    ) {
         if (scenes == null || scenes.isEmpty()) {
-            throw new IllegalArgumentException("Un piano deve avere almeno una scena.");
-        }
-        if (display == null || onFloorCompleted == null) {
-            throw new IllegalArgumentException("I callback non possono essere null.");
+            throw new IllegalArgumentException(
+                    "Un piano deve avere almeno una scena."
+            );
         }
 
-        this.scenes = new ArrayList<>(scenes);
+        if (display == null
+                || onFloorCompleted == null) {
+
+            throw new IllegalArgumentException(
+                    "I callback non possono essere null."
+            );
+        }
+
+        this.scenes =
+                new ArrayList<>(scenes);
+
         this.display = display;
         this.onFloorCompleted = onFloorCompleted;
         this.current = 0;
     }
 
     /**
-     * Mostra la prima scena e avvia il piano.
+     * Avvia il piano.
      */
     public void start() {
         showCurrent();
     }
 
     private void showCurrent() {
-        display.accept(scenes.get(current).createView(this::onSceneFinished));
+        FloorScene scene =
+                scenes.get(current);
+
+        display.accept(
+                scene.createView(
+                        this::onSceneFinished
+                )
+        );
     }
 
-    private void onSceneFinished(SceneOutcome outcome) {
+    private void onSceneFinished(
+            SceneOutcome outcome
+    ) {
         if (outcome == SceneOutcome.RIPETI) {
             showCurrent();
             return;
         }
 
         current++;
+
         if (current >= scenes.size()) {
             onFloorCompleted.run();
         } else {

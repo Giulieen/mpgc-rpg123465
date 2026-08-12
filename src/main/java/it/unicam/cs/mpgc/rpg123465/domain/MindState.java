@@ -1,52 +1,33 @@
 package it.unicam.cs.mpgc.rpg123465.domain;
 
 import java.io.Serializable;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
- * Lo stato interiore del protagonista: ciò che la Torre gli fa, e ciò che lui
- * diventa.
- * <p>
- * Tiene insieme due cose di natura diversa:
- * <ul>
- *   <li><b>gli stati</b> ({@code lucidita}, {@code stress}), che salgono e
- *       scendono di continuo mentre si gioca;</li>
- *   <li><b>i contatori delle scelte</b>, che <em>non si azzerano mai</em> e da
- *       cui, in cima alla Torre, si forma l'{@link AlterEgo}.</li>
- * </ul>
- * Vive nel dominio e non nell'interfaccia: è ciò che permette al gioco di
- * ricordare, da un piano all'altro, chi è diventato il protagonista.
+ * Stato interiore del protagonista.
+ *
+ * Mantiene Lucidità e Stress e registra, in modo invisibile al giocatore,
+ * i tre tratti che emergono dalle risposte ai dilemmi "Preferiresti":
+ * Coraggio, Curiosità e Avventura.
  */
 public class MindState implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    /*
+     * Il formato è cambiato rispetto al vecchio sistema basato su Attitude.
+     * I vecchi salvataggi non sono quindi considerati compatibili.
+     */
+    private static final long serialVersionUID = 2L;
 
-    /** Valore massimo di Lucidità e Stress. */
     public static final int MAX = 100;
 
-    /** Quanta Lucidità si recupera sulle scale, fra un piano e l'altro. */
     private static final int RIPOSO_LUCIDITA = 20;
-
-    /** Quanto Stress si scarica sulle scale, fra un piano e l'altro. */
     private static final int RIPOSO_STRESS = 25;
 
-    /**
-     * Quota minima, in percentuale sul totale delle scelte, perché un
-     * atteggiamento si dica dominante.
-     * <p>
-     * È una proporzione e non uno scarto secco: così la regola vale sia dopo
-     * poche scelte sia a fine partita. Con quattro atteggiamenti, chi scegliesse
-     * a caso si fermerebbe intorno al 25%: sopra il 45% c'è una vera inclinazione.
-     * Sotto, nessuna forma prevale e l'alter ego è il Riflesso.
-     */
-    private static final int QUOTA_DOMINANZA = 45;
-
     private int lucidita = MAX;
-    private int stress = 0;
-    private final Map<Attitude, Integer> scelte = new EnumMap<>(Attitude.class);
+    private int stress;
 
-    // --- Stati --------------------------------------------------------------
+    private int coraggio;
+    private int curiosita;
+    private int avventura;
 
     public int getLucidita() {
         return lucidita;
@@ -56,149 +37,253 @@ public class MindState implements Serializable {
         return stress;
     }
 
-    /** Il protagonista ha ceduto: la Torre ha avuto la meglio. */
     public boolean isSopraffatto() {
         return lucidita <= 0;
     }
 
     /**
-     * Entrare in una stanza aggiunge tensione a quella che ci si porta già
-     * dietro dai piani precedenti.
+     * Aumenta lo Stress entrando in un nuovo ambiente.
      *
-     * @param tensione stress che la stanza incute all'ingresso
+     * @param tensione tensione iniziale del piano
      */
-    public void enterRoom(int tensione) {
-        stress = clamp(stress + tensione);
+    public void enterRoom(
+            int tensione
+    ) {
+        stress = clamp(
+                stress + tensione
+        );
     }
 
     /**
-     * Le scale fra un piano e l'altro: si tira il fiato, ma non si guarisce.
-     * Le conseguenze delle scelte pesano ancora, semplicemente non condannano.
+     * Recupero applicato tra un piano e il successivo.
      */
     public void rest() {
-        lucidita = clamp(lucidita + RIPOSO_LUCIDITA);
-        stress = clamp(stress - RIPOSO_STRESS);
+        lucidita = clamp(
+                lucidita + RIPOSO_LUCIDITA
+        );
+
+        stress = clamp(
+                stress - RIPOSO_STRESS
+        );
     }
 
-    // --- Scelte -------------------------------------------------------------
-
     /**
-     * Applica una reazione: sposta gli stati e registra per sempre
-     * l'atteggiamento con cui il giocatore ha risposto alla paura.
+     * Registra il tratto associato a una risposta.
      *
-     * @param lucidityDelta variazione di Lucidità
-     * @param stressDelta   variazione di Stress
-     * @param attitude      atteggiamento della reazione
+     * Il punteggio rimane nascosto nell'interfaccia.
+     *
+     * @param trait tratto associato alla risposta
      */
-    public void apply(int lucidityDelta, int stressDelta, Attitude attitude) {
-        if (attitude == null) {
-            throw new IllegalArgumentException("L'atteggiamento non può essere null.");
+    public void registerTrait(
+            ProfileTrait trait
+    ) {
+        if (trait == null) {
+            throw new IllegalArgumentException(
+                    "Il tratto non può essere null."
+            );
         }
 
-        lucidita = clamp(lucidita + lucidityDelta);
-        stress = clamp(stress + stressDelta);
-        scelte.merge(attitude, 1, Integer::sum);
-    }
-
-    /**
-     * @return quante volte il giocatore ha reagito con questo atteggiamento
-     */
-    public int count(Attitude attitude) {
-        return scelte.getOrDefault(attitude, 0);
-    }
-
-    /** @return quante scelte sono state compiute in tutto */
-    public int getTotalChoices() {
-        int totale = 0;
-        for (Attitude attitude : Attitude.values()) {
-            totale += count(attitude);
+        switch (trait) {
+            case CORAGGIO -> coraggio++;
+            case CURIOSITA -> curiosita++;
+            case AVVENTURA -> avventura++;
         }
-        return totale;
     }
 
-    // --- Tratti (letture derivate dai contatori) -----------------------------
-
-    /** Affrontare la paura senza scappare: resistere o accoglierla, non fuggirla. */
     public int getCoraggio() {
-        return Math.max(0, count(Attitude.RESISTI)
-                + count(Attitude.ACCOGLI)
-                - count(Attitude.FUGGI));
+        return coraggio;
     }
 
-    /** Reagire senza violenza, avvicinandosi a ciò che si teme. */
-    public int getEmpatia() {
-        return count(Attitude.ACCOGLI);
+    public int getCuriosita() {
+        return curiosita;
     }
 
-    /** Agire d'istinto, colpendo prima di capire. */
-    public int getImpulsivita() {
-        return count(Attitude.AGGREDISCI);
+    public int getAvventura() {
+        return avventura;
     }
 
-    // --- Alter ego ----------------------------------------------------------
+    public int getTotalProfileChoices() {
+        return coraggio
+                + curiosita
+                + avventura;
+    }
 
     /**
-     * La forma che Chimeris assumerà: l'atteggiamento dominante del percorso,
-     * oppure il {@link AlterEgo#RIFLESSO} se nessuno ha davvero prevalso.
-     * <p>
-     * Perché un atteggiamento prevalga deve essere l'unico più frequente e
-     * coprire almeno la {@link #QUOTA_DOMINANZA} delle scelte compiute. Chi si
-     * è distribuito fra più modi di reagire — o li ha usati in egual misura —
-     * non incontra un mostro: incontra il Riflesso.
-     *
-     * @return l'alter ego costruito dalle scelte compiute finora
+     * Modifica solamente Lucidità e Stress.
      */
-    public AlterEgo alterEgo() {
-        Attitude dominante = null;
-        int primo = 0;
-        int secondo = 0;
+    public void harm(
+            int lucidityDelta,
+            int stressDelta
+    ) {
+        lucidita = clamp(
+                lucidita + lucidityDelta
+        );
 
-        for (Attitude attitude : Attitude.values()) {
-            int quante = count(attitude);
-            if (quante > primo) {
-                secondo = primo;
-                primo = quante;
-                dominante = attitude;
-            } else if (quante > secondo) {
-                secondo = quante;
-            }
-        }
-
-        boolean nessunaScelta = dominante == null || primo == 0;
-        boolean pareggio = primo == secondo;
-        boolean inclinazioneDebole = primo * 100 < QUOTA_DOMINANZA * getTotalChoices();
-
-        if (nessunaScelta || pareggio || inclinazioneDebole) {
-            return AlterEgo.RIFLESSO;
-        }
-
-        return switch (dominante) {
-            case AGGREDISCI -> AlterEgo.BESTIA;
-            case FUGGI -> AlterEgo.OMBRA;
-            case RESISTI -> AlterEgo.CUSTODE;
-            case ACCOGLI -> AlterEgo.MEDIATORE;
-        };
+        stress = clamp(
+                stress + stressDelta
+        );
     }
 
-    // --- Persistenza --------------------------------------------------------
+    /**
+     * Ripristina direttamente Lucidità e Stress.
+     */
+    public void restoreStats(
+            int lucidita,
+            int stress
+    ) {
+        this.lucidita =
+                clamp(lucidita);
+
+        this.stress =
+                clamp(stress);
+    }
 
     /**
-     * Ripristina questo stato da quello di una partita salvata.
+     * Determina il profilo verso cui il personaggio si sta dirigendo.
      *
-     * @param salvato stato caricato dal salvataggio
+     * Regole:
+     * - se tutti e tre i valori differiscono al massimo di 1: Poliedrico;
+     * - se due tratti sono vicini (differenza massima 1) e il terzo è
+     *   almeno 2 punti più basso: profilo combinato;
+     * - altrimenti prevale il tratto con il punteggio maggiore.
+     *
+     * @return profilo corrente
      */
-    public void restoreFrom(MindState salvato) {
+    public PlayerProfile profile() {
+        if (getTotalProfileChoices() == 0) {
+            return PlayerProfile.POLIEDRICO;
+        }
+
+        int max =
+                Math.max(
+                        coraggio,
+                        Math.max(
+                                curiosita,
+                                avventura
+                        )
+                );
+
+        int min =
+                Math.min(
+                        coraggio,
+                        Math.min(
+                                curiosita,
+                                avventura
+                        )
+                );
+
+        if (max - min <= 1) {
+            return PlayerProfile.POLIEDRICO;
+        }
+
+        if (Math.abs(coraggio - curiosita) <= 1
+                && Math.min(coraggio, curiosita) - avventura >= 2) {
+
+            return PlayerProfile.ESPLORATORE;
+        }
+
+        if (Math.abs(coraggio - avventura) <= 1
+                && Math.min(coraggio, avventura) - curiosita >= 2) {
+
+            return PlayerProfile.RISOLUTO;
+        }
+
+        if (Math.abs(curiosita - avventura) <= 1
+                && Math.min(curiosita, avventura) - coraggio >= 2) {
+
+            return PlayerProfile.VISIONARIO;
+        }
+
+        if (coraggio >= curiosita
+                && coraggio >= avventura) {
+
+            return PlayerProfile.CORAGGIOSO;
+        }
+
+        if (curiosita >= coraggio
+                && curiosita >= avventura) {
+
+            return PlayerProfile.CURIOSO;
+        }
+
+        return PlayerProfile.AVVENTURIERO;
+    }
+
+    /**
+     * Crea una copia indipendente dello stato.
+     *
+     * Serve ai checkpoint dei piani.
+     */
+    public MindState copy() {
+        MindState copy =
+                new MindState();
+
+        copy.lucidita =
+                this.lucidita;
+
+        copy.stress =
+                this.stress;
+
+        copy.coraggio =
+                this.coraggio;
+
+        copy.curiosita =
+                this.curiosita;
+
+        copy.avventura =
+                this.avventura;
+
+        return copy;
+    }
+
+    /**
+     * Ripristina questo stato da quello salvato.
+     *
+     * @param salvato stato mentale salvato
+     */
+    public void restoreFrom(
+            MindState salvato
+    ) {
         if (salvato == null) {
             return;
         }
 
-        this.lucidita = clamp(salvato.lucidita);
-        this.stress = clamp(salvato.stress);
-        this.scelte.clear();
-        this.scelte.putAll(salvato.scelte);
+        this.lucidita =
+                clamp(
+                        salvato.lucidita
+                );
+
+        this.stress =
+                clamp(
+                        salvato.stress
+                );
+
+        this.coraggio =
+                Math.max(
+                        0,
+                        salvato.coraggio
+                );
+
+        this.curiosita =
+                Math.max(
+                        0,
+                        salvato.curiosita
+                );
+
+        this.avventura =
+                Math.max(
+                        0,
+                        salvato.avventura
+                );
     }
 
-    private int clamp(int valore) {
-        return Math.max(0, Math.min(MAX, valore));
+    private int clamp(
+            int valore
+    ) {
+        return Math.clamp(
+                valore,
+                0,
+                MAX
+        );
     }
 }

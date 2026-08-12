@@ -1,24 +1,26 @@
 package it.unicam.cs.mpgc.rpg123465.engine;
 
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
-import it.unicam.cs.mpgc.rpg123465.domain.Inventory;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.domain.Stats;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
-import it.unicam.cs.mpgc.rpg123465.fear.FearEncounters;
+import it.unicam.cs.mpgc.rpg123465.floors.altezze.AltezzeFloors;
+import it.unicam.cs.mpgc.rpg123465.floors.buio.BuioFloor;
+import it.unicam.cs.mpgc.rpg123465.floors.encounter.EncounterFloors;
 
 import java.util.List;
 
 /**
  * Crea una nuova partita di Tower of Self.
- * <p>
- * La Torre è composta dai piani delle paure: per aggiungerne uno basta scrivere
- * il suo incontro in {@link FearEncounters} ed elencarlo qui, senza toccare il
- * resto del gioco.
+ *
+ * La Torre è composta dai piani delle paure: per aggiungerne uno basta creare
+ * il suo contenuto nel package del piano (in {@code floors}) ed elencarlo qui,
+ * senza toccare il resto del gioco.
  */
 public final class GameFactory {
 
     private static final String DEFAULT_PLAYER_NAME = "Viaggiatore";
+    private static final int DEFAULT_MAX_HEALTH = 100;
 
     private GameFactory() {
         // Impedisce l'istanziazione.
@@ -47,25 +49,48 @@ public final class GameFactory {
 
         Player player = new Player(
                 name,
-                new Stats(100, 14, 5),
-                new Inventory()
+                new Stats(DEFAULT_MAX_HEALTH)
         );
 
-        return new GameEngine(player, createTower());
+        return new GameEngine(
+                player,
+                createTower()
+        );
     }
 
     /**
      * Costruisce la Torre.
-     * <p>
-     * Al momento contiene il solo Piano I. I piani successivi (il buio, le
-     * altezze, la solitudine, il fallimento e il confronto con l'alter ego)
-     * andranno aggiunti qui, in ordine di salita.
+     *
+     * Al momento contiene tre piani:
+     * I Topi, Il Buio e Le Altezze.
      *
      * @return la Torre da salire
      */
     private static Tower createTower() {
-        Floor primoPiano = new Floor(1, "I Topi", FearEncounters.topi());
+        Floor primoPiano = new Floor(
+                1,
+                "I Topi",
+                EncounterFloors.topi()
+        );
 
-        return new Tower(List.of(primoPiano));
+        Floor secondoPiano = new Floor(
+                2,
+                "Il Buio",
+                BuioFloor.buio()
+        );
+
+        Floor terzoPiano = new Floor(
+                3,
+                "Le Altezze",
+                AltezzeFloors.altezze()
+        );
+
+        return new Tower(
+                List.of(
+                        primoPiano,
+                        secondoPiano,
+                        terzoPiano
+                )
+        );
     }
 }
