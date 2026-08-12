@@ -48,3 +48,5 @@ logs/
 
 # Copie originali degli asset prima delle elaborazioni (solo backup locale)
 audio-originali/
+# Copie originali degli asset prima delle elaborazioni (backup locale)
+asset-originali/
