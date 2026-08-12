@@ -1,0 +1,608 @@
+{
+  "topi": [
+    {
+      "id": 26,
+      "question": "Preferiresti vivere in una casa infestata da topi o vivere per strada?",
+      "first": {
+        "text": "Vivere in una casa infestata da topi",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Vivere per strada",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 36,
+      "question": "Preferiresti salvare il tuo animale domestico o salvare uno sconosciuto?",
+      "first": {
+        "text": "Salvare il tuo animale domestico",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Salvare uno sconosciuto",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 52,
+      "question": "Preferiresti vivere da solo su un'isola deserta o vivere in prigione con dei compagni di cella?",
+      "first": {
+        "text": "Vivere da solo su un'isola deserta",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Vivere in prigione con dei compagni di cella",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 66,
+      "question": "Preferiresti dover combattere per la tua vita una volta all'anno o vivere nella paura costante?",
+      "first": {
+        "text": "Combattere per la tua vita una volta all'anno",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Vivere nella paura costante",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 68,
+      "question": "Preferiresti combattere contro 100 cavalli grandi come anatre o contro un'anatra grande come un cavallo?",
+      "first": {
+        "text": "Combattere contro 100 cavalli grandi come anatre",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Combattere contro un'anatra grande come un cavallo",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 70,
+      "question": "Preferiresti essere inseguito da una lumaca assassina immortale o essere inseguito da un clown?",
+      "first": {
+        "text": "Essere inseguito da una lumaca assassina immortale",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere inseguito da un clown",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 74,
+      "question": "Preferiresti essere un cane domestico o un gatto randagio?",
+      "first": {
+        "text": "Essere un cane domestico",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere un gatto randagio",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 88,
+      "question": "Preferiresti essere un vampiro o essere un lupo mannaro?",
+      "first": {
+        "text": "Essere un vampiro",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere un lupo mannaro",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 91,
+      "question": "Preferiresti non sentire mai più dolore o non sentire mai più paura?",
+      "first": {
+        "text": "Non sentire mai più dolore",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Non sentire mai più paura",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 95,
+      "question": "Preferiresti essere un oggetto inanimato cosciente o un animale incosciente?",
+      "first": {
+        "text": "Essere un oggetto inanimato cosciente",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere un animale incosciente",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 53,
+      "question": "Preferiresti ferire qualcuno involontariamente o essere ferito intenzionalmente?",
+      "first": {
+        "text": "Ferire qualcuno involontariamente",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere ferito intenzionalmente",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 3,
+      "question": "Preferiresti indossare vestiti bagnati per tutta la vita o avere perennemente un sasso nella scarpa?",
+      "first": {
+        "text": "Indossare vestiti bagnati per tutta la vita",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Avere perennemente un sasso nella scarpa",
+        "trait": "AVVENTURA"
+      }
+    }
+  ],
+  "buio": [
+    {
+      "id": 79,
+      "question": "Preferiresti vivere in un mondo in bianco e nero o in un mondo sfocato?",
+      "first": {
+        "text": "Vivere in un mondo in bianco e nero",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Vivere in un mondo sfocato",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 57,
+      "question": "Preferiresti vivere senza elettricità o vivere senza acqua corrente?",
+      "first": {
+        "text": "Vivere senza elettricità",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Vivere senza acqua corrente",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 7,
+      "question": "Preferiresti vivere senza riscaldamento d'inverno o senza aria condizionata d'estate?",
+      "first": {
+        "text": "Vivere senza riscaldamento d'inverno",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Vivere senza aria condizionata d'estate",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 13,
+      "question": "Preferiresti sapere quando morirai o come morirai?",
+      "first": {
+        "text": "Sapere quando morirai",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Sapere come morirai",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 23,
+      "question": "Preferiresti avere una memoria fotografica o dimenticare tutto ciò che è imbarazzante?",
+      "first": {
+        "text": "Avere una memoria fotografica",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Dimenticare tutto ciò che è imbarazzante",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 39,
+      "question": "Preferiresti dimenticare chi sei o dimenticare chi sono i tuoi cari?",
+      "first": {
+        "text": "Dimenticare chi sei",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Dimenticare chi sono i tuoi cari",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 41,
+      "question": "Preferiresti perdere tutti i tuoi soldi o perdere tutti i tuoi ricordi?",
+      "first": {
+        "text": "Perdere tutti i tuoi soldi",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Perdere tutti i tuoi ricordi",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 58,
+      "question": "Preferiresti essere un genio incompreso o un idiota felice?",
+      "first": {
+        "text": "Essere un genio incompreso",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere un idiota felice",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 59,
+      "question": "Preferiresti saper leggere nel pensiero o poter cancellare la memoria delle persone?",
+      "first": {
+        "text": "Saper leggere nel pensiero",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Poter cancellare la memoria delle persone",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 61,
+      "question": "Preferiresti non poter mai più mentire o credere a tutte le bugie che ti dicono?",
+      "first": {
+        "text": "Non poter mai più mentire",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Credere a tutte le bugie che ti dicono",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 63,
+      "question": "Preferiresti avere una reputazione orribile o non avere alcuna reputazione?",
+      "first": {
+        "text": "Avere una reputazione orribile",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Non avere alcuna reputazione",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 65,
+      "question": "Preferiresti vivere in un film horror o vivere in un musical?",
+      "first": {
+        "text": "Vivere in un film horror",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Vivere in un musical",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 77,
+      "question": "Preferiresti cambiare colore in base al tuo umore o brillare al buio?",
+      "first": {
+        "text": "Cambiare colore in base al tuo umore",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Brillare al buio",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 87,
+      "question": "Preferiresti avere un pulsante \"Replay\" per la tua vita o un pulsante \"Pausa\"?",
+      "first": {
+        "text": "Avere un pulsante Replay",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Avere un pulsante Pausa",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 94,
+      "question": "Preferiresti poter cambiare faccia ogni giorno o tenere la stessa faccia ma cambiare corpo?",
+      "first": {
+        "text": "Cambiare faccia ogni giorno",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Tenere la stessa faccia ma cambiare corpo",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 5,
+      "question": "Preferiresti dover dire tutto quello che pensi o non poter mai più parlare?",
+      "first": {
+        "text": "Dire tutto quello che pensi",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Non poter mai più parlare",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 21,
+      "question": "Preferiresti parlare tutte le lingue del mondo o saper suonare tutti gli strumenti?",
+      "first": {
+        "text": "Parlare tutte le lingue del mondo",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Saper suonare tutti gli strumenti",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 30,
+      "question": "Preferiresti essere famoso per una cosa stupida o essere un genio sconosciuto?",
+      "first": {
+        "text": "Essere famoso per una cosa stupida",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Essere un genio sconosciuto",
+        "trait": "CURIOSITA"
+      }
+    }
+  ],
+  "altezze": [
+    {
+      "id": 31,
+      "question": "Preferiresti avere sempre la sensazione di cadere o avere sempre la sensazione di essere osservato?",
+      "first": {
+        "text": "Avere sempre la sensazione di cadere",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Avere sempre la sensazione di essere osservato",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 69,
+      "question": "Preferiresti vivere sott'acqua o vivere nello spazio?",
+      "first": {
+        "text": "Vivere sott'acqua",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Vivere nello spazio",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 15,
+      "question": "Preferiresti essere invisibile o poter volare?",
+      "first": {
+        "text": "Essere invisibile",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Poter volare",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 80,
+      "question": "Preferiresti essere minuscolo come una formica o gigante come un palazzo?",
+      "first": {
+        "text": "Essere minuscolo come una formica",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Essere gigante come un palazzo",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 14,
+      "question": "Preferiresti vivere nel passato o vivere nel futuro?",
+      "first": {
+        "text": "Vivere nel passato",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Vivere nel futuro",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 18,
+      "question": "Preferiresti controllare il fuoco o controllare l'acqua?",
+      "first": {
+        "text": "Controllare il fuoco",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Controllare l'acqua",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 28,
+      "question": "Preferiresti avere 4 braccia o 4 gambe?",
+      "first": {
+        "text": "Avere 4 braccia",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Avere 4 gambe",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 40,
+      "question": "Preferiresti essere sempre in ritardo di 10 minuti o essere sempre in anticipo di 2 ore?",
+      "first": {
+        "text": "Essere sempre in ritardo di 10 minuti",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Essere sempre in anticipo di 2 ore",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 45,
+      "question": "Preferiresti essere il capo di un'azienda in fallimento o l'impiegato di un'azienda di successo?",
+      "first": {
+        "text": "Essere il capo di un'azienda in fallimento",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Essere l'impiegato di un'azienda di successo",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 60,
+      "question": "Preferiresti avere sempre ragione ed essere solo o avere torto ed essere circondato da amici?",
+      "first": {
+        "text": "Avere sempre ragione ed essere solo",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Avere torto ed essere circondato da amici",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 67,
+      "question": "Preferiresti avere piedi al posto delle mani o mani al posto dei piedi?",
+      "first": {
+        "text": "Avere piedi al posto delle mani",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Avere mani al posto dei piedi",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 72,
+      "question": "Preferiresti poter camminare solo all'indietro o poter parlare solo cantando?",
+      "first": {
+        "text": "Camminare solo all'indietro",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Parlare solo cantando",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 73,
+      "question": "Preferiresti avere gli occhi dietro la testa o avere le orecchie sotto le ascelle?",
+      "first": {
+        "text": "Avere gli occhi dietro la testa",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Avere le orecchie sotto le ascelle",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 78,
+      "question": "Preferiresti avere ruote al posto delle gambe o ali al posto delle braccia?",
+      "first": {
+        "text": "Avere ruote al posto delle gambe",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Avere ali al posto delle braccia",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 84,
+      "question": "Preferiresti svegliarti ogni mattina in un paese diverso o non poter mai uscire dalla tua città?",
+      "first": {
+        "text": "Svegliarti ogni mattina in un paese diverso",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Non poter mai uscire dalla tua città",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 86,
+      "question": "Preferiresti vivere in un videogioco o vivere in un cartone animato?",
+      "first": {
+        "text": "Vivere in un videogioco",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Vivere in un cartone animato",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 89,
+      "question": "Preferiresti poterti teletrasportare ovunque ma perdendo un vestito ogni volta o volare ma a 2 km/h?",
+      "first": {
+        "text": "Teletrasportarti ovunque perdendo un vestito ogni volta",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Volare ma a 2 km/h",
+        "trait": "CORAGGIO"
+      }
+    },
+    {
+      "id": 90,
+      "question": "Preferiresti avere delle molle sotto i piedi o delle ventose sulle mani?",
+      "first": {
+        "text": "Avere delle molle sotto i piedi",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "Avere delle ventose sulle mani",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 93,
+      "question": "Preferiresti vivere 1000 anni o vivere 10 vite diverse di 100 anni?",
+      "first": {
+        "text": "Vivere 1000 anni",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "Vivere 10 vite diverse di 100 anni",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 99,
+      "question": "Preferiresti essere il padrone del mondo per 1 giorno o un cittadino qualunque per l'eternità?",
+      "first": {
+        "text": "Essere il padrone del mondo per 1 giorno",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "Essere un cittadino qualunque per l'eternità",
+        "trait": "CURIOSITA"
+      }
+    }
+  ]
+}
