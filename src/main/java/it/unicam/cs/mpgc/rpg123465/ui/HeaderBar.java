@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.ui;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -10,10 +11,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Barra di stato sempre visibile in cima alle schermate di gioco: nome del
- * giocatore, vita, lucidità e la prova in corso.
- * <p>
- * Le icone (Ikonli, pack Material Design) sono monocromatiche e tinte tutte
- * con lo stesso colore, così restano coerenti con il tema della Torre.
+ * giocatore, vita, lucidità, stress e prova in corso.
  */
 public class HeaderBar {
 
@@ -26,24 +24,62 @@ public class HeaderBar {
     private final Label stressValue = new Label();
     private final Label provaValue = new Label();
 
+    private final Runnable onSave;
+    private final Runnable onExit;
+
     /**
      * @param playerName nome del giocatore mostrato nella barra
      */
     public HeaderBar(String playerName) {
+        this(playerName, null, null);
+    }
+
+    /**
+     * @param playerName nome del giocatore mostrato nella barra
+     * @param onSave azione da eseguire al salvataggio, oppure {@code null}
+     */
+    public HeaderBar(String playerName, Runnable onSave) {
+        this(playerName, onSave, null);
+    }
+
+    /**
+     * @param playerName nome del giocatore mostrato nella barra
+     * @param onSave azione da eseguire al salvataggio, oppure {@code null}
+     * @param onExit azione per uscire dal livello, oppure {@code null}
+     */
+    public HeaderBar(String playerName, Runnable onSave, Runnable onExit) {
         nameValue.setText(playerName);
+        this.onSave = onSave;
+        this.onExit = onExit;
     }
 
     /**
      * @return la barra, da allineare in cima alla schermata
      */
     public Region createView() {
-        HBox bar = new HBox(30,
+        HBox bar = new HBox(
+                30,
                 item("mdi2a-account", nameValue),
                 item("mdi2h-heart", vitaValue),
                 item("mdi2b-brain", lucidValue),
                 item("mdi2l-lightning-bolt", stressValue),
                 spacer(),
-                item("mdi2b-book-open-variant", provaValue));
+                item("mdi2b-book-open-variant", provaValue)
+        );
+
+        if (onSave != null) {
+            Button saveButton = new Button("Salva");
+            saveButton.getStyleClass().add("header-save");
+            saveButton.setOnAction(event -> onSave.run());
+            bar.getChildren().add(saveButton);
+        }
+
+        if (onExit != null) {
+            Button exitButton = new Button("Esci");
+            exitButton.getStyleClass().add("header-save");
+            exitButton.setOnAction(event -> onExit.run());
+            bar.getChildren().add(exitButton);
+        }
 
         bar.setAlignment(Pos.CENTER_LEFT);
         bar.getStyleClass().add("header-bar");

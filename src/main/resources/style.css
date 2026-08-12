@@ -349,6 +349,40 @@
         dropshadow(gaussian, rgba(0,0,0,0.9), 6, 0.4, 0, 2);
 }
 
+/* Stanza buia: timer, numeri sulle pareti e serratura */
+
+.dark-timer {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #d8c07a;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 8, 0.5, 0, 2);
+}
+
+.dark-timer:urgent {
+    -fx-text-fill: #e5563f;
+    -fx-effect: dropshadow(gaussian, rgba(229,86,63,0.7), 14, 0.6, 0, 0);
+}
+
+.wall-cardinal {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.wall-binary {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 46px;
+    -fx-font-weight: bold;
+}
+
+.lock-digit {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
 /* Barra di stato in cima alle schermate di gioco */
 
 .header-bar {
@@ -372,4 +406,19 @@
 
     -fx-effect:
         dropshadow(gaussian, rgba(0,0,0,0.8), 4, 0.3, 0, 1);
+}
+
+.header-save {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #201a10;
+    -fx-background-color: #d8c07a;
+    -fx-background-radius: 4px;
+    -fx-padding: 6 13 6 13;
+    -fx-cursor: hand;
+}
+
+.header-save:hover {
+    -fx-background-color: #f4d98e;
 }
