@@ -383,6 +383,93 @@
     -fx-font-weight: bold;
 }
 
+/* =====================================================
+   CORNICE DELLA FINESTRA
+   ===================================================== */
+
+.window-root {
+    -fx-background-color: #000000;
+    -fx-border-color: #4a3d21;
+    -fx-border-width: 1;
+}
+
+.window-bar {
+    -fx-background-color: linear-gradient(to bottom, #17140f, #0c0a07);
+    -fx-border-color: transparent transparent #4a3d21 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.window-mark {
+    -fx-icon-color: #c28a2c;
+}
+
+.window-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #d8c07a;
+}
+
+.window-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0 16 0 16;
+    -fx-min-height: 34;
+    -fx-cursor: hand;
+}
+
+.window-button .ikonli-font-icon {
+    -fx-icon-color: #9d9484;
+}
+
+.window-button:hover {
+    -fx-background-color: rgba(216,192,122,0.14);
+}
+
+.window-button:hover .ikonli-font-icon {
+    -fx-icon-color: #f4c76b;
+}
+
+.window-button-close:hover {
+    -fx-background-color: #a8352a;
+}
+
+.window-button-close:hover .ikonli-font-icon {
+    -fx-icon-color: #ffffff;
+}
+
+/* Messaggi del gioco, al posto delle finestre di sistema */
+
+.dialog-veil {
+    -fx-background-color: rgba(0,0,0,0.72);
+}
+
+.dialog-card {
+    -fx-background-color: linear-gradient(to bottom, #17140f, #0b0906);
+    -fx-background-radius: 10;
+    -fx-border-color: #b8862b;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 34, 0.4, 0, 10);
+}
+
+.dialog-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f4c76b;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 8, 0.4, 0, 2);
+}
+
+.dialog-text {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 16px;
+    -fx-text-fill: #ece7df;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-line-spacing: 4px;
+}
+
 /* Labirinto dei Topi (Piano I) */
 
 .maze-panel {
