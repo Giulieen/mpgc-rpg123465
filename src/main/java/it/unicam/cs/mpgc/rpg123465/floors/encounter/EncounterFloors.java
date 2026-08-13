@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.floors.encounter;
 
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.Questions;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 
 import java.util.List;
 
@@ -17,11 +17,14 @@ public final class EncounterFloors {
     /**
      * Piano I — I Topi.
      *
-     * La domanda viene estratta casualmente dal catalogo JSON.
+     * @param questions catalogo da cui estrarre la domanda del piano
+     * @return contenuto del Piano I
      */
-    public static FearEncounter topi() {
+    public static FearEncounter topi(
+            QuestionRepository questions
+    ) {
         Dilemma dilemma =
-                Questions.repository()
+                questions
                         .randomQuestions(
                                 "topi",
                                 1

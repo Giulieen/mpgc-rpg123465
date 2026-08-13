@@ -12,7 +12,9 @@ import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.PlayerRegistry;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.questions.JsonQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
@@ -47,6 +49,16 @@ public final class Navigator {
             new FilePlayerRegistry(
                     PLAYERS_PATH
             );
+
+    /**
+     * Catalogo condiviso da tutta l'esecuzione.
+     *
+     * Viene letto alla prima partita e non alla costruzione del navigatore:
+     * un file rotto deve diventare un messaggio a schermo, e lo può fare solo
+     * se l'errore nasce dentro un percorso che qualcuno intercetta. Restando
+     * null dopo un fallimento, il tentativo successivo rilegge il file.
+     */
+    private QuestionRepository questions;
 
     private final WindowFrame frame;
 
@@ -181,6 +193,7 @@ public final class Navigator {
         FloorSceneFactory scenes =
                 new FloorSceneFactory(
                         controller,
+                        questions(),
                         records,
                         onDismissed -> showSaveResult(
                                 controller,
@@ -287,7 +300,8 @@ public final class Navigator {
     ) {
         GameEngine engine =
                 GameFactory.createNewGame(
-                        playerName
+                        playerName,
+                        questions()
                 );
 
         SaveManager saveManager =
@@ -297,8 +311,21 @@ public final class Navigator {
 
         return new GameController(
                 engine,
-                saveManager
+                saveManager,
+                questions()
         );
+    }
+
+    /**
+     * @return il catalogo condiviso, letto alla prima richiesta
+     * @throws QuestionCatalogException se il catalogo non è utilizzabile
+     */
+    private QuestionRepository questions() {
+        if (questions == null) {
+            questions = new JsonQuestionRepository();
+        }
+
+        return questions;
     }
 
     /**

@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 
 import java.io.IOException;
 
@@ -17,6 +18,13 @@ import java.io.IOException;
 public class GameController {
 
     private final SaveManager saveManager;
+
+    /**
+     * Catalogo con cui ricostruire la Torre caricando una partita: il motore
+     * viene rifatto da capo, e i piani ne estraggono di nuovo le domande.
+     */
+    private final QuestionRepository questions;
+
     private GameEngine gameEngine;
 
     /**
@@ -28,7 +36,11 @@ public class GameController {
      */
     private GameSave floorCheckpoint;
 
-    public GameController(GameEngine gameEngine, SaveManager saveManager) {
+    public GameController(
+            GameEngine gameEngine,
+            SaveManager saveManager,
+            QuestionRepository questions
+    ) {
         if (gameEngine == null) {
             throw new IllegalArgumentException(
                     "Il motore di gioco non può essere null."
@@ -41,8 +53,15 @@ public class GameController {
             );
         }
 
+        if (questions == null) {
+            throw new IllegalArgumentException(
+                    "Il catalogo delle domande non può essere null."
+            );
+        }
+
         this.gameEngine = gameEngine;
         this.saveManager = saveManager;
+        this.questions = questions;
     }
 
     public Floor getCurrentFloor() {
@@ -153,7 +172,7 @@ public class GameController {
             GameSave save = saveManager.load();
 
             GameEngine loadedEngine =
-                    GameFactory.createNewGame(save.getPlayerName());
+                    GameFactory.createNewGame(save.getPlayerName(), questions);
 
             loadedEngine.restoreState(
                     save.getCurrentFloor(),

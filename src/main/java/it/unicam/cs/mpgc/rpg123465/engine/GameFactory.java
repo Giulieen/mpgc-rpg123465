@@ -6,6 +6,7 @@ import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 import it.unicam.cs.mpgc.rpg123465.floors.altezze.AltezzeFloors;
 import it.unicam.cs.mpgc.rpg123465.floors.buio.BuioFloor;
 import it.unicam.cs.mpgc.rpg123465.floors.encounter.EncounterFloors;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 
 import java.util.List;
 
@@ -24,22 +25,24 @@ public final class GameFactory {
     }
 
     /**
-     * Crea una nuova partita con il nome predefinito.
-     *
-     * @return motore di una nuova partita
-     */
-    public static GameEngine createNewGame() {
-        return createNewGame(DEFAULT_PLAYER_NAME);
-    }
-
-    /**
      * Crea una nuova partita.
      *
      * @param playerName nome scelto dal giocatore; se vuoto viene usato quello
      *                   predefinito
+     * @param questions catalogo da cui i piani estraggono le proprie domande
      * @return motore di una nuova partita
+     * @throws IllegalArgumentException se il catalogo è null
      */
-    public static GameEngine createNewGame(String playerName) {
+    public static GameEngine createNewGame(
+            String playerName,
+            QuestionRepository questions
+    ) {
+        if (questions == null) {
+            throw new IllegalArgumentException(
+                    "Il catalogo delle domande non può essere null."
+            );
+        }
+
         String name = (playerName == null || playerName.isBlank())
                 ? DEFAULT_PLAYER_NAME
                 : playerName.trim();
@@ -48,7 +51,7 @@ public final class GameFactory {
 
         return new GameEngine(
                 player,
-                createTower()
+                createTower(questions)
         );
     }
 
@@ -60,11 +63,11 @@ public final class GameFactory {
      *
      * @return la Torre da salire
      */
-    private static Tower createTower() {
+    private static Tower createTower(QuestionRepository questions) {
         Floor primoPiano = new Floor(
                 1,
                 "I Topi",
-                EncounterFloors.topi()
+                EncounterFloors.topi(questions)
         );
 
         Floor secondoPiano = new Floor(

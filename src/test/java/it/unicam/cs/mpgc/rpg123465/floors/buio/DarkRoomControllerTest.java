@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.floors.buio;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,8 @@ class DarkRoomControllerTest {
 
     @BeforeEach
     void setUp() {
-        game = new GameController(TestTowers.engineWithFloors(3), new FakeSaveManager());
+        game = new GameController(TestTowers.engineWithFloors(3),
+                new FakeSaveManager(), new FakeQuestionRepository());
         controller = new DarkRoomController(room(), game);
     }
 

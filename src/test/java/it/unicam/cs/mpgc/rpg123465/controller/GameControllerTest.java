@@ -1,20 +1,25 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 import it.unicam.cs.mpgc.rpg123465.domain.MindState;
 import it.unicam.cs.mpgc.rpg123465.domain.PlayerProfile;
 import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
+import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,14 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GameControllerTest {
 
     private FakeSaveManager saves;
+    private FakeQuestionRepository questions;
     private GameEngine engine;
     private GameController controller;
 
     @BeforeEach
     void setUp() {
         saves = new FakeSaveManager();
+        questions = new FakeQuestionRepository();
         engine = TestTowers.engineWithFloors(3);
-        controller = new GameController(engine, saves);
+        controller = new GameController(engine, saves, questions);
     }
 
     private void answer(ProfileTrait trait) {
@@ -192,7 +199,7 @@ class GameControllerTest {
 
         assertTrue(controller.loadGame().success());
 
-        assertEquals(1, controller.getCurrentFloor().getNumber() - 1);
+        assertEquals(2, controller.getCurrentFloor().getNumber());
         assertEquals("Ripreso", controller.getPlayerName());
         assertEquals(2, controller.getMind().getCuriosita());
         assertEquals(1, controller.getMind().getAvventura());
@@ -233,6 +240,35 @@ class GameControllerTest {
         controller.loadGame();
 
         assertEquals(PlayerProfile.AVVENTURIERO, controller.getPlayerProfile());
+    }
+
+    /**
+     * Caricare ricostruisce la Torre da capo, quindi i piani riestraggono le
+     * domande: devono chiederle al catalogo ricevuto dal controller. Il testo
+     * del Piano I lo dimostra, perché porta il marcatore del catalogo finto.
+     */
+    @Test
+    void caricareRicostruisceLaTorreConIlCatalogoRicevuto() {
+        saves.preload(new GameSave("Ripreso", 0, false, new MindState()));
+
+        controller.loadGame();
+
+        assertEquals(List.of("topi"), questions.requestedCategories());
+
+        FloorContent primoPiano = controller.getCurrentFloor().getContent();
+
+        assertInstanceOf(FearEncounter.class, primoPiano);
+        assertTrue(((FearEncounter) primoPiano).situation()
+                .startsWith(FakeQuestionRepository.MARKER));
+    }
+
+    /** Finché non si carica nulla, al catalogo non viene chiesto niente. */
+    @Test
+    void senzaCaricamentiIlCatalogoNonVieneInterrogato() {
+        controller.climbToNextFloor();
+        controller.saveGame();
+
+        assertTrue(questions.requestedCategories().isEmpty());
     }
 
     // --- errori ----------------------------------------------------------
@@ -283,9 +319,12 @@ class GameControllerTest {
     @Test
     void ilControllerRifiutaMotoreOSalvataggioMancanti() {
         assertThrows(IllegalArgumentException.class,
-                () -> new GameController(null, saves));
+                () -> new GameController(null, saves, questions));
 
         assertThrows(IllegalArgumentException.class,
-                () -> new GameController(engine, null));
+                () -> new GameController(engine, null, questions));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new GameController(engine, saves, null));
     }
 }

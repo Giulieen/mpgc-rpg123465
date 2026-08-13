@@ -10,6 +10,7 @@ import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounterScreen;
 import it.unicam.cs.mpgc.rpg123465.floors.encounter.RatMazeScene;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 
 import java.util.List;
@@ -21,23 +22,26 @@ import java.util.function.Consumer;
 public final class FloorSceneFactory {
 
     private final GameController controller;
+    private final QuestionRepository questions;
     private final RecordStore records;
     private final Consumer<Runnable> onSave;
     private final Runnable onExit;
 
     public FloorSceneFactory(
             GameController controller,
+            QuestionRepository questions,
             RecordStore records,
             Consumer<Runnable> onSave,
             Runnable onExit
     ) {
-        if (controller == null || records == null) {
+        if (controller == null || questions == null || records == null) {
             throw new IllegalArgumentException(
-                    "Il controller e l'archivio dei record non possono essere null."
+                    "Controller, catalogo e archivio dei record non possono essere null."
             );
         }
 
         this.controller = controller;
+        this.questions = questions;
         this.records = records;
         this.onSave = onSave;
         this.onExit = onExit;
@@ -71,6 +75,7 @@ public final class FloorSceneFactory {
                     new DarkRoomScene(
                             room,
                             controller,
+                            questions,
                             records,
                             onSave,
                             onExit
@@ -83,6 +88,7 @@ public final class FloorSceneFactory {
                     new AltezzeScene(
                             crossing,
                             controller,
+                            questions,
                             records,
                             onSave,
                             onExit

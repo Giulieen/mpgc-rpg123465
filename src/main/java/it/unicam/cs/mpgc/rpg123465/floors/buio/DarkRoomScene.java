@@ -5,7 +5,7 @@ import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
-import it.unicam.cs.mpgc.rpg123465.questions.Questions;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
@@ -55,6 +55,7 @@ public class DarkRoomScene implements FloorScene {
 
     private final DarkRoom room;
     private final DarkRoomController controller;
+    private final QuestionRepository questions;
     private final RecordStore records;
     private final HeaderBar header;
     private final Consumer<Runnable> onSave;
@@ -111,17 +112,19 @@ public class DarkRoomScene implements FloorScene {
     public DarkRoomScene(
             DarkRoom room,
             GameController game,
+            QuestionRepository questions,
             RecordStore records,
             Consumer<Runnable> onSave,
             Runnable onExit
     ) {
-        if (room == null || game == null || records == null) {
+        if (room == null || game == null || questions == null || records == null) {
             throw new IllegalArgumentException(
                     "Gli argomenti non possono essere null."
             );
         }
 
         this.room = room;
+        this.questions = questions;
         this.records = records;
 
         this.controller =
@@ -206,7 +209,7 @@ public class DarkRoomScene implements FloorScene {
      */
     private void prepareDilemmas() {
         dilemmas =
-                Questions.repository()
+                questions
                         .randomQuestions(
                                 "buio",
                                 3

@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.floors.encounter;
 
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,8 @@ class RatMazeControllerTest {
 
     @BeforeEach
     void setUp() {
-        game = new GameController(TestTowers.engineWithFloors(3), new FakeSaveManager());
+        game = new GameController(TestTowers.engineWithFloors(3),
+                new FakeSaveManager(), new FakeQuestionRepository());
         controller = new RatMazeController(maze, game, new Random(20260813L));
     }
 
