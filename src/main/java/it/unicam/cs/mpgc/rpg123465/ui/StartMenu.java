@@ -106,8 +106,8 @@ public class StartMenu {
 
         Label subtitle =
                 new Label("""
-                        Ogni paura ha un volto.
-                        Solo affrontandola potrai salire.
+                        La Torre osserva le tue scelte.
+                        Solo salendo scoprirai cosa raccontano di te.
                         """);
 
         subtitle.getStyleClass().add(

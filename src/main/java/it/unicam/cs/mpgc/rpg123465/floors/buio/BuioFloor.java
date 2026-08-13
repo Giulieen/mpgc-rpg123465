@@ -28,15 +28,10 @@ public final class BuioFloor {
                         + "imparato ad attraversarlo.",
 
                 "Le cifre non coincidono. "
-                        + "Il lucchetto scatta a vuoto e il buio sembra "
-                        + "stringersi attorno a te. La porta resta chiusa. "
-                        + "Raccogli ciò che ricordi e prova ancora.",
+                        + "Il buio non nasconde niente che tu non possa rileggere.",
 
                 "Il tempo si esaurisce. "
-                        + "La serratura si blocca con uno scatto secco "
-                        + "e la stanza torna immobile. "
-                        + "Il buio non ti concede altro tempo: "
-                        + "dovrai ricominciare.",
+                        + "La serratura si blocca, ma le pareti restano dove sono.",
 
                 "3524",
                 60,
