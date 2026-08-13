@@ -3,32 +3,30 @@ package it.unicam.cs.mpgc.rpg123465.domain;
 /**
  * Il protagonista controllato dal giocatore.
  * <p>
- * Porta con sé due cose che la Torre logora in modi diversi: il corpo, nelle
- * {@link Stats} ereditate da {@link GameCharacter}, e la mente, nel
- * {@link MindState}. È quest'ultimo a ricordare il percorso da un piano
- * all'altro, e a decidere quale alter ego attenderà in cima.
+ * Porta con sé una cosa sola che attraversa la Torre: la memoria delle proprie
+ * risposte, nel {@link MindState}, da cui nasce il profilo finale. Quanto gli
+ * resta per superare la prova corrente non è suo ma del piano, e vive nei
+ * tentativi.
  */
 public class Player extends GameCharacter {
 
-    /** Ciò che la Torre gli fa, e ciò che le sue scelte lo stanno facendo diventare. */
+    /** Ciò che le sue scelte lo stanno facendo diventare. */
     private final MindState mind = new MindState();
 
     /**
      * Crea un nuovo giocatore.
      *
      * @param name nome del giocatore
-     * @param stats statistiche del giocatore
-     * @throws IllegalArgumentException se un parametro non è valido
+     * @throws IllegalArgumentException se il nome non è valido
      */
-    public Player(String name, Stats stats) {
-        super(name, stats);
+    public Player(String name) {
+        super(name);
     }
 
     /**
-     * Restituisce lo stato interiore del giocatore: Lucidità, Stress e la
-     * memoria di come ha reagito alle paure.
+     * Restituisce la memoria delle risposte date ai dilemmi.
      *
-     * @return stato interiore del giocatore
+     * @return conteggi dei tratti accumulati dal giocatore
      */
     public MindState getMind() {
         return mind;

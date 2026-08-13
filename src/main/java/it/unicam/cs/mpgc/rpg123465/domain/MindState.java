@@ -3,69 +3,31 @@ package it.unicam.cs.mpgc.rpg123465.domain;
 import java.io.Serializable;
 
 /**
- * Stato interiore del protagonista.
+ * Memoria delle risposte ai dilemmi "Preferiresti".
  *
- * Mantiene Lucidità e Stress e registra, in modo invisibile al giocatore,
- * i tre tratti che emergono dalle risposte ai dilemmi "Preferiresti":
- * Coraggio, Curiosità e Avventura.
+ * <p>
+ * Registra, in modo invisibile al giocatore, quante volte ha scelto ciascuno
+ * dei tre tratti — Coraggio, Curiosità e Avventura — e da quei conteggi ricava
+ * il profilo verso cui si sta dirigendo.
+ *
+ * <p>
+ * I tratti sono l'unica cosa che attraversa i piani. Le difficoltà della prova
+ * corrente vivono altrove, nei tentativi, e non influiscono in alcun modo sul
+ * profilo: sbagliare una combinazione o cadere da un ponte non dice nulla su
+ * chi sta giocando.
  */
 public class MindState implements Serializable {
 
     /*
-     * Il formato è cambiato rispetto al vecchio sistema basato su Attitude.
-     * I vecchi salvataggi non sono quindi considerati compatibili.
+     * Il formato è cambiato due volte: prima abbandonando Attitude, poi
+     * togliendo Lucidità e Stress. I salvataggi precedenti non sono
+     * compatibili.
      */
-    private static final long serialVersionUID = 2L;
-
-    public static final int MAX = 100;
-
-    private static final int RIPOSO_LUCIDITA = 20;
-    private static final int RIPOSO_STRESS = 25;
-
-    private int lucidita = MAX;
-    private int stress;
+    private static final long serialVersionUID = 3L;
 
     private int coraggio;
     private int curiosita;
     private int avventura;
-
-    public int getLucidita() {
-        return lucidita;
-    }
-
-    public int getStress() {
-        return stress;
-    }
-
-    public boolean isSopraffatto() {
-        return lucidita <= 0;
-    }
-
-    /**
-     * Aumenta lo Stress entrando in un nuovo ambiente.
-     *
-     * @param tensione tensione iniziale del piano
-     */
-    public void enterRoom(
-            int tensione
-    ) {
-        stress = clamp(
-                stress + tensione
-        );
-    }
-
-    /**
-     * Recupero applicato tra un piano e il successivo.
-     */
-    public void rest() {
-        lucidita = clamp(
-                lucidita + RIPOSO_LUCIDITA
-        );
-
-        stress = clamp(
-                stress - RIPOSO_STRESS
-        );
-    }
 
     /**
      * Registra il tratto associato a una risposta.
@@ -106,36 +68,6 @@ public class MindState implements Serializable {
         return coraggio
                 + curiosita
                 + avventura;
-    }
-
-    /**
-     * Modifica solamente Lucidità e Stress.
-     */
-    public void harm(
-            int lucidityDelta,
-            int stressDelta
-    ) {
-        lucidita = clamp(
-                lucidita + lucidityDelta
-        );
-
-        stress = clamp(
-                stress + stressDelta
-        );
-    }
-
-    /**
-     * Ripristina direttamente Lucidità e Stress.
-     */
-    public void restoreStats(
-            int lucidita,
-            int stress
-    ) {
-        this.lucidita =
-                clamp(lucidita);
-
-        this.stress =
-                clamp(stress);
     }
 
     /**
@@ -210,19 +142,14 @@ public class MindState implements Serializable {
     }
 
     /**
-     * Crea una copia indipendente dello stato.
+     * Crea una copia indipendente dei conteggi.
      *
-     * Serve ai checkpoint dei piani.
+     * Serve al checkpoint del piano: fotografa le risposte date fino
+     * all'ingresso, così ricaricando non vengono contate due volte.
      */
     public MindState copy() {
         MindState copy =
                 new MindState();
-
-        copy.lucidita =
-                this.lucidita;
-
-        copy.stress =
-                this.stress;
 
         copy.coraggio =
                 this.coraggio;
@@ -237,9 +164,9 @@ public class MindState implements Serializable {
     }
 
     /**
-     * Ripristina questo stato da quello salvato.
+     * Ripristina questi conteggi da quelli salvati.
      *
-     * @param salvato stato mentale salvato
+     * @param salvato conteggi salvati
      */
     public void restoreFrom(
             MindState salvato
@@ -247,16 +174,6 @@ public class MindState implements Serializable {
         if (salvato == null) {
             return;
         }
-
-        this.lucidita =
-                clamp(
-                        salvato.lucidita
-                );
-
-        this.stress =
-                clamp(
-                        salvato.stress
-                );
 
         this.coraggio =
                 Math.max(
@@ -275,15 +192,5 @@ public class MindState implements Serializable {
                         0,
                         salvato.avventura
                 );
-    }
-
-    private int clamp(
-            int valore
-    ) {
-        return Math.clamp(
-                valore,
-                0,
-                MAX
-        );
     }
 }

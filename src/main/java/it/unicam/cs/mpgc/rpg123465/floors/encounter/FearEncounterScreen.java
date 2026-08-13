@@ -47,7 +47,6 @@ public class FearEncounterScreen implements FloorScene {
     private Region fog;
     private ScreenShake shake;
 
-    private boolean entered;
     private boolean answered;
 
     public FearEncounterScreen(
@@ -114,13 +113,6 @@ public class FearEncounterScreen implements FloorScene {
         this.onFinished = onFinished;
 
         root.getStyleClass().add("fear-root");
-
-        if (!entered) {
-            mind.enterRoom(
-                    encounter.initialStress()
-            );
-            entered = true;
-        }
 
         startAmbience();
 
@@ -213,19 +205,9 @@ public class FearEncounterScreen implements FloorScene {
     }
 
     private void updateHeader() {
-        header.setVita(
-                controller.getPlayerCurrentHealth(),
-                controller.getPlayerMaxHealth()
-        );
-
-        header.setLucidita(
-                mind.getLucidita(),
-                MindState.MAX
-        );
-
-        header.setStress(
-                mind.getStress(),
-                MindState.MAX
+        header.setTentativi(
+                controller.getRemainingAttempts(),
+                controller.getMaxAttempts()
         );
     }
 

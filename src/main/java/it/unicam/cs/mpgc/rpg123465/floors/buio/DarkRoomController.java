@@ -7,19 +7,16 @@ import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
 /**
  * Controller del Piano II — Il Buio.
  *
- * Tiene le regole del puzzle e le conseguenze sul giocatore separate
- * dalla rappresentazione JavaFX.
+ * <p>
+ * Tiene le regole del puzzle separate dalla rappresentazione JavaFX. Le regole
+ * sono due: la combinazione apre la porta, e ogni errore — cifre sbagliate o
+ * tempo scaduto — costa un tentativo.
  */
 public final class DarkRoomController {
 
     private final DarkRoom room;
     private final GameController game;
     private final MindState mind;
-    private final DarkRoomOutcomeHandler outcomes;
-
-    private int checkpointLucidita;
-    private int checkpointStress;
-    private int checkpointVita;
 
     /**
      * @param room contenuto del piano
@@ -38,29 +35,6 @@ public final class DarkRoomController {
         this.room = room;
         this.game = game;
         this.mind = game.getMind();
-
-        this.outcomes =
-                new DarkRoomOutcomeHandler(
-                        mind
-                );
-    }
-
-    /**
-     * Entra nella stanza e fissa il checkpoint.
-     */
-    public void enter() {
-        mind.enterRoom(
-                room.initialStress()
-        );
-
-        checkpointLucidita =
-                mind.getLucidita();
-
-        checkpointStress =
-                mind.getStress();
-
-        checkpointVita =
-                game.getPlayerCurrentHealth();
     }
 
     /**
@@ -78,7 +52,8 @@ public final class DarkRoomController {
     /**
      * Registra la risposta a un dilemma del piano.
      *
-     * Il tratto è nascosto al giocatore.
+     * Il tratto è nascosto al giocatore e non ha alcun effetto sulla prova:
+     * contribuisce soltanto al profilo finale.
      */
     public void registerChoice(
             ProfileTrait trait
@@ -88,64 +63,32 @@ public final class DarkRoomController {
         );
     }
 
-    public void registerSuccess() {
-        outcomes.success();
-    }
-
-    public void registerWrong() {
-        outcomes.wrongCombination();
-    }
-
-    public void registerTimeout() {
-        outcomes.timeout();
-    }
-
-    public int successLucidityDelta() {
-        return DarkRoomOutcomeHandler.SUCCESS_LUCIDITY;
-    }
-
-    public int successStressDelta() {
-        return DarkRoomOutcomeHandler.SUCCESS_STRESS;
-    }
-
-    public boolean isDefeated() {
-        return game.isDefeated();
+    /**
+     * Consuma un tentativo per una combinazione errata o per il tempo scaduto.
+     */
+    public void registerFailedAttempt() {
+        game.loseAttempt();
     }
 
     /**
-     * Ripristina corpo e statistiche mentali al checkpoint.
-     *
-     * I tratti già registrati non vengono cancellati, perché le domande
-     * del piano non vengono ripetute durante il retry dello stesso piano.
+     * @return {@code true} se restano tentativi per riprovare la serratura
      */
-    public void restoreCheckpoint() {
-        mind.restoreStats(
-                checkpointLucidita,
-                checkpointStress
-        );
-
-        game.setPlayerHealth(
-                checkpointVita
-        );
+    public boolean canRetry() {
+        return game.hasAttemptsLeft();
     }
 
-    public int playerCurrentHealth() {
-        return game.getPlayerCurrentHealth();
+    /**
+     * Riporta i tentativi al massimo per ricominciare la prova da capo.
+     */
+    public void restartTrial() {
+        game.resetAttempts();
     }
 
-    public int playerMaxHealth() {
-        return game.getPlayerMaxHealth();
+    public int remainingAttempts() {
+        return game.getRemainingAttempts();
     }
 
-    public int lucidita() {
-        return mind.getLucidita();
-    }
-
-    public int stress() {
-        return mind.getStress();
-    }
-
-    public int mindMax() {
-        return MindState.MAX;
+    public int maxAttempts() {
+        return game.getMaxAttempts();
     }
 }

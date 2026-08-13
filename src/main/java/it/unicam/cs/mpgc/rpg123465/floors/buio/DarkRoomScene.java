@@ -193,7 +193,6 @@ public class DarkRoomScene implements FloorScene {
         );
 
         if (!entered) {
-            controller.enter();
             prepareDilemmas();
             entered = true;
         }
@@ -523,10 +522,10 @@ public class DarkRoomScene implements FloorScene {
         );
 
         /*
-         * Il close-up copre l'intera scena: senza questo, Vita, Lucidità,
-         * Stress, Salva ed Esci sparirebbero proprio dove il giocatore passa
-         * più tempo. Il primo piano resta comunque utilizzabile, perché la
-         * barra occupa solo la fascia superiore.
+         * Il close-up copre l'intera scena: senza questo, i tentativi, Salva
+         * ed Esci sparirebbero proprio dove il giocatore passa più tempo.
+         * Il primo piano resta comunque utilizzabile, perché la barra occupa
+         * solo la fascia superiore.
          */
         headerView.toFront();
     }
@@ -604,8 +603,6 @@ public class DarkRoomScene implements FloorScene {
                 0.7
         );
 
-        controller.registerSuccess();
-
         updateHeader();
         showSuccessResult();
     }
@@ -623,18 +620,6 @@ public class DarkRoomScene implements FloorScene {
                 SceneFx.paragraph(
                         room.outro()
                 );
-
-        Label effects =
-                new Label(
-                        formatEffects(
-                                controller.successLucidityDelta(),
-                                controller.successStressDelta()
-                        )
-                );
-
-        effects.getStyleClass().add(
-                "fear-effects"
-        );
 
         Button next =
                 new Button(
@@ -657,7 +642,6 @@ public class DarkRoomScene implements FloorScene {
                 new VBox(
                         24,
                         result,
-                        effects,
                         next
                 );
 
@@ -708,10 +692,7 @@ public class DarkRoomScene implements FloorScene {
                 0.35
         );
 
-        controller.registerWrong();
-        updateHeader();
-
-        showInterlude(
+        failAttempt(
                 room.wrongText()
         );
     }
@@ -728,66 +709,140 @@ public class DarkRoomScene implements FloorScene {
             closeup.close();
         }
 
-        controller.registerTimeout();
-        updateHeader();
-
-        showInterlude(
+        failAttempt(
                 room.timeoutText()
         );
+    }
+
+    /**
+     * Registra un errore grave e decide come prosegue la prova.
+     *
+     * Finché restano tentativi si torna alla serratura dopo un breve
+     * interludio; esauriti, la prova è fallita e va ricominciata da capo.
+     */
+    private void failAttempt(
+            String message
+    ) {
+        controller.registerFailedAttempt();
+        updateHeader();
+
+        if (controller.canRetry()) {
+            showInterlude(
+                    message
+            );
+        } else {
+            showTrialFailed(
+                    message
+            );
+        }
     }
 
     private void showInterlude(
             String message
     ) {
-        String note = null;
-
-        if (controller.isDefeated()) {
-            controller.restoreCheckpoint();
-            updateHeader();
-
-            note =
-                    "La Torre ti ha sopraffatto. "
-                            + "Ti risvegli sulla soglia "
-                            + "e provi ancora.";
-        }
-
         stopInterlude();
 
         interlude = SceneFx.interlude(
                 root,
                 message,
-                note,
-                note != null
-                        ? 3.4
-                        : 2.8,
+                attemptsNote(),
+                3.4,
                 this::startAttempt
         );
 
         headerView.toFront();
     }
 
-    private String formatEffects(
-            int lucidityDelta,
-            int stressDelta
-    ) {
-        return "Lucidità "
-                + signed(
-                        lucidityDelta
-                )
-                + "     ·     Stress "
-                + signed(
-                        stressDelta
-                );
+    private String attemptsNote() {
+        int left =
+                controller.remainingAttempts();
+
+        return left == 1
+                ? "Ti resta un tentativo."
+                : "Ti restano " + left + " tentativi.";
     }
 
-    private String signed(
-            int value
+    /**
+     * Tentativi esauriti: la prova ricomincia con i tentativi al massimo.
+     *
+     * Le risposte gia' date restano registrate e le domande non vengono
+     * riproposte, quindi ricominciare non altera il profilo.
+     */
+    private void showTrialFailed(
+            String message
     ) {
-        return value > 0
-                ? "+" + value
-                : Integer.toString(
-                        value
+        StackPane overlay =
+                new StackPane(
+                        SceneFx.veil(
+                                root,
+                                0.86
+                        )
                 );
+
+        Label heading =
+                new Label(
+                        "Prova fallita"
+                );
+
+        heading.getStyleClass().add(
+                "fear-title"
+        );
+
+        Button again =
+                new Button(
+                        "Ricomincia la prova"
+                );
+
+        again.getStyleClass().add(
+                "menu-button"
+        );
+
+        again.setOnAction(event -> {
+            root.getChildren().remove(
+                    overlay
+            );
+
+            controller.restartTrial();
+            updateHeader();
+            startAttempt();
+        });
+
+        VBox panel =
+                new VBox(
+                        24,
+                        heading,
+                        SceneFx.paragraph(
+                                message
+                        ),
+                        again
+                );
+
+        panel.setAlignment(
+                Pos.CENTER
+        );
+
+        panel.setMaxWidth(
+                780
+        );
+
+        panel.getStyleClass().add(
+                "fear-panel"
+        );
+
+        overlay.getChildren().add(
+                panel
+        );
+
+        StackPane.setAlignment(
+                panel,
+                Pos.CENTER
+        );
+
+        root.getChildren().add(
+                overlay
+        );
+
+        headerView.toFront();
     }
 
     private void startClock() {
@@ -843,19 +898,9 @@ public class DarkRoomScene implements FloorScene {
     }
 
     private void updateHeader() {
-        header.setVita(
-                controller.playerCurrentHealth(),
-                controller.playerMaxHealth()
-        );
-
-        header.setLucidita(
-                controller.lucidita(),
-                controller.mindMax()
-        );
-
-        header.setStress(
-                controller.stress(),
-                controller.mindMax()
+        header.setTentativi(
+                controller.remainingAttempts(),
+                controller.maxAttempts()
         );
     }
 

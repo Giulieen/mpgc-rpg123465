@@ -32,7 +32,6 @@ public final class EncounterFloors {
                 "Piano I — I Topi",
                 "/images/scenes/floor1-topi.jpg",
                 dilemma.question(),
-                45,
                 List.of(
                         new FearChoice(
                                 dilemma.first().text(),

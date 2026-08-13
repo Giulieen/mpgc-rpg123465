@@ -10,14 +10,12 @@ import java.util.List;
  * @param title titolo del piano
  * @param backgroundResource immagine di sfondo nel classpath
  * @param situation domanda mostrata al giocatore
- * @param initialStress stress applicato entrando nel piano
  * @param choices le due risposte disponibili
  */
 public record FearEncounter(
         String title,
         String backgroundResource,
         String situation,
-        int initialStress,
         List<FearChoice> choices
 ) implements FloorContent {
 
@@ -37,12 +35,6 @@ public record FearEncounter(
         if (situation == null || situation.isBlank()) {
             throw new IllegalArgumentException(
                     "La domanda non può essere vuota."
-            );
-        }
-
-        if (initialStress < 0) {
-            throw new IllegalArgumentException(
-                    "Lo stress iniziale non può essere negativo."
             );
         }
 

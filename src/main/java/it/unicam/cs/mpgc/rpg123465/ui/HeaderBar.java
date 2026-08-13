@@ -11,18 +11,25 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Barra di stato sempre visibile in cima alle schermate di gioco: nome del
- * giocatore, vita, lucidità, stress e prova in corso.
+ * giocatore, tentativi rimasti e prova in corso, più i comandi per salvare e
+ * uscire.
  */
 public class HeaderBar {
 
     private static final Color ICON_COLOR = Color.web("#d8c07a");
+    private static final Color SPENT_COLOR = Color.rgb(255, 255, 255, 0.18);
     private static final int ICON_SIZE = 20;
+    private static final int ATTEMPT_ICON_SIZE = 18;
 
     private final Label nameValue = new Label();
-    private final Label vitaValue = new Label();
-    private final Label lucidValue = new Label();
-    private final Label stressValue = new Label();
     private final Label provaValue = new Label();
+
+    /**
+     * Le losanghe dei tentativi: accese quelle disponibili, spente le altre.
+     * Mostrarli come simboli invece che come numero rende leggibile a colpo
+     * d'occhio quanto manca alla fine della prova.
+     */
+    private final HBox attemptIcons = new HBox(6);
 
     private final Runnable onSave;
     private final Runnable onExit;
@@ -57,12 +64,12 @@ public class HeaderBar {
      * @return la barra, da allineare in cima alla schermata
      */
     public Region createView() {
+        attemptIcons.setAlignment(Pos.CENTER_LEFT);
+
         HBox bar = new HBox(
                 30,
                 item("mdi2a-account", nameValue),
-                item("mdi2h-heart", vitaValue),
-                item("mdi2b-brain", lucidValue),
-                item("mdi2l-lightning-bolt", stressValue),
+                attemptsGroup(),
                 spacer(),
                 item("mdi2b-book-open-variant", provaValue)
         );
@@ -88,20 +95,34 @@ public class HeaderBar {
         return bar;
     }
 
-    public void setVita(int current, int max) {
-        vitaValue.setText(current + " / " + max);
-    }
+    /**
+     * Aggiorna i tentativi mostrati.
+     *
+     * @param remaining tentativi ancora disponibili
+     * @param max tentativi concessi all'ingresso del piano
+     */
+    public void setTentativi(int remaining, int max) {
+        attemptIcons.getChildren().clear();
 
-    public void setLucidita(int current, int max) {
-        lucidValue.setText(current + " / " + max);
-    }
-
-    public void setStress(int current, int max) {
-        stressValue.setText(current + " / " + max);
+        for (int i = 0; i < max; i++) {
+            FontIcon icon = new FontIcon("mdi2r-rhombus");
+            icon.setIconSize(ATTEMPT_ICON_SIZE);
+            icon.setIconColor(i < remaining ? ICON_COLOR : SPENT_COLOR);
+            attemptIcons.getChildren().add(icon);
+        }
     }
 
     public void setProva(String text) {
         provaValue.setText(text);
+    }
+
+    private HBox attemptsGroup() {
+        Label caption = new Label("Tentativi");
+        caption.getStyleClass().add("header-value");
+
+        HBox box = new HBox(8, caption, attemptIcons);
+        box.setAlignment(Pos.CENTER_LEFT);
+        return box;
     }
 
     private HBox item(String iconLiteral, Label value) {

@@ -6,20 +6,28 @@ import java.io.Serializable;
 
 /**
  * Rappresenta i dati di una partita salvata.
+ *
+ * <p>
+ * Un salvataggio fotografa l'<em>ingresso</em> di un piano, non un momento
+ * qualsiasi: contiene quindi il piano raggiunto e le risposte date fino a lì.
+ * I tentativi non ci sono perché all'ingresso di un piano sono per definizione
+ * al massimo, e ricalcolarli è più sicuro che conservarli.
  */
 public class GameSave implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    /*
+     * Il formato è cambiato con la rimozione di Vita, Lucidità e Stress:
+     * i salvataggi precedenti non sono compatibili.
+     */
+    private static final long serialVersionUID = 3L;
 
     private final String playerName;
     private final int currentFloor;
-    private final int currentHealth;
     private final boolean gameCompleted;
 
     /**
-     * Stato interiore del giocatore: Lucidità, Stress e la memoria di come ha
-     * reagito alle paure. Senza questo, ricaricando una partita si perderebbe
-     * il percorso da cui nasce l'alter ego finale.
+     * Le risposte ai dilemmi date fino all'ingresso di questo piano. Senza,
+     * ricaricando si perderebbe il percorso da cui nasce il profilo finale.
      */
     private final MindState mindState;
 
@@ -28,19 +36,16 @@ public class GameSave implements Serializable {
      *
      * @param playerName nome del giocatore
      * @param currentFloor piano corrente
-     * @param currentHealth punti vita correnti
      * @param gameCompleted indica se la partita è stata completata
-     * @param mindState stato interiore del giocatore
+     * @param mindState risposte registrate fino all'ingresso del piano
      */
     public GameSave(String playerName,
                     int currentFloor,
-                    int currentHealth,
                     boolean gameCompleted,
                     MindState mindState) {
 
         this.playerName = playerName;
         this.currentFloor = currentFloor;
-        this.currentHealth = currentHealth;
         this.gameCompleted = gameCompleted;
         this.mindState = mindState;
     }
@@ -53,17 +58,12 @@ public class GameSave implements Serializable {
         return currentFloor;
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
     public boolean isGameCompleted() {
         return gameCompleted;
     }
 
     /**
-     * @return lo stato interiore salvato, oppure {@code null} se il
-     *         salvataggio proviene da una versione precedente del gioco
+     * @return le risposte registrate al momento del salvataggio
      */
     public MindState getMindState() {
         return mindState;

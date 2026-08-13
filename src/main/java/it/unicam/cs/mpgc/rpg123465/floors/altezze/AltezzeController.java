@@ -7,25 +7,15 @@ import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
 /**
  * Controller del Piano III — Le Altezze.
  *
- * Gestisce le conseguenze della traversata sul giocatore mantenendo
- * separata la logica di dominio dalla rappresentazione JavaFX.
+ * <p>
+ * Tiene le conseguenze della traversata separate dalla rappresentazione
+ * JavaFX. Gli errori sulle frecce restano interni alla scena, che li conta
+ * come punti equilibrio: solo la caduta costa un tentativo.
  */
 public final class AltezzeController {
 
-    private static final int FALL_DAMAGE = 15;
-    private static final int FALL_LUCIDITY = -6;
-    private static final int FALL_STRESS = 22;
-
-    private static final int SUCCESS_LUCIDITY = 5;
-    private static final int SUCCESS_STRESS = -20;
-
-    private final AltitudeCrossing crossing;
     private final GameController game;
     private final MindState mind;
-
-    private int checkpointLucidita;
-    private int checkpointStress;
-    private int checkpointVita;
 
     /**
      * @param crossing contenuto del piano
@@ -42,33 +32,15 @@ public final class AltezzeController {
             );
         }
 
-        this.crossing = crossing;
         this.game = game;
         this.mind = game.getMind();
     }
 
     /**
-     * Entra nel piano e fissa il checkpoint.
-     */
-    public void enter() {
-        mind.enterRoom(
-                crossing.config().initialStress()
-        );
-
-        checkpointLucidita =
-                mind.getLucidita();
-
-        checkpointStress =
-                mind.getStress();
-
-        checkpointVita =
-                game.getPlayerCurrentHealth();
-    }
-
-    /**
      * Registra una risposta a un dilemma "Preferiresti".
      *
-     * Il tratto associato alla risposta resta nascosto al giocatore.
+     * Il tratto resta nascosto e non ha alcun effetto sulla traversata:
+     * contribuisce soltanto al profilo finale.
      *
      * @param trait tratto associato alla risposta
      */
@@ -81,76 +53,34 @@ public final class AltezzeController {
     }
 
     /**
-     * Registra la vittoria.
-     */
-    public void registerVictory() {
-        mind.harm(
-                SUCCESS_LUCIDITY,
-                SUCCESS_STRESS
-        );
-    }
-
-    /**
-     * Registra una caduta.
+     * Consuma un tentativo per una caduta nel vuoto.
+     *
+     * È l'unica penalità del piano: i singoli errori sulle frecce tolgono
+     * equilibrio, non tentativi.
      */
     public void registerFall() {
-        game.woundPlayer(
-                FALL_DAMAGE
-        );
-
-        mind.harm(
-                FALL_LUCIDITY,
-                FALL_STRESS
-        );
-    }
-
-    public int successLucidityDelta() {
-        return SUCCESS_LUCIDITY;
-    }
-
-    public int successStressDelta() {
-        return SUCCESS_STRESS;
-    }
-
-    public boolean isDefeated() {
-        return game.isDefeated();
+        game.loseAttempt();
     }
 
     /**
-     * Ripristina Vita, Lucidità e Stress al checkpoint.
-     *
-     * I tratti già registrati non vengono cancellati: in questo modo
-     * una domanda già risposta non viene conteggiata due volte dopo
-     * una caduta.
+     * @return {@code true} se restano tentativi per una nuova traversata
      */
-    public void restoreCheckpoint() {
-        mind.restoreStats(
-                checkpointLucidita,
-                checkpointStress
-        );
-
-        game.setPlayerHealth(
-                checkpointVita
-        );
+    public boolean canRetry() {
+        return game.hasAttemptsLeft();
     }
 
-    public int playerCurrentHealth() {
-        return game.getPlayerCurrentHealth();
+    /**
+     * Riporta i tentativi al massimo per ricominciare la prova da capo.
+     */
+    public void restartTrial() {
+        game.resetAttempts();
     }
 
-    public int playerMaxHealth() {
-        return game.getPlayerMaxHealth();
+    public int remainingAttempts() {
+        return game.getRemainingAttempts();
     }
 
-    public int lucidita() {
-        return mind.getLucidita();
-    }
-
-    public int stress() {
-        return mind.getStress();
-    }
-
-    public int mindMax() {
-        return MindState.MAX;
+    public int maxAttempts() {
+        return game.getMaxAttempts();
     }
 }

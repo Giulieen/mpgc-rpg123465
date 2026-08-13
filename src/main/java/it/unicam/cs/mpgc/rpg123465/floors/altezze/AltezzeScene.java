@@ -211,7 +211,6 @@ public class AltezzeScene implements FloorScene {
         );
 
         if (!entered) {
-            controller.enter();
             prepareDilemmas();
             entered = true;
         }
@@ -1033,8 +1032,6 @@ public class AltezzeScene implements FloorScene {
                 0.7
         );
 
-        controller.registerVictory();
-
         AltezzeRecord.save(
                 best
         );
@@ -1051,21 +1048,6 @@ public class AltezzeScene implements FloorScene {
         message
                 .append(
                         crossing.victory()
-                )
-                .append("\n\n")
-                .append("Lucidità ")
-                .append(
-                        signed(
-                                controller
-                                        .successLucidityDelta()
-                        )
-                )
-                .append("   ·   Stress ")
-                .append(
-                        signed(
-                                controller
-                                        .successStressDelta()
-                        )
                 )
                 .append("\n\n")
                 .append("Punteggio: ")
@@ -1145,16 +1127,13 @@ public class AltezzeScene implements FloorScene {
                 best
         );
 
+        boolean canRetry =
+                controller.canRetry();
+
         String note =
-                "";
-
-        if (controller.isDefeated()) {
-            controller.restoreCheckpoint();
-
-            note =
-                    "\n\nLa Torre ti ha sopraffatto: "
-                            + "ricominci dalla soglia.";
-        }
+                canRetry
+                        ? "\n\n" + attemptsNote()
+                        : "\n\nTentativi esauriti: la prova ricomincia da capo.";
 
         updateHeader();
 
@@ -1205,15 +1184,42 @@ public class AltezzeScene implements FloorScene {
                             );
 
                     showOverlay(
-                            "GAME OVER",
+                            canRetry
+                                    ? "Sei caduto"
+                                    : "Prova fallita",
                             message,
-                            "Ricomincia",
-                            this::restartLevel
+                            canRetry
+                                    ? "Riprova"
+                                    : "Ricomincia la prova",
+                            canRetry
+                                    ? this::restartLevel
+                                    : this::restartTrial
                     );
                 }
         );
 
         drop.play();
+    }
+
+    /**
+     * Tentativi esauriti: si riparte con i tentativi al massimo.
+     *
+     * Le domande già risposte non vengono riproposte, quindi ricominciare
+     * non altera il profilo.
+     */
+    private void restartTrial() {
+        controller.restartTrial();
+        updateHeader();
+        restartLevel();
+    }
+
+    private String attemptsNote() {
+        int left =
+                controller.remainingAttempts();
+
+        return left == 1
+                ? "Ti resta un tentativo."
+                : "Ti restano " + left + " tentativi.";
     }
 
     private void restartLevel() {
@@ -1388,19 +1394,9 @@ public class AltezzeScene implements FloorScene {
     }
 
     private void updateHeader() {
-        header.setVita(
-                controller.playerCurrentHealth(),
-                controller.playerMaxHealth()
-        );
-
-        header.setLucidita(
-                controller.lucidita(),
-                controller.mindMax()
-        );
-
-        header.setStress(
-                controller.stress(),
-                controller.mindMax()
+        header.setTentativi(
+                controller.remainingAttempts(),
+                controller.maxAttempts()
         );
     }
 
@@ -1499,16 +1495,6 @@ public class AltezzeScene implements FloorScene {
                 );
 
         overlay = null;
-    }
-
-    private String signed(
-            int value
-    ) {
-        return value > 0
-                ? "+" + value
-                : Integer.toString(
-                        value
-                );
     }
 
     // ---------------------------------------------------------------------

@@ -23,8 +23,8 @@ public class GameController {
      * Snapshot dello stato prima di entrare nel piano corrente.
      *
      * Salvare durante un minigioco significa salvare questo checkpoint:
-     * ricaricando si riparte dall'inizio dello stesso piano, senza duplicare
-     * Stress d'ingresso o scelte narrative.
+     * ricaricando si riparte dall'inizio dello stesso piano, senza contare
+     * due volte le risposte già date su quel piano.
      */
     private GameSave floorCheckpoint;
 
@@ -54,7 +54,6 @@ public class GameController {
     }
 
     public void climbToNextFloor() {
-        player().getMind().rest();
         gameEngine.climb();
         floorCheckpoint = null;
     }
@@ -71,25 +70,11 @@ public class GameController {
        return player().getMind().profile();
     }
 
-    public int getPlayerCurrentHealth() {
-        return player().getStats().getCurrentHealth();
-    }
-
-    public int getPlayerMaxHealth() {
-        return player().getStats().getMaxHealth();
-    }
-
-    public void woundPlayer(int damage) {
-        player().takeDamage(damage);
-    }
-
-    public void setPlayerHealth(int value) {
-        player().getStats().setCurrentHealth(value);
-    }
-
+    /**
+     * @return {@code true} se la prova corrente è fallita per tentativi esauriti
+     */
     public boolean isDefeated() {
-        return !player().isAlive()
-                || player().getMind().isSopraffatto();
+        return !hasAttemptsLeft();
     }
 
     /**
@@ -134,8 +119,8 @@ public class GameController {
     /**
      * Fissa il punto di ripresa del piano corrente.
      *
-     * Va chiamato prima di creare la scena del piano, quindi prima che
-     * enterRoom() o una scelta possano modificare il giocatore.
+     * Va chiamato prima di creare la scena del piano, quindi prima che una
+     * risposta a un dilemma possa entrare nel conteggio dei tratti.
      */
     public void beginFloorCheckpoint() {
         floorCheckpoint = snapshotCurrentState();
@@ -176,10 +161,6 @@ public class GameController {
             );
 
             loadedEngine.getPlayer()
-                    .getStats()
-                    .setCurrentHealth(save.getCurrentHealth());
-
-            loadedEngine.getPlayer()
                     .getMind()
                     .restoreFrom(save.getMindState());
 
@@ -205,7 +186,6 @@ public class GameController {
         return new GameSave(
                 player().getName(),
                 gameEngine.getCurrentFloorIndex(),
-                player().getStats().getCurrentHealth(),
                 gameEngine.isGameCompleted(),
                 player().getMind().copy()
         );

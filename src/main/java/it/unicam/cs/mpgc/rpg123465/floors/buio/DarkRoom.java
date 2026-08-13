@@ -13,9 +13,8 @@ import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
  * alla porta.
  *
  * <p>
- * Il contenuto conserva i testi e i parametri del puzzle; le conseguenze
- * delle azioni e la registrazione dell'atteggiamento appartengono al
- * controller del piano.
+ * Il contenuto conserva soltanto i testi e i parametri del puzzle: le regole
+ * della prova appartengono al controller del piano.
  *
  * @param title titolo del piano
  * @param backgroundResource immagine della stanza
@@ -25,7 +24,6 @@ import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
  * @param timeoutText testo mostrato allo scadere del tempo
  * @param combination combinazione corretta
  * @param seconds secondi disponibili
- * @param initialStress stress provocato entrando nella stanza
  */
 public record DarkRoom(
         String title,
@@ -35,8 +33,7 @@ public record DarkRoom(
         String wrongText,
         String timeoutText,
         String combination,
-        int seconds,
-        int initialStress
+        int seconds
 ) implements FloorContent {
 
     /**
@@ -66,12 +63,6 @@ public record DarkRoom(
         if (seconds <= 0) {
             throw new IllegalArgumentException(
                     "Il tempo deve essere positivo."
-            );
-        }
-
-        if (initialStress < 0) {
-            throw new IllegalArgumentException(
-                    "Lo stress iniziale non può essere negativo."
             );
         }
     }

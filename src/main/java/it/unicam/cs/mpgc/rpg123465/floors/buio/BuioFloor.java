@@ -34,8 +34,7 @@ public final class BuioFloor {
                         + "La serratura si blocca, ma le pareti restano dove sono.",
 
                 "3524",
-                60,
-                40
+                60
         );
     }
 }

@@ -16,7 +16,6 @@ import java.util.List;
  *                              fino a questa frazione (es. 0.85)
  * @param bridges               i tre ponti: sinistra (0), centro (1), destra (2)
  * @param manualRoute           sequenza fissa di destinazioni per test, o {@code null}
- * @param initialStress         tensione all'ingresso
  */
 public record AltezzeConfig(
         int totalSeconds,
@@ -26,8 +25,7 @@ public record AltezzeConfig(
         double endgameIntervalFactor,
         double endgameResponseFactor,
         List<BridgeSpec> bridges,
-        int[] manualRoute,
-        int initialStress) {
+        int[] manualRoute) {
 
     public AltezzeConfig {
         if (totalSeconds <= 0 || balancePoints <= 0) {
@@ -63,7 +61,6 @@ public record AltezzeConfig(
                         new BridgeSpec(BridgeType.SAFE, "sicuro",
                                 "Largo e lento — reagisci con calma, ma il tempo scorre.",
                                 1400, 1700, 0.5)),
-                null,
-                40);
+                null);
     }
 }

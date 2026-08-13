@@ -2,7 +2,6 @@ package it.unicam.cs.mpgc.rpg123465.engine;
 
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
-import it.unicam.cs.mpgc.rpg123465.domain.Stats;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 import it.unicam.cs.mpgc.rpg123465.floors.altezze.AltezzeFloors;
 import it.unicam.cs.mpgc.rpg123465.floors.buio.BuioFloor;
@@ -20,7 +19,6 @@ import java.util.List;
 public final class GameFactory {
 
     private static final String DEFAULT_PLAYER_NAME = "Viaggiatore";
-    private static final int DEFAULT_MAX_HEALTH = 100;
 
     private GameFactory() {
         // Impedisce l'istanziazione.
@@ -47,10 +45,7 @@ public final class GameFactory {
                 ? DEFAULT_PLAYER_NAME
                 : playerName.trim();
 
-        Player player = new Player(
-                name,
-                new Stats(DEFAULT_MAX_HEALTH)
-        );
+        Player player = new Player(name);
 
         return new GameEngine(
                 player,
