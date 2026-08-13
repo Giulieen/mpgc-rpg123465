@@ -1,6 +1,8 @@
 package it.unicam.cs.mpgc.rpg123465.ui.support;
 
 import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -46,6 +48,40 @@ public final class DilemmaPrompt {
 
     private DilemmaPrompt() {
         // Solo metodi statici.
+    }
+
+    /**
+     * Traduce le due risposte di un dilemma nelle opzioni dell'overlay.
+     *
+     * @param dilemma dilemma da mostrare
+     * @return le due risposte, nell'ordine del dilemma
+     */
+    public static List<Option> optionsOf(
+            Dilemma dilemma
+    ) {
+        if (dilemma == null) {
+            throw new IllegalArgumentException(
+                    "Il dilemma non può essere null."
+            );
+        }
+
+        return List.of(
+                toOption(
+                        dilemma.first()
+                ),
+                toOption(
+                        dilemma.second()
+                )
+        );
+    }
+
+    private static Option toOption(
+            DilemmaOption option
+    ) {
+        return new Option(
+                option.text(),
+                option.trait()
+        );
     }
 
     /**
