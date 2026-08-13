@@ -24,11 +24,13 @@ import javafx.scene.shape.Rectangle;
 import java.util.function.Consumer;
 
 /**
- * Scena del Piano I.
+ * Prima fase del Piano I: il dilemma.
  *
- * Mostra un dilemma "Preferiresti" con due sole risposte.
- * Il tratto associato alla risposta viene registrato internamente,
- * senza essere mostrato al giocatore.
+ * <p>
+ * Mostra una domanda "Preferiresti" con due sole risposte e registra il tratto
+ * associato, che resta invisibile al giocatore. Data la risposta, introduce la
+ * prova e cede il passo alla stanza dei Topi: il dilemma vale una sola volta,
+ * mentre la prova si puo' ripetere.
  */
 public class FearEncounterScreen implements FloorScene {
 
@@ -279,10 +281,52 @@ public class FearEncounterScreen implements FloorScene {
         );
 
         updateHeader();
-        cleanup();
+        showBriefing();
+    }
 
-        onFinished.accept(
-                SceneOutcome.AVANTI
+    /**
+     * Annuncia la prova che segue.
+     *
+     * La scelta e' gia' stata registrata: da qui in poi il Piano I non tocca
+     * piu' il profilo, qualunque cosa succeda nel labirinto.
+     */
+    private void showBriefing() {
+        Label heading =
+                new Label(
+                        "La Torre ha raccolto la tua scelta."
+                );
+
+        heading.getStyleClass().add(
+                "fear-title"
+        );
+
+        Button enter =
+                new Button(
+                        "Entra nel labirinto"
+                );
+
+        enter.getStyleClass().add(
+                "menu-button"
+        );
+
+        enter.setOnAction(event -> {
+            cleanup();
+
+            onFinished.accept(
+                    SceneOutcome.AVANTI
+            );
+        });
+
+        showCenter(
+                panel(
+                        heading,
+                        SceneFx.paragraph(
+                                "Un rumore crescente sale dalle pareti: "
+                                        + "le tane si stanno aprendo.\n\n"
+                                        + "Non lasciare che i topi raggiungano le uscite."
+                        ),
+                        enter
+                )
         );
     }
 
