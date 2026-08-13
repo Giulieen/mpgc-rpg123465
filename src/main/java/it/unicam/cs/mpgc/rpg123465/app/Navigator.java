@@ -6,7 +6,9 @@ import it.unicam.cs.mpgc.rpg123465.controller.OperationResult;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.persistence.FileRecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
+import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
 import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
@@ -23,6 +25,18 @@ public final class Navigator {
 
     private static final String SAVE_PATH =
             "saves/save.dat";
+
+    private static final String RECORDS_PATH =
+            "saves/records.properties";
+
+    /**
+     * I record sopravvivono alle partite: uno solo per tutta l'applicazione,
+     * creato all'avvio e non insieme al salvataggio.
+     */
+    private final RecordStore records =
+            new FileRecordStore(
+                    RECORDS_PATH
+            );
 
     private final Scene scene;
 
@@ -147,6 +161,7 @@ public final class Navigator {
         FloorSceneFactory scenes =
                 new FloorSceneFactory(
                         controller,
+                        records,
                         () -> showSaveResult(
                                 controller
                         ),

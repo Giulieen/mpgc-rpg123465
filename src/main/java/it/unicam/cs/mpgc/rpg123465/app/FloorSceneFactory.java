@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg123465.floors.buio.DarkRoom;
 import it.unicam.cs.mpgc.rpg123465.floors.buio.DarkRoomScene;
 import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounterScreen;
+import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 
 import java.util.List;
@@ -18,21 +19,24 @@ import java.util.List;
 public final class FloorSceneFactory {
 
     private final GameController controller;
+    private final RecordStore records;
     private final Runnable onSave;
     private final Runnable onExit;
 
     public FloorSceneFactory(
             GameController controller,
+            RecordStore records,
             Runnable onSave,
             Runnable onExit
     ) {
-        if (controller == null) {
+        if (controller == null || records == null) {
             throw new IllegalArgumentException(
-                    "Il controller non può essere null."
+                    "Il controller e l'archivio dei record non possono essere null."
             );
         }
 
         this.controller = controller;
+        this.records = records;
         this.onSave = onSave;
         this.onExit = onExit;
     }
@@ -54,6 +58,7 @@ public final class FloorSceneFactory {
                     new DarkRoomScene(
                             room,
                             controller,
+                            records,
                             onSave,
                             onExit
                     )
@@ -65,6 +70,7 @@ public final class FloorSceneFactory {
                     new AltezzeScene(
                             crossing,
                             controller,
+                            records,
                             onSave,
                             onExit
                     )

@@ -2,6 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.floors.buio;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
+import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
 import it.unicam.cs.mpgc.rpg123465.questions.Questions;
@@ -29,6 +30,7 @@ import javafx.scene.shape.Rectangle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 /**
@@ -48,8 +50,12 @@ public class DarkRoomScene implements FloorScene {
     private static final int SECOND_DILEMMA_AT = 40;
     private static final int THIRD_DILEMMA_AT = 20;
 
+    /** Identifica il record del piano nell'archivio condiviso. */
+    private static final String RECORD_KEY = "buio.tempo";
+
     private final DarkRoom room;
     private final DarkRoomController controller;
+    private final RecordStore records;
     private final HeaderBar header;
     private final Runnable onSave;
     private final Runnable onExit;
@@ -104,42 +110,19 @@ public class DarkRoomScene implements FloorScene {
 
     public DarkRoomScene(
             DarkRoom room,
-            GameController game
-    ) {
-        this(
-                room,
-                game,
-                null,
-                null
-        );
-    }
-
-    public DarkRoomScene(
-            DarkRoom room,
             GameController game,
-            Runnable onSave
-    ) {
-        this(
-                room,
-                game,
-                onSave,
-                null
-        );
-    }
-
-    public DarkRoomScene(
-            DarkRoom room,
-            GameController game,
+            RecordStore records,
             Runnable onSave,
             Runnable onExit
     ) {
-        if (room == null || game == null) {
+        if (room == null || game == null || records == null) {
             throw new IllegalArgumentException(
                     "Gli argomenti non possono essere null."
             );
         }
 
         this.room = room;
+        this.records = records;
 
         this.controller =
                 new DarkRoomController(
@@ -590,6 +573,15 @@ public class DarkRoomScene implements FloorScene {
 
         resolved = true;
 
+        /*
+         * Il tempo va letto prima di fermare il clock, che azzera il residuo.
+         * Il conto alla rovescia resta la meccanica; il record misura invece
+         * quanto ci si è messi, dove più basso è meglio.
+         */
+        int elapsed =
+                room.seconds()
+                        - clock.remainingSeconds();
+
         clock.stop();
 
         if (closeup.isOpen()) {
@@ -604,10 +596,53 @@ public class DarkRoomScene implements FloorScene {
         );
 
         updateHeader();
-        showSuccessResult();
+        showSuccessResult(
+                elapsed,
+                submitRecord(elapsed)
+        );
     }
 
-    private void showSuccessResult() {
+    /**
+     * Conserva il tempo se ha battuto il record.
+     *
+     * @return il record da mostrare dopo questa prova
+     */
+    private int submitRecord(
+            int elapsed
+    ) {
+        OptionalInt previous =
+                records.best(
+                        RECORD_KEY
+                );
+
+        if (previous.isEmpty()
+                || elapsed < previous.getAsInt()) {
+
+            records.save(
+                    RECORD_KEY,
+                    elapsed
+            );
+
+            return elapsed;
+        }
+
+        return previous.getAsInt();
+    }
+
+    private String formatTime(
+            int seconds
+    ) {
+        return String.format(
+                "%02d:%02d",
+                seconds / 60,
+                seconds % 60
+        );
+    }
+
+    private void showSuccessResult(
+            int elapsed,
+            int record
+    ) {
         StackPane overlay =
                 new StackPane(
                         SceneFx.veil(
@@ -620,6 +655,18 @@ public class DarkRoomScene implements FloorScene {
                 SceneFx.paragraph(
                         room.outro()
                 );
+
+        Label times =
+                new Label(
+                        "Tempo: "
+                                + formatTime(elapsed)
+                                + "     ·     Record: "
+                                + formatTime(record)
+                );
+
+        times.getStyleClass().add(
+                "fear-effects"
+        );
 
         Button next =
                 new Button(
@@ -642,6 +689,7 @@ public class DarkRoomScene implements FloorScene {
                 new VBox(
                         24,
                         result,
+                        times,
                         next
                 );
 

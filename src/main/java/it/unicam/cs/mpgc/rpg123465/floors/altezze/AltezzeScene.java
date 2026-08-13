@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.floors.altezze;
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
+import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
 import it.unicam.cs.mpgc.rpg123465.questions.Questions;
@@ -37,6 +38,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -60,9 +62,13 @@ public class AltezzeScene implements FloorScene {
     private static final double MIN_INTERVAL = 230;
     private static final double MIN_RESPONSE = 350;
 
+    /** Identifica il record del piano nell'archivio condiviso. */
+    private static final String RECORD_KEY = "altezze.punteggio";
+
     private final AltitudeCrossing crossing;
     private final AltezzeConfig config;
     private final AltezzeController controller;
+    private final RecordStore records;
     private final HeaderBar header;
     private final Runnable onSave;
     private final Runnable onExit;
@@ -136,36 +142,12 @@ public class AltezzeScene implements FloorScene {
 
     public AltezzeScene(
             AltitudeCrossing crossing,
-            GameController game
-    ) {
-        this(
-                crossing,
-                game,
-                null,
-                null
-        );
-    }
-
-    public AltezzeScene(
-            AltitudeCrossing crossing,
             GameController game,
-            Runnable onSave
-    ) {
-        this(
-                crossing,
-                game,
-                onSave,
-                null
-        );
-    }
-
-    public AltezzeScene(
-            AltitudeCrossing crossing,
-            GameController game,
+            RecordStore records,
             Runnable onSave,
             Runnable onExit
     ) {
-        if (crossing == null || game == null) {
+        if (crossing == null || game == null || records == null) {
             throw new IllegalArgumentException(
                     "Gli argomenti non possono essere null."
             );
@@ -173,6 +155,7 @@ public class AltezzeScene implements FloorScene {
 
         this.crossing = crossing;
         this.config = crossing.config();
+        this.records = records;
         this.onSave = onSave;
         this.onExit = onExit;
 
@@ -216,7 +199,9 @@ public class AltezzeScene implements FloorScene {
         }
 
         best =
-                AltezzeRecord.load();
+                records.best(
+                        RECORD_KEY
+                ).orElse(0);
 
         headerView =
                 header.createView();
@@ -1032,13 +1017,33 @@ public class AltezzeScene implements FloorScene {
                 0.7
         );
 
-        AltezzeRecord.save(
-                best
-        );
+        submitRecord();
 
         updateHeader();
 
         showVictoryResult();
+    }
+
+    /**
+     * Conserva il punteggio se ha battuto il record.
+     *
+     * Qui più alto è meglio, al contrario del tempo del Piano II: è il piano
+     * a saperlo, non l'archivio.
+     */
+    private void submitRecord() {
+        OptionalInt previous =
+                records.best(
+                        RECORD_KEY
+                );
+
+        if (previous.isEmpty()
+                || best > previous.getAsInt()) {
+
+            records.save(
+                    RECORD_KEY,
+                    best
+            );
+        }
     }
 
     private void showVictoryResult() {
@@ -1123,9 +1128,7 @@ public class AltezzeScene implements FloorScene {
 
         controller.registerFall();
 
-        AltezzeRecord.save(
-                best
-        );
+        submitRecord();
 
         boolean canRetry =
                 controller.canRetry();
