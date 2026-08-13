@@ -32,12 +32,17 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Introduzione narrativa mostrata all'avvio di una nuova partita.
- * <p>
- * Si svolge in due momenti: il bosco che scorre mentre la storia si presenta,
- * e il cancello incatenato che il giocatore apre dopo aver trovato una chiave.
+ * Introduzione narrativa mostrata all'avvio di una nuova partita: il bosco che
+ * scorre, poi il cancello che il giocatore apre dopo aver raccolto la chiave.
  * Al termine invoca il callback che porta dentro la Torre.
+ * <p>
+ * Le animazioni a ciclo indefinito e gli ambienti sonori avviati qui non si
+ * fermano da soli: vengono conservati e chiusi in {@link #cleanup()} prima di
+ * cedere il controllo.
  */
 public class IntroScreen {
 
@@ -46,6 +51,14 @@ public class IntroScreen {
 
     private final Runnable onEnter;
     private final StackPane root = new StackPane();
+
+    /**
+     * Animazioni a ciclo indefinito avviate dalla schermata.
+     * <p>
+     * Le transizioni finite si esauriscono da sole; queste no, e continuerebbero
+     * a girare sul nodo della chiave anche dopo la sua rimozione dalla scena.
+     */
+    private final List<Animation> endlessAnimations = new ArrayList<>();
 
     /**
      * @param onEnter azione da eseguire quando il giocatore entra nella Torre
@@ -119,6 +132,11 @@ public class IntroScreen {
         Node key = keyGleam();
         key.setOnMouseClicked(event -> {
             Sound.play("/audio/padlock-unlock.mp3", 0.8);
+
+            // La chiave lascia la scena: le sue animazioni non hanno più un
+            // bersaglio visibile e vanno chiuse qui, non alla fine della scena.
+            stopEndlessAnimations();
+
             root.getChildren().remove(key);
             open.setDisable(false);
         });
@@ -176,8 +194,31 @@ public class IntroScreen {
         FadeTransition fade = new FadeTransition(Duration.millis(1000), root);
         fade.setFromValue(1);
         fade.setToValue(0);
-        fade.setOnFinished(event -> onEnter.run());
+
+        // Si chiude a dissolvenza finita e non prima, così il cigolio del
+        // cancello e gli ambienti accompagnano l'uscita invece di troncarla.
+        fade.setOnFinished(event -> {
+            cleanup();
+            onEnter.run();
+        });
+
         fade.play();
+    }
+
+    /**
+     * Chiude ciò che la schermata ha avviato e che non termina da solo.
+     * <p>
+     * È idempotente: le animazioni già ferme ignorano lo stop e la lista viene
+     * svuotata alla prima chiamata.
+     */
+    private void cleanup() {
+        stopEndlessAnimations();
+        Sound.stopAll();
+    }
+
+    private void stopEndlessAnimations() {
+        endlessAnimations.forEach(Animation::stop);
+        endlessAnimations.clear();
     }
 
     // --- Costruzione dei livelli e degli elementi --------------------------
@@ -246,7 +287,8 @@ public class IntroScreen {
         bob.setAutoReverse(true);
         bob.setCycleCount(Animation.INDEFINITE);
         bob.setInterpolator(Interpolator.EASE_BOTH);
-        bob.play();
+
+        playEndless(bob);
     }
 
     /** Ondeggia appena, come sospesa a un filo. */
@@ -257,6 +299,13 @@ public class IntroScreen {
         sway.setAutoReverse(true);
         sway.setCycleCount(Animation.INDEFINITE);
         sway.setInterpolator(Interpolator.EASE_BOTH);
-        sway.play();
+
+        playEndless(sway);
+    }
+
+    /** Avvia un'animazione senza fine, registrandola perché sia richiudibile. */
+    private void playEndless(Animation animation) {
+        endlessAnimations.add(animation);
+        animation.play();
     }
 }

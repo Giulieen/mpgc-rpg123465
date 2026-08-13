@@ -52,7 +52,22 @@ public class FileSaveManager implements SaveManager {
     public GameSave load() throws IOException, ClassNotFoundException {
         try (ObjectInputStream inputStream =
                      new ObjectInputStream(new FileInputStream(filePath))) {
-            return (GameSave) inputStream.readObject();
+
+            Object loaded = inputStream.readObject();
+
+            /*
+             * Un cast diretto solleverebbe ClassCastException, che è una
+             * RuntimeException e risalirebbe fino al gestore d'evento JavaFX
+             * senza che nessuno la traduca in un messaggio. Un file che si
+             * deserializza ma contiene altro è un errore di caricamento come
+             * gli altri, e va segnalato allo stesso modo.
+             */
+            if (!(loaded instanceof GameSave save)) {
+                throw new IOException(
+                        "Il file di salvataggio non contiene dati validi per il gioco.");
+            }
+
+            return save;
         }
     }
 

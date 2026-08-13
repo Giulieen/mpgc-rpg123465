@@ -19,7 +19,8 @@ public interface SaveManager {
      * Carica i dati della partita.
      *
      * @return dati della partita salvata
-     * @throws IOException se si verifica un errore durante il caricamento
+     * @throws IOException se il file è illeggibile, corrotto o non contiene un
+     *         salvataggio del gioco
      * @throws ClassNotFoundException se il file contiene dati non compatibili
      */
     GameSave load() throws IOException, ClassNotFoundException;

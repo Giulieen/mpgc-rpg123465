@@ -26,6 +26,13 @@ java {
     }
 }
 
+// I sorgenti contengono testi italiani accentati: senza questa riga
+// l'encoding dipenderebbe dalla codepage della macchina che compila,
+// e un disallineamento non produce errori ma stringhe illeggibili.
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 javafx {
     version = '21.0.2'
     modules = ['javafx.controls', 'javafx.media']
