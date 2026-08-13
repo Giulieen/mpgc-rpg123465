@@ -68,6 +68,20 @@ public class ScrollingBackground {
         Pane track = new Pane();
         Pane view = new Pane(track);
 
+        /*
+         * Le copie affiancate sporgono di tre schermate oltre il bordo, e un
+         * Pane deduce la propria dimensione preferita dai figli: senza questo
+         * lo sfondo direbbe di volere il quadruplo della larghezza disponibile.
+         * È decorazione stirata dal genitore, non deve chiedere spazio.
+         */
+        track.setMinSize(0, 0);
+        track.setPrefSize(0, 0);
+        track.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        view.setMinSize(0, 0);
+        view.setPrefSize(0, 0);
+        view.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
         for (int i = 0; i < TILES; i++) {
             ImageView tile = new ImageView(image);
 

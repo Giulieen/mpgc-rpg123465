@@ -100,6 +100,16 @@ public class FogOverlay {
         view.setBlendMode(BlendMode.SCREEN);
 
         /*
+         * La griglia 3x3 di copie sporge di due schermate oltre il bordo, e un
+         * Pane calcola la propria dimensione preferita dai figli: senza questo
+         * la nebbia direbbe di volere il triplo dello spazio disponibile, e chi
+         * la contiene si dimensionerebbe su quel numero. È decorazione stirata
+         * dal genitore: la sua preferenza non deve pesare su nessuno.
+         */
+        neutralSize(track);
+        neutralSize(view);
+
+        /*
          * Griglia 3x3 di copie specchiate:
          * nessuna giuntura visibile durante lo spostamento.
          */
@@ -178,6 +188,18 @@ public class FogOverlay {
         );
 
         return view;
+    }
+
+    /**
+     * Toglie un nodo dal calcolo delle dimensioni del genitore.
+     *
+     * Preferenza a zero perché non chieda spazio, massimo illimitato perché
+     * possa comunque riempire tutto quello che gli viene dato.
+     */
+    private static void neutralSize(Region region) {
+        region.setMinSize(0, 0);
+        region.setPrefSize(0, 0);
+        region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     /**
