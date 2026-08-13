@@ -5,7 +5,7 @@ import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
+import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
@@ -134,10 +134,10 @@ public class AltezzeScene implements FloorScene {
      * L'indice non viene azzerato dopo una caduta, così le risposte
      * non vengono conteggiate due volte nello stesso piano.
      */
-    private List<Dilemma> dilemmas =
-            List.of();
-
-    private int nextDilemmaIndex;
+    private DilemmaSequence dilemmas =
+            new DilemmaSequence(
+                    List.of()
+            );
 
     private boolean dilemmaOpen;
 
@@ -278,13 +278,13 @@ public class AltezzeScene implements FloorScene {
 
     private void prepareDilemmas() {
         dilemmas =
-                questions
-                        .randomQuestions(
-                                "altezze",
-                                4
-                        );
-
-        nextDilemmaIndex = 0;
+                new DilemmaSequence(
+                        questions
+                                .randomQuestions(
+                                        "altezze",
+                                        4
+                                )
+                );
     }
 
     /**
@@ -292,9 +292,7 @@ public class AltezzeScene implements FloorScene {
      * Il countdown resta fermo finché il giocatore non risponde.
      */
     private void showRerouteDilemma() {
-        if (nextDilemmaIndex
-                >= dilemmas.size()) {
-
+        if (!dilemmas.hasNext()) {
             proceedReroute();
             return;
         }
@@ -303,22 +301,21 @@ public class AltezzeScene implements FloorScene {
         clock.pause();
 
         Dilemma dilemma =
-                dilemmas.get(
-                        nextDilemmaIndex
-                );
+                dilemmas.current();
 
         DilemmaPrompt.show(
                 root,
                 dilemma.question(),
-                promptOptions(
+                DilemmaPrompt.optionsOf(
                         dilemma
                 ),
                 option -> {
-                    controller.registerChoice(
-                            option.trait()
-                    );
+                    if (dilemmas.resolve(dilemma)) {
+                        controller.registerChoice(
+                                option.trait()
+                        );
+                    }
 
-                    nextDilemmaIndex++;
                     dilemmaOpen = false;
 
                     updateHeader();
@@ -1281,8 +1278,8 @@ public class AltezzeScene implements FloorScene {
         startAmbience();
 
         /*
-         * nextDilemmaIndex non viene azzerato:
-         * le domande già risposte non vengono conteggiate di nuovo.
+         * La sequenza non viene ricreata: le domande già risposte non
+         * vengono conteggiate di nuovo.
          */
         toSelection();
     }
@@ -1624,28 +1621,6 @@ public class AltezzeScene implements FloorScene {
         if (transition != null) {
             transition.stop();
         }
-    }
-
-    private List<DilemmaPrompt.Option> promptOptions(
-            Dilemma dilemma
-    ) {
-        return List.of(
-                toPromptOption(
-                        dilemma.first()
-                ),
-                toPromptOption(
-                        dilemma.second()
-                )
-        );
-    }
-
-    private DilemmaPrompt.Option toPromptOption(
-            DilemmaOption option
-    ) {
-        return new DilemmaPrompt.Option(
-                option.text(),
-                option.trait()
-        );
     }
 }
 

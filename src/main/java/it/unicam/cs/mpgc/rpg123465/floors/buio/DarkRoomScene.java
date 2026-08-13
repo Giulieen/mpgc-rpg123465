@@ -4,7 +4,7 @@ import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
+import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
@@ -92,10 +92,10 @@ public class DarkRoomScene implements FloorScene {
     private boolean closeupOpen;
     private boolean entered;
 
-    private List<Dilemma> dilemmas =
-            List.of();
-
-    private int nextDilemmaIndex;
+    private DilemmaSequence dilemmas =
+            new DilemmaSequence(
+                    List.of()
+            );
 
     private boolean dilemmaOpen;
     private boolean successWaitingForDilemmas;
@@ -209,13 +209,13 @@ public class DarkRoomScene implements FloorScene {
      */
     private void prepareDilemmas() {
         dilemmas =
-                questions
-                        .randomQuestions(
-                                "buio",
-                                3
-                        );
-
-        nextDilemmaIndex = 0;
+                new DilemmaSequence(
+                        questions
+                                .randomQuestions(
+                                        "buio",
+                                        3
+                                )
+                );
     }
 
     private void showEntryDilemma() {
@@ -246,8 +246,7 @@ public class DarkRoomScene implements FloorScene {
             boolean pauseClock
     ) {
         if (dilemmaOpen
-                || nextDilemmaIndex
-                >= dilemmas.size()) {
+                || !dilemmas.hasNext()) {
 
             if (afterChoice != null) {
                 afterChoice.run();
@@ -263,22 +262,21 @@ public class DarkRoomScene implements FloorScene {
         dilemmaOpen = true;
 
         Dilemma dilemma =
-                dilemmas.get(
-                        nextDilemmaIndex
-                );
+                dilemmas.current();
 
         DilemmaPrompt.show(
                 root,
                 dilemma.question(),
-                promptOptions(
+                DilemmaPrompt.optionsOf(
                         dilemma
                 ),
                 option -> {
-                    controller.registerChoice(
-                            option.trait()
-                    );
+                    if (dilemmas.resolve(dilemma)) {
+                        controller.registerChoice(
+                                option.trait()
+                        );
+                    }
 
-                    nextDilemmaIndex++;
                     dilemmaOpen = false;
 
                     updateHeader();
@@ -542,8 +540,7 @@ public class DarkRoomScene implements FloorScene {
             closeup.close();
         }
 
-        if (nextDilemmaIndex
-                < dilemmas.size()) {
+        if (dilemmas.hasNext()) {
 
             successWaitingForDilemmas = true;
 
@@ -555,8 +552,7 @@ public class DarkRoomScene implements FloorScene {
     }
 
     private void showRemainingDilemmasBeforeSuccess() {
-        if (nextDilemmaIndex
-                >= dilemmas.size()) {
+        if (!dilemmas.hasNext()) {
 
             successWaitingForDilemmas = false;
             succeed();
@@ -927,7 +923,7 @@ public class DarkRoomScene implements FloorScene {
             return;
         }
 
-        if (nextDilemmaIndex == 1
+        if (dilemmas.resolvedCount() == 1
                 && remaining <= SECOND_DILEMMA_AT) {
 
             showNextDilemma(
@@ -938,7 +934,7 @@ public class DarkRoomScene implements FloorScene {
             return;
         }
 
-        if (nextDilemmaIndex == 2
+        if (dilemmas.resolvedCount() == 2
                 && remaining <= THIRD_DILEMMA_AT) {
 
             showNextDilemma(
@@ -1006,28 +1002,6 @@ public class DarkRoomScene implements FloorScene {
             interlude.stop();
             interlude = null;
         }
-    }
-
-    private List<DilemmaPrompt.Option> promptOptions(
-            Dilemma dilemma
-    ) {
-        return List.of(
-                toPromptOption(
-                        dilemma.first()
-                ),
-                toPromptOption(
-                        dilemma.second()
-                )
-        );
-    }
-
-    private DilemmaPrompt.Option toPromptOption(
-            DilemmaOption option
-    ) {
-        return new DilemmaPrompt.Option(
-                option.text(),
-                option.trait()
-        );
     }
 }
 
