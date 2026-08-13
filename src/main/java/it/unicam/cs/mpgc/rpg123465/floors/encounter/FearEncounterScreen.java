@@ -53,33 +53,8 @@ public class FearEncounterScreen implements FloorScene {
 
     public FearEncounterScreen(
             FearEncounter encounter,
-            GameController controller
-    ) {
-        this(
-                encounter,
-                controller,
-                null,
-                null
-        );
-    }
-
-    public FearEncounterScreen(
-            FearEncounter encounter,
             GameController controller,
-            Runnable onSave
-    ) {
-        this(
-                encounter,
-                controller,
-                onSave,
-                null
-        );
-    }
-
-    public FearEncounterScreen(
-            FearEncounter encounter,
-            GameController controller,
-            Runnable onSave,
+            Consumer<Runnable> onSave,
             Runnable onExit
     ) {
         if (encounter == null || controller == null) {
@@ -95,7 +70,10 @@ public class FearEncounterScreen implements FloorScene {
 
         this.header = new HeaderBar(
                 controller.getPlayerName(),
-                onSave,
+                onSave == null
+                        ? null
+                        // Il dilemma non ha nulla da fermare: niente da riprendere.
+                        : () -> onSave.accept(null),
                 onExit == null
                         ? null
                         : this::exitLevel

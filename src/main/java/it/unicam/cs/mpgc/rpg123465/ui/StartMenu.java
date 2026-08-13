@@ -19,14 +19,22 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class StartMenu {
 
-    private static final int MIN_NAME_LENGTH = 2;
+    private static final int MIN_NAME_LENGTH = 4;
     private static final int MAX_NAME_LENGTH = 20;
 
     private final Consumer<String> onNewGame;
     private final Runnable onLoadGame;
+
+    /**
+     * Dice se un nome è già stato usato su questa installazione.
+     *
+     * Il menu non sa dove sia scritto l'elenco: gli basta poter chiedere.
+     */
+    private final Predicate<String> nameTaken;
 
     private final TextField nameField =
             new TextField();
@@ -36,10 +44,12 @@ public class StartMenu {
 
     public StartMenu(
             Consumer<String> onNewGame,
-            Runnable onLoadGame
+            Runnable onLoadGame,
+            Predicate<String> nameTaken
     ) {
         if (onNewGame == null
-                || onLoadGame == null) {
+                || onLoadGame == null
+                || nameTaken == null) {
 
             throw new IllegalArgumentException(
                     "I callback non possono essere null."
@@ -48,6 +58,7 @@ public class StartMenu {
 
         this.onNewGame = onNewGame;
         this.onLoadGame = onLoadGame;
+        this.nameTaken = nameTaken;
     }
 
     public Parent createView() {
@@ -313,7 +324,9 @@ public class StartMenu {
         if (name.length()
                 < MIN_NAME_LENGTH) {
 
-            return "Il nome deve contenere almeno 2 caratteri.";
+            return "Il nome deve contenere almeno "
+                    + MIN_NAME_LENGTH
+                    + " caratteri.";
         }
 
         /*
@@ -327,6 +340,14 @@ public class StartMenu {
                 "[\\p{L}][\\p{L} '\\-]*"
         )) {
             return "Il nome può contenere solo lettere, spazi, apostrofi e trattini.";
+        }
+
+        /*
+         * Il confronto ignora maiuscole e spazi ai bordi: lo decide il registro,
+         * che è l'unico a sapere quali nomi sono già stati usati.
+         */
+        if (nameTaken.test(name)) {
+            return "Questo nome è già stato usato. Scegline un altro.";
         }
 
         return null;

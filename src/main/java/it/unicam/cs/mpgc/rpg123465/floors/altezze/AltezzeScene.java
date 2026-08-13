@@ -70,7 +70,7 @@ public class AltezzeScene implements FloorScene {
     private final AltezzeController controller;
     private final RecordStore records;
     private final HeaderBar header;
-    private final Runnable onSave;
+    private final Consumer<Runnable> onSave;
     private final Runnable onExit;
 
     private final StackPane root =
@@ -144,7 +144,7 @@ public class AltezzeScene implements FloorScene {
             AltitudeCrossing crossing,
             GameController game,
             RecordStore records,
-            Runnable onSave,
+            Consumer<Runnable> onSave,
             Runnable onExit
     ) {
         if (crossing == null || game == null || records == null) {
@@ -1547,10 +1547,7 @@ public class AltezzeScene implements FloorScene {
             advance.stop();
         }
 
-        try {
-            onSave.run();
-
-        } finally {
+        onSave.accept(() -> {
             if (advance != null) {
                 lastFrame = 0;
                 advance.start();
@@ -1563,7 +1560,7 @@ public class AltezzeScene implements FloorScene {
             if (clockRunning) {
                 clock.resume();
             }
-        }
+        });
     }
 
     private void pauseIfRunning(

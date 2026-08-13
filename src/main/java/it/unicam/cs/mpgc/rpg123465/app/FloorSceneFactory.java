@@ -13,6 +13,7 @@ import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Sceglie le scene con cui mostrare un piano a partire dal suo contenuto.
@@ -21,13 +22,13 @@ public final class FloorSceneFactory {
 
     private final GameController controller;
     private final RecordStore records;
-    private final Runnable onSave;
+    private final Consumer<Runnable> onSave;
     private final Runnable onExit;
 
     public FloorSceneFactory(
             GameController controller,
             RecordStore records,
-            Runnable onSave,
+            Consumer<Runnable> onSave,
             Runnable onExit
     ) {
         if (controller == null || records == null) {

@@ -57,7 +57,7 @@ public class DarkRoomScene implements FloorScene {
     private final DarkRoomController controller;
     private final RecordStore records;
     private final HeaderBar header;
-    private final Runnable onSave;
+    private final Consumer<Runnable> onSave;
     private final Runnable onExit;
 
     private final StackPane root =
@@ -112,7 +112,7 @@ public class DarkRoomScene implements FloorScene {
             DarkRoom room,
             GameController game,
             RecordStore records,
-            Runnable onSave,
+            Consumer<Runnable> onSave,
             Runnable onExit
     ) {
         if (room == null || game == null || records == null) {
@@ -966,14 +966,11 @@ public class DarkRoomScene implements FloorScene {
 
         clock.pause();
 
-        try {
-            onSave.run();
-
-        } finally {
+        onSave.accept(() -> {
             if (running) {
                 clock.resume();
             }
-        }
+        });
     }
 
     private void exitLevel() {

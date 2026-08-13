@@ -86,7 +86,7 @@ public final class RatMazeScene implements FloorScene {
     private final RatMazeController controller;
     private final MazeSprites sprites = MazeSprites.load();
     private final HeaderBar header;
-    private final Runnable onSave;
+    private final Consumer<Runnable> onSave;
     private final Runnable onExit;
     private final Random rng = new Random();
 
@@ -150,7 +150,7 @@ public final class RatMazeScene implements FloorScene {
     public RatMazeScene(
             FearEncounter encounter,
             GameController game,
-            Runnable onSave,
+            Consumer<Runnable> onSave,
             Runnable onExit
     ) {
         if (encounter == null || game == null) {
@@ -836,14 +836,11 @@ public final class RatMazeScene implements FloorScene {
             pauseTimelines();
         }
 
-        try {
-            onSave.run();
-
-        } finally {
+        onSave.accept(() -> {
             if (running) {
                 resumeTimelines();
             }
-        }
+        });
     }
 
     private void pauseTimelines() {

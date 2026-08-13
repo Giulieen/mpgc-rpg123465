@@ -6,8 +6,10 @@ import it.unicam.cs.mpgc.rpg123465.controller.OperationResult;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.persistence.FilePlayerRegistry;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileRecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
+import it.unicam.cs.mpgc.rpg123465.persistence.PlayerRegistry;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
@@ -15,8 +17,7 @@ import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
 import it.unicam.cs.mpgc.rpg123465.ui.StartMenu;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import it.unicam.cs.mpgc.rpg123465.ui.WindowFrame;
 
 /**
  * Governa la navigazione fra menu, introduzione, piani e finale della demo.
@@ -29,6 +30,9 @@ public final class Navigator {
     private static final String RECORDS_PATH =
             "saves/records.properties";
 
+    private static final String PLAYERS_PATH =
+            "saves/players.txt";
+
     /**
      * I record sopravvivono alle partite: uno solo per tutta l'applicazione,
      * creato all'avvio e non insieme al salvataggio.
@@ -38,18 +42,24 @@ public final class Navigator {
                     RECORDS_PATH
             );
 
-    private final Scene scene;
+    /** I nomi già usati, per non farli riprendere da una partita nuova. */
+    private final PlayerRegistry players =
+            new FilePlayerRegistry(
+                    PLAYERS_PATH
+            );
+
+    private final WindowFrame frame;
 
     public Navigator(
-            Scene scene
+            WindowFrame frame
     ) {
-        if (scene == null) {
+        if (frame == null) {
             throw new IllegalArgumentException(
-                    "La scena non può essere null."
+                    "La cornice non può essere null."
             );
         }
 
-        this.scene = scene;
+        this.frame = frame;
     }
 
     public void showStartMenu() {
@@ -58,10 +68,11 @@ public final class Navigator {
         StartMenu menu =
                 new StartMenu(
                         this::startNewGame,
-                        this::loadGame
+                        this::loadGame,
+                        players::isTaken
                 );
 
-        scene.setRoot(
+        frame.setContent(
                 menu.createView()
         );
     }
@@ -84,6 +95,12 @@ public final class Navigator {
             return;
         }
 
+        /*
+         * Il nome si riserva solo ora: se il catalogo fosse rotto la partita
+         * non partirebbe, e sarebbe bruciato per niente.
+         */
+        players.register(playerName);
+
         IntroScreen intro =
                 new IntroScreen(
                         () -> showCurrentFloor(
@@ -91,7 +108,7 @@ public final class Navigator {
                         )
                 );
 
-        scene.setRoot(
+        frame.setContent(
                 intro.createView()
         );
     }
@@ -115,7 +132,8 @@ public final class Navigator {
         if (!controller.hasSavedGame()) {
             showInfo(
                     "Nessun salvataggio",
-                    "Non è stata trovata alcuna partita salvata."
+                    "Non è stata trovata alcuna partita salvata.",
+                    "Torna al menu"
             );
             return;
         }
@@ -129,7 +147,8 @@ public final class Navigator {
                     errorMessage(
                             "Si è verificato un errore durante il caricamento.",
                             result
-                    )
+                    ),
+                    "Torna al menu"
             );
             return;
         }
@@ -146,12 +165,13 @@ public final class Navigator {
     }
 
     /**
-     * Crea il checkpoint prima della scena.
+     * Crea il checkpoint prima della scena e lo salva da solo.
      */
     private void showCurrentFloor(
             GameController controller
     ) {
         controller.beginFloorCheckpoint();
+        autoSave(controller);
 
         FloorContent content =
                 controller
@@ -162,8 +182,9 @@ public final class Navigator {
                 new FloorSceneFactory(
                         controller,
                         records,
-                        () -> showSaveResult(
-                                controller
+                        onDismissed -> showSaveResult(
+                                controller,
+                                onDismissed
                         ),
                         () -> exitCurrentFloor(
                                 controller
@@ -174,7 +195,7 @@ public final class Navigator {
                 scenes.scenesFor(
                         content
                 ),
-                scene::setRoot,
+                frame::setContent,
                 () -> onFloorCompleted(
                         controller
                 )
@@ -212,7 +233,8 @@ public final class Navigator {
                     errorMessage(
                             "Non è stato possibile salvare il punto di ripresa.",
                             result
-                    )
+                    ),
+                    "Riprendi"
             );
             return;
         }
@@ -221,18 +243,41 @@ public final class Navigator {
     }
 
     /**
+     * Salva senza dire niente.
+     *
+     * <p>
+     * Scatta all'ingresso di ogni piano e alla fine della salita, cioè
+     * esattamente dove il checkpoint è già quello giusto: il giocatore ritrova
+     * la partita dov'era anche se chiude la finestra senza pensarci. Il pulsante
+     * Salva resta, per chi vuole fermare il punto di propria iniziativa.
+     *
+     * <p>
+     * Un errore non viene mostrato: interrompere la partita con un messaggio
+     * per un salvataggio che il giocatore non ha chiesto darebbe più fastidio
+     * del problema. Se ne accorgerà semmai salvando a mano, dove l'esito si
+     * vede.
+     */
+    private void autoSave(
+            GameController controller
+    ) {
+        controller.saveGame();
+    }
+
+    /**
      * Mostra direttamente il risultato della demo.
      */
     private void showDemoResult(
             GameController controller
     ) {
+        autoSave(controller);
+
         ProfileResultScreen finale =
                 new ProfileResultScreen(
                         controller.getMind(),
                         this::showStartMenu
                 );
 
-        scene.setRoot(
+        frame.setContent(
                 finale.createView()
         );
     }
@@ -256,8 +301,18 @@ public final class Navigator {
         );
     }
 
+    /**
+     * Salva e mostra l'esito.
+     *
+     * Il messaggio non blocca più il thread grafico, quindi la prova che si
+     * era fermata per mostrarlo va ripresa quando il giocatore lo chiude: è
+     * questo il compito di {@code onDismissed}.
+     *
+     * @param onDismissed avvisa il piano che il messaggio è stato chiuso
+     */
     private void showSaveResult(
-            GameController controller
+            GameController controller,
+            Runnable onDismissed
     ) {
         OperationResult result =
                 controller.saveGame();
@@ -266,7 +321,9 @@ public final class Navigator {
             showInfo(
                     "Salvataggio",
                     "Punto di ripresa salvato. "
-                            + "Caricando ripartirai dall'inizio di questo piano."
+                            + "Caricando ripartirai dall'inizio di questo piano.",
+                    "Riprendi",
+                    onDismissed
             );
         } else {
             showInfo(
@@ -274,7 +331,9 @@ public final class Navigator {
                     errorMessage(
                             "Si è verificato un errore durante il salvataggio.",
                             result
-                    )
+                    ),
+                    "Riprendi",
+                    onDismissed
             );
         }
     }
@@ -293,7 +352,8 @@ public final class Navigator {
                 "Non è stato possibile avviare la partita perché il catalogo "
                         + "delle domande non è leggibile."
                         + "\n\nDettaglio: "
-                        + exception.getMessage()
+                        + exception.getMessage(),
+                "Torna al menu"
         );
     }
 
@@ -312,27 +372,34 @@ public final class Navigator {
                 + result.detail();
     }
 
+    /**
+     * Mostra un messaggio del gioco.
+     *
+     * L'etichetta del pulsante dice dove si va chiudendo, invece di un generico
+     * assenso: da un messaggio di sistema ci si aspetta un "va bene", da un
+     * gioco di sapere cosa succede dopo.
+     *
+     * @param buttonLabel cosa succede chiudendo
+     */
     private void showInfo(
             String title,
-            String content
+            String content,
+            String buttonLabel
     ) {
-        Alert alert =
-                new Alert(
-                        Alert.AlertType.INFORMATION
-                );
+        showInfo(title, content, buttonLabel, null);
+    }
 
-        alert.setTitle(
-                title
+    private void showInfo(
+            String title,
+            String content,
+            String buttonLabel,
+            Runnable onDismissed
+    ) {
+        frame.showMessage(
+                title,
+                content,
+                buttonLabel,
+                onDismissed
         );
-
-        alert.setHeaderText(
-                title
-        );
-
-        alert.setContentText(
-                content
-        );
-
-        alert.showAndWait();
     }
 }
