@@ -1,0 +1,16 @@
+{
+  "alfa": [
+    {
+      "id": 1,
+      "question": "Preferiresti A o B?",
+      "first": {
+        "text": "A",
+        "trait": "TRATTO_INESISTENTE"
+      },
+      "second": {
+        "text": "B",
+        "trait": "CORAGGIO"
+      }
+    }
+  ]
+}

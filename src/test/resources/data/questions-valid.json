@@ -1,0 +1,66 @@
+{
+  "alfa": [
+    {
+      "id": 1,
+      "question": "Preferiresti A o B?",
+      "first": {
+        "text": "A",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "B",
+        "trait": "CURIOSITA"
+      }
+    },
+    {
+      "id": 2,
+      "question": "Preferiresti C o D?",
+      "first": {
+        "text": "C",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "D",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 3,
+      "question": "Preferiresti E o F?",
+      "first": {
+        "text": "E",
+        "trait": "AVVENTURA"
+      },
+      "second": {
+        "text": "F",
+        "trait": "CORAGGIO"
+      }
+    }
+  ],
+  "beta": [
+    {
+      "id": 4,
+      "question": "Preferiresti G o H?",
+      "first": {
+        "text": "G",
+        "trait": "CORAGGIO"
+      },
+      "second": {
+        "text": "H",
+        "trait": "AVVENTURA"
+      }
+    },
+    {
+      "id": 5,
+      "question": "Preferiresti I o L?",
+      "first": {
+        "text": "I",
+        "trait": "CURIOSITA"
+      },
+      "second": {
+        "text": "L",
+        "trait": "CORAGGIO"
+      }
+    }
+  ]
+}
