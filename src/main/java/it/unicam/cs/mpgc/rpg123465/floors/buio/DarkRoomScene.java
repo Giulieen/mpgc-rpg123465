@@ -13,6 +13,7 @@ import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
 import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
 import it.unicam.cs.mpgc.rpg123465.ui.support.RoomLighting;
 import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -50,6 +51,7 @@ public class DarkRoomScene implements FloorScene {
     private final DarkRoom room;
     private final DarkRoomController controller;
     private final HeaderBar header;
+    private final Runnable onSave;
     private final Runnable onExit;
 
     private final StackPane root =
@@ -90,6 +92,15 @@ public class DarkRoomScene implements FloorScene {
 
     private boolean dilemmaOpen;
     private boolean successWaitingForDilemmas;
+
+    /**
+     * Attesa dell'interludio fra un tentativo e il successivo.
+     *
+     * Va conservata perché il giocatore può uscire mentre è a schermo: senza
+     * fermarla, allo scadere ripartirebbe un tentativo — con il suo audio e il
+     * suo countdown — su una scena che non è più visibile.
+     */
+    private PauseTransition interlude;
 
     public DarkRoomScene(
             DarkRoom room,
@@ -136,12 +147,15 @@ public class DarkRoomScene implements FloorScene {
                         game
                 );
 
+        this.onSave = onSave;
         this.onExit = onExit;
 
         this.header =
                 new HeaderBar(
                         game.getPlayerName(),
-                        onSave,
+                        onSave == null
+                                ? null
+                                : this::saveWithClockSuspended,
                         onExit == null
                                 ? null
                                 : this::exitLevel
@@ -360,6 +374,8 @@ public class DarkRoomScene implements FloorScene {
     }
 
     private void startAttempt() {
+        interlude = null;
+
         resolved = false;
         closeupOpen = false;
         successWaitingForDilemmas = false;
@@ -505,6 +521,14 @@ public class DarkRoomScene implements FloorScene {
         closeup.open(
                 lock.createView()
         );
+
+        /*
+         * Il close-up copre l'intera scena: senza questo, Vita, Lucidità,
+         * Stress, Salva ed Esci sparirebbero proprio dove il giocatore passa
+         * più tempo. Il primo piano resta comunque utilizzabile, perché la
+         * barra occupa solo la fascia superiore.
+         */
+        headerView.toFront();
     }
 
     private void submit(
@@ -727,7 +751,9 @@ public class DarkRoomScene implements FloorScene {
                             + "e provi ancora.";
         }
 
-        SceneFx.interlude(
+        stopInterlude();
+
+        interlude = SceneFx.interlude(
                 root,
                 message,
                 note,
@@ -833,6 +859,30 @@ public class DarkRoomScene implements FloorScene {
         );
     }
 
+    /**
+     * Salva tenendo fermo il conto alla rovescia.
+     *
+     * La conferma del salvataggio è una finestra modale, e una modale JavaFX
+     * gira in un event loop annidato: i pulse continuano, quindi senza questa
+     * sospensione il tempo scorrerebbe mentre il giocatore legge il messaggio.
+     * Il countdown riparte solo se stava davvero correndo: se era gia' fermo
+     * per un dilemma, a riprenderlo ci pensa la risposta.
+     */
+    private void saveWithClockSuspended() {
+        boolean running = !clock.isPaused();
+
+        clock.pause();
+
+        try {
+            onSave.run();
+
+        } finally {
+            if (running) {
+                clock.resume();
+            }
+        }
+    }
+
     private void exitLevel() {
         cleanup();
 
@@ -843,12 +893,26 @@ public class DarkRoomScene implements FloorScene {
 
     private void cleanup() {
         clock.stop();
+        stopInterlude();
 
         if (closeup.isOpen()) {
             closeup.close();
         }
 
         Sound.stopAll();
+    }
+
+    /**
+     * Annulla l'interludio ancora in attesa, se ce n'è uno.
+     *
+     * Fermare la transizione impedisce che il suo esito riavvii il piano
+     * dopo che il giocatore ha già lasciato la scena.
+     */
+    private void stopInterlude() {
+        if (interlude != null) {
+            interlude.stop();
+            interlude = null;
+        }
     }
 
     private List<DilemmaPrompt.Option> promptOptions(

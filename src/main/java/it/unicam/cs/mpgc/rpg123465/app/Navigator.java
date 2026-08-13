@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
 import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
@@ -54,10 +55,20 @@ public final class Navigator {
     private void startNewGame(
             String playerName
     ) {
-        GameController controller =
-                createController(
-                        playerName
-                );
+        GameController controller;
+
+        try {
+            controller =
+                    createController(
+                            playerName
+                    );
+
+        } catch (QuestionCatalogException exception) {
+            showCatalogError(
+                    exception
+            );
+            return;
+        }
 
         IntroScreen intro =
                 new IntroScreen(
@@ -72,10 +83,20 @@ public final class Navigator {
     }
 
     private void loadGame() {
-        GameController controller =
-                createController(
-                        null
-                );
+        GameController controller;
+
+        try {
+            controller =
+                    createController(
+                            null
+                    );
+
+        } catch (QuestionCatalogException exception) {
+            showCatalogError(
+                    exception
+            );
+            return;
+        }
 
         if (!controller.hasSavedGame()) {
             showInfo(
@@ -241,6 +262,24 @@ public final class Navigator {
                     )
             );
         }
+    }
+
+    /**
+     * Spiega che la partita non può iniziare perché il catalogo è guasto.
+     *
+     * Il dettaglio arriva dal repository e indica il file e il punto del
+     * problema: senza, resterebbe soltanto uno stack trace nella console.
+     */
+    private void showCatalogError(
+            QuestionCatalogException exception
+    ) {
+        showInfo(
+                "Domande non disponibili",
+                "Non è stato possibile avviare la partita perché il catalogo "
+                        + "delle domande non è leggibile."
+                        + "\n\nDettaglio: "
+                        + exception.getMessage()
+        );
     }
 
     private String errorMessage(

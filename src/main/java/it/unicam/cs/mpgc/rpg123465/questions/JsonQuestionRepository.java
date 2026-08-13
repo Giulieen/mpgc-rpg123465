@@ -84,14 +84,14 @@ public final class JsonQuestionRepository
                 );
 
         if (source == null) {
-            throw new IllegalArgumentException(
+            throw new QuestionCatalogException(
                     "Categoria di domande sconosciuta: "
                             + category
             );
         }
 
         if (source.size() < count) {
-            throw new IllegalArgumentException(
+            throw new QuestionCatalogException(
                     "La categoria "
                             + category
                             + " contiene "
@@ -129,7 +129,7 @@ public final class JsonQuestionRepository
                         );
 
         if (stream == null) {
-            throw new IllegalStateException(
+            throw new QuestionCatalogException(
                     "Catalogo delle domande non trovato: "
                             + resourcePath
             );
@@ -157,8 +157,9 @@ public final class JsonQuestionRepository
             if (loaded == null
                     || loaded.isEmpty()) {
 
-                throw new IllegalStateException(
-                        "Il catalogo delle domande è vuoto."
+                throw new QuestionCatalogException(
+                        "Il catalogo delle domande è vuoto: "
+                                + resourcePath
                 );
             }
 
@@ -166,9 +167,34 @@ public final class JsonQuestionRepository
                     loaded
             );
 
+        } catch (QuestionCatalogException exception) {
+            throw exception;
+
         } catch (IOException exception) {
-            throw new IllegalStateException(
-                    "Impossibile leggere il catalogo delle domande.",
+            throw new QuestionCatalogException(
+                    "Impossibile leggere il catalogo delle domande: "
+                            + resourcePath,
+                    exception
+            );
+
+        } catch (RuntimeException exception) {
+            /*
+             * Qui dentro succede una cosa sola: Gson legge il file. Qualunque
+             * eccezione non controllata riguarda quindi i dati, non il codice
+             * — JsonSyntaxException per una virgola di troppo, ma anche le
+             * validazioni di Dilemma e DilemmaOption, che Gson esegue quando
+             * costruisce i record e che scattano per un tratto sconosciuto o
+             * una risposta mancante.
+             *
+             * Vengono tradotte tutte in un errore del catalogo, conservando la
+             * causa: è l'unico modo per risalire alla riga da correggere.
+             */
+            throw new QuestionCatalogException(
+                    "Il catalogo delle domande non è valido: "
+                            + resourcePath
+                            + " ("
+                            + exception.getMessage()
+                            + ")",
                     exception
             );
         }

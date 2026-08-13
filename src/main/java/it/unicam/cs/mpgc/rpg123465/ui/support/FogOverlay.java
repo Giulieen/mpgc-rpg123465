@@ -254,6 +254,15 @@ public class FogOverlay {
 
             last = now;
 
+            /*
+             * Pausa del thread grafico: riallineiamo il riferimento e saltiamo
+             * il frame, così la nebbia riprende da dov'era invece di scattare
+             * in avanti di tutta l'interruzione.
+             */
+            if (elapsed > SceneFx.MAX_FRAME_SECONDS) {
+                return;
+            }
+
             double periodX = 2 * width;
             double periodY = 2 * height;
 

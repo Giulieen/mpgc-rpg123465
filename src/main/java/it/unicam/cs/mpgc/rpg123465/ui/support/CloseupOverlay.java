@@ -20,6 +20,15 @@ import javafx.util.Duration;
  */
 public final class CloseupOverlay {
 
+    /**
+     * Distanza dall'alto del comando per allontanarsi.
+     * <p>
+     * Le schermate di gioco tengono in cima una barra di stato che resta sopra
+     * il primo piano: il comando parte sotto quella fascia, altrimenti finirebbe
+     * coperto e non più cliccabile.
+     */
+    private static final double BACK_TOP_INSET = 76;
+
     private final StackPane root;
     private final Runnable onClose;
     private StackPane view;
@@ -51,7 +60,7 @@ public final class CloseupOverlay {
         back.setCursor(Cursor.HAND);
         back.setOnMouseClicked(event -> close());
         StackPane.setAlignment(back, Pos.TOP_LEFT);
-        StackPane.setMargin(back, new Insets(28, 0, 0, 34));
+        StackPane.setMargin(back, new Insets(BACK_TOP_INSET, 0, 0, 34));
 
         view = new StackPane(backdrop, content, back);
         view.setOpacity(0);

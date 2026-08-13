@@ -197,6 +197,16 @@ public final class CountdownClock {
 
         lastFrame = now;
 
+        /*
+         * Il frame è troppo distante dal precedente: la scena non stava
+         * aggiornandosi (tipicamente una modale aperta sul thread grafico).
+         * Il riferimento è già riallineato: saltiamo il frame senza scalare
+         * il tempo dell'interruzione dal countdown.
+         */
+        if (delta > SceneFx.MAX_FRAME_SECONDS) {
+            return;
+        }
+
         remainingSeconds =
                 Math.max(
                         0,

@@ -174,6 +174,15 @@ public class ScrollingBackground {
             last = now;
 
             /*
+             * Pausa del thread grafico: riallineiamo il riferimento e saltiamo
+             * il frame, così lo sfondo riprende da dov'era invece di scattare
+             * in avanti di tutta l'interruzione.
+             */
+            if (elapsed > SceneFx.MAX_FRAME_SECONDS) {
+                return;
+            }
+
+            /*
              * Il motivo si ripete ogni due immagini:
              * una normale e una specchiata.
              */

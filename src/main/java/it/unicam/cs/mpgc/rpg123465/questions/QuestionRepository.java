@@ -15,6 +15,10 @@ public interface QuestionRepository {
      * @param category categoria del piano: topi, buio o altezze
      * @param count numero di domande richieste
      * @return domande casuali senza ripetizioni
+     * @throws IllegalArgumentException se la categoria è vuota o il numero di
+     *         domande non è positivo
+     * @throws QuestionCatalogException se la categoria non esiste nel catalogo
+     *         o non contiene abbastanza domande
      */
     List<Dilemma> randomQuestions(
             String category,

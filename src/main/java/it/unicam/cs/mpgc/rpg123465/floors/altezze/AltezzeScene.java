@@ -12,6 +12,7 @@ import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
 import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
 import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
 import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -63,6 +64,7 @@ public class AltezzeScene implements FloorScene {
     private final AltezzeConfig config;
     private final AltezzeController controller;
     private final HeaderBar header;
+    private final Runnable onSave;
     private final Runnable onExit;
 
     private final StackPane root =
@@ -171,6 +173,7 @@ public class AltezzeScene implements FloorScene {
 
         this.crossing = crossing;
         this.config = crossing.config();
+        this.onSave = onSave;
         this.onExit = onExit;
 
         this.controller =
@@ -182,7 +185,9 @@ public class AltezzeScene implements FloorScene {
         this.header =
                 new HeaderBar(
                         game.getPlayerName(),
-                        onSave,
+                        onSave == null
+                                ? null
+                                : this::saveWithGameplaySuspended,
                         onExit == null
                                 ? null
                                 : this::exitLevel
@@ -452,6 +457,16 @@ public class AltezzeScene implements FloorScene {
                         / 1_000_000_000.0;
 
         lastFrame = now;
+
+        /*
+         * Frame troppo distante dal precedente: il thread grafico era occupato
+         * (per esempio da una modale) e la traversata non stava avanzando.
+         * Il riferimento è già riallineato: saltiamo il frame invece di
+         * spingere il giocatore in avanti di tutta la pausa.
+         */
+        if (dt > SceneFx.MAX_FRAME_SECONDS) {
+            return;
+        }
 
         if (state != LevelState.PLAYING
                 || currentBridge < 0) {
@@ -1514,6 +1529,74 @@ public class AltezzeScene implements FloorScene {
         cancel(
                 rerouteDeadline
         );
+    }
+
+    /**
+     * Salva tenendo ferma la traversata.
+     *
+     * La conferma del salvataggio è una finestra modale, e una modale JavaFX
+     * gira in un event loop annidato: i pulse continuano. Senza sospendere,
+     * mentre il giocatore legge il messaggio il countdown scorrerebbe, il
+     * personaggio avanzerebbe verso l'altra sponda e una freccia potrebbe
+     * scadere da sola facendogli perdere l'equilibrio.
+     *
+     * Si ferma tutto ciò che misura il tempo e si riprende com'era: il
+     * countdown solo se stava correndo, le attese solo se erano in corso, e
+     * l'avanzamento riazzerando il riferimento del frame perché il primo dopo
+     * la modale non recuperi la pausa.
+     */
+    private void saveWithGameplaySuspended() {
+        boolean clockRunning = !clock.isPaused();
+
+        clock.pause();
+
+        pauseIfRunning(arrowDelay);
+        pauseIfRunning(responseTimer);
+        pauseIfRunning(rerouteDeadline);
+
+        if (advance != null) {
+            advance.stop();
+        }
+
+        try {
+            onSave.run();
+
+        } finally {
+            if (advance != null) {
+                lastFrame = 0;
+                advance.start();
+            }
+
+            resumeIfPaused(arrowDelay);
+            resumeIfPaused(responseTimer);
+            resumeIfPaused(rerouteDeadline);
+
+            if (clockRunning) {
+                clock.resume();
+            }
+        }
+    }
+
+    private void pauseIfRunning(
+            PauseTransition transition
+    ) {
+        if (transition != null
+                && transition.getStatus()
+                == Animation.Status.RUNNING) {
+
+            transition.pause();
+        }
+    }
+
+    private void resumeIfPaused(
+            PauseTransition transition
+    ) {
+        if (transition != null
+                && transition.getStatus()
+                == Animation.Status.PAUSED) {
+
+            transition.play();
+        }
     }
 
     private void exitLevel() {
