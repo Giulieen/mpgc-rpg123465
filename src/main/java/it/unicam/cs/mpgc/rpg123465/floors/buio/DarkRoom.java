@@ -3,9 +3,8 @@ package it.unicam.cs.mpgc.rpg123465.floors.buio;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 
 /**
- * La paura del buio: una stanza chiusa da una porta con serratura a
- * combinazione, che si apre trovando le quattro cifre corrette prima
- * che il tempo scada.
+ * Una stanza chiusa da una porta con serratura a combinazione, che si apre
+ * trovando le quattro cifre corrette prima che il tempo scada.
  *
  * <p>
  * Le cifre sono scritte in binario sulle quattro pareti e si leggono

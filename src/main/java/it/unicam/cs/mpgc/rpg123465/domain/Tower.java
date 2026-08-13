@@ -24,29 +24,19 @@ public class Tower {
         this.floors = new ArrayList<>(floors);
     }
 
-    /**
-     * Restituisce tutti i piani della torre.
-     *
-     * @return lista non modificabile dei piani
-     */
+    /** @return lista non modificabile dei piani */
     public List<Floor> getFloors() {
         return Collections.unmodifiableList(floors);
     }
 
-    /**
-     * Restituisce il numero totale di piani.
-     *
-     * @return numero di piani
-     */
     public int getTotalFloors() {
         return floors.size();
     }
 
     /**
-     * Restituisce un piano dato il suo indice.
-     *
      * @param index indice del piano, a partire da zero
      * @return piano corrispondente
+     * @throws IllegalArgumentException se l'indice è fuori dalla Torre
      */
     public Floor getFloor(int index) {
         if (index < 0 || index >= floors.size()) {

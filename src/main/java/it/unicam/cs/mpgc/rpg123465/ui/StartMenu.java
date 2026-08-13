@@ -1,7 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.ui;
 
 import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
-import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -9,14 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -153,14 +149,6 @@ public class StartMenu {
 
         loadButton.getStyleClass().add(
                 "menu-button"
-        );
-
-        addButtonAnimation(
-                newGameButton
-        );
-
-        addButtonAnimation(
-                loadButton
         );
 
         newGameButton.setOnAction(
@@ -379,99 +367,4 @@ public class StartMenu {
         );
     }
 
-    private void addButtonAnimation(
-            Button button
-    ) {
-        DropShadow normalShadow =
-                new DropShadow();
-
-        normalShadow.setColor(
-                Color.rgb(
-                        0,
-                        0,
-                        0,
-                        0.75
-                )
-        );
-
-        normalShadow.setRadius(
-                12
-        );
-
-        normalShadow.setOffsetY(
-                4
-        );
-
-        DropShadow glowShadow =
-                new DropShadow();
-
-        glowShadow.setColor(
-                Color.rgb(
-                        255,
-                        190,
-                        70,
-                        0.85
-                )
-        );
-
-        glowShadow.setRadius(
-                22
-        );
-
-        glowShadow.setSpread(
-                0.35
-        );
-
-        button.setEffect(
-                normalShadow
-        );
-
-        button.setOnMouseEntered(
-                event -> {
-                    ScaleTransition scale =
-                            new ScaleTransition(
-                                    Duration.millis(140),
-                                    button
-                            );
-
-                    scale.setToX(
-                            1.06
-                    );
-
-                    scale.setToY(
-                            1.06
-                    );
-
-                    scale.play();
-
-                    button.setEffect(
-                            glowShadow
-                    );
-                }
-        );
-
-        button.setOnMouseExited(
-                event -> {
-                    ScaleTransition scale =
-                            new ScaleTransition(
-                                    Duration.millis(140),
-                                    button
-                            );
-
-                    scale.setToX(
-                            1.0
-                    );
-
-                    scale.setToY(
-                            1.0
-                    );
-
-                    scale.play();
-
-                    button.setEffect(
-                            normalShadow
-                    );
-                }
-        );
-    }
 }

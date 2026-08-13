@@ -152,16 +152,47 @@
         );
 }
 
+/*
+ * Sotto il puntatore il pulsante si accende e cresce appena. Erano due
+ * DropShadow e due ScaleTransition costruiti a mano nel menu, e valevano solo
+ * per i suoi due pulsanti: qui sono stato del controllo, quindi valgono per
+ * tutti quelli del gioco.
+ */
 .menu-button:hover {
 
     -fx-background-color:rgba(70,42,14,0.92);
 
     -fx-text-fill:#ffe6a3;
+
+    -fx-scale-x:1.06;
+
+    -fx-scale-y:1.06;
+
+    -fx-effect:
+        dropshadow(
+            gaussian,
+            rgba(255,190,70,0.85),
+            22,
+            0.35,
+            0,
+            0
+        );
 }
 
 .menu-button:pressed {
 
     -fx-background-color:rgba(10,7,4,0.95);
+
+    -fx-scale-x:1.0;
+
+    -fx-scale-y:1.0;
+}
+
+.menu-button:disabled {
+
+    -fx-opacity:0.45;
+
+    -fx-effect:null;
 }
 
 /* =====================================================

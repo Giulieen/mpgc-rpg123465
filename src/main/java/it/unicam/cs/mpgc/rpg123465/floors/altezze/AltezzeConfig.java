@@ -10,10 +10,10 @@ import java.util.List;
  * @param balancePoints         errori tollerati prima della caduta
  * @param routeThresholds       percentuali di progresso ai cambi di ponte (es. 20, 45, 70)
  * @param rerouteSeconds        secondi per raggiungere il ponte illuminato
- * @param endgameIntervalFactor a fine percorso gli intervalli fra le frecce si
- *                              accorciano fino a questa frazione (es. 0.75)
- * @param endgameResponseFactor a fine percorso il tempo di risposta si accorcia
- *                              fino a questa frazione (es. 0.85)
+ * @param endgameIntervalFactor previsto per stringere gli intervalli fra le
+ *                              frecce a fine percorso, oggi non applicato
+ * @param endgameResponseFactor previsto per accorciare il tempo di risposta a
+ *                              fine percorso, oggi non applicato
  * @param bridges               i tre ponti: sinistra (0), centro (1), destra (2)
  * @param manualRoute           sequenza fissa di destinazioni per test, o {@code null}
  */

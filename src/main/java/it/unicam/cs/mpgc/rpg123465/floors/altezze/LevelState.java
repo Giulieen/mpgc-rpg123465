@@ -1,9 +1,14 @@
 package it.unicam.cs.mpgc.rpg123465.floors.altezze;
 
 /**
- * Gli stati del livello. Ogni stato accetta solo gli input che gli competono:
- * la selezione del ponte, la risposta alle frecce, il cambio di ponte col
- * movimento del mouse, l'esito.
+ * Gli stati della traversata. Ogni stato accetta solo gli input che gli
+ * competono: il clic sul ponte durante la scelta iniziale, le frecce durante
+ * l'attraversamento, il clic sul ponte illuminato durante un cambio.
+ *
+ * <p>
+ * {@link #ROUTE_CHANGE_WARNING} e {@link #PAUSED} non sono usati: restano da
+ * una versione in cui il cambio di ponte era preceduto da un avviso e la
+ * traversata si poteva mettere in pausa.
  */
 public enum LevelState {
     INTRO,

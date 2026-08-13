@@ -1,8 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.domain;
 
 /**
- * Rappresenta un piano della Torre: una paura, e ciò che il giocatore vi
- * affronta.
+ * Rappresenta un piano della Torre: un luogo, e la prova che vi si affronta.
  */
 public class Floor {
 
@@ -14,7 +13,7 @@ public class Floor {
      * Crea un nuovo piano.
      *
      * @param number numero del piano, a partire da uno
-     * @param name nome della paura custodita dal piano
+     * @param name nome del piano, come compare al giocatore
      * @param content ciò che il giocatore vi affronta
      * @throws IllegalArgumentException se un parametro non è valido
      */
@@ -34,29 +33,19 @@ public class Floor {
         this.content = content;
     }
 
-    /**
-     * Restituisce il numero del piano.
-     *
-     * @return numero del piano
-     */
+    /** @return numero del piano, a partire da uno */
     public int getNumber() {
         return number;
     }
 
     /**
-     * Restituisce il nome della paura custodita dal piano.
-     *
-     * @return nome del piano
+     * @return nome del piano, come compare al giocatore
      */
     public String getName() {
         return name;
     }
 
-    /**
-     * Restituisce ciò che il giocatore affronta su questo piano.
-     *
-     * @return contenuto del piano
-     */
+    /** @return la prova che si affronta su questo piano */
     public FloorContent getContent() {
         return content;
     }

@@ -12,9 +12,8 @@ import java.util.List;
 /**
  * Crea una nuova partita di Tower of Self.
  *
- * La Torre è composta dai piani delle paure: per aggiungerne uno basta creare
- * il suo contenuto nel package del piano (in {@code floors}) ed elencarlo qui,
- * senza toccare il resto del gioco.
+ * Per aggiungere un piano basta creare il suo contenuto nel package
+ * {@code floors} ed elencarlo qui, senza toccare il resto del gioco.
  */
 public final class GameFactory {
 

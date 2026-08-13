@@ -3,15 +3,12 @@ package it.unicam.cs.mpgc.rpg123465.floors.altezze;
 import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
 
 /**
- * La paura delle altezze: attraversare un abisso su tre ponti sospesi, tenendo
- * l'equilibrio contro le oscillazioni e cambiando ponte quando il percorso lo
- * impone, prima che il tempo scada.
+ * La traversata dell'abisso: tre ponti sospesi, l'equilibrio da tenere contro
+ * le oscillazioni, e un cambio di ponte quando il percorso cede, il tutto prima
+ * che il tempo scada.
  * <p>
- * Sotto la paura corre una metafora informatica: i tre ponti sono canali di
- * trasmissione con banda diversa, il tempo è la latenza massima, le frecce sono
- * i disturbi da correggere, il cambio di ponte è il rerouting, la caduta è la
- * perdita del pacchetto. Il contenuto porta i testi e la configurazione; le
- * regole del gioco vivono nella scena.
+ * Il contenuto porta i testi e la configurazione; le regole vivono nella scena
+ * e le conseguenze nel controller.
  *
  * @param title              titolo del piano
  * @param backgroundResource immagine dell'abisso e dei ponti

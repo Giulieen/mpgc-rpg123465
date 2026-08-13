@@ -9,8 +9,9 @@ import it.unicam.cs.mpgc.rpg123465.domain.Tower;
  * Coordina la salita della Torre: a che piano si trova il giocatore e quando il
  * cammino è concluso.
  * <p>
- * Non sa nulla di come le paure vengano affrontate: quella è materia del
- * contenuto di ciascun piano. Qui si tiene soltanto il filo del percorso.
+ * Non sa nulla di come le prove vengano superate: quella è materia del
+ * contenuto di ciascun piano. Qui si tiene soltanto il filo del percorso, e i
+ * tentativi che restano su quello corrente.
  */
 public class GameEngine {
 
@@ -50,65 +51,33 @@ public class GameEngine {
         this.gameCompleted = false;
     }
 
-    /**
-     * Restituisce il giocatore.
-     *
-     * @return giocatore
-     */
     public Player getPlayer() {
         return player;
     }
 
-    /**
-     * Restituisce la torre.
-     *
-     * @return torre
-     */
     public Tower getTower() {
         return tower;
     }
 
-    /**
-     * Restituisce l'indice del piano corrente.
-     *
-     * @return indice del piano corrente, a partire da zero
-     */
+    /** @return indice del piano corrente, a partire da zero */
     public int getCurrentFloorIndex() {
         return currentFloorIndex;
     }
 
-    /**
-     * Restituisce il piano su cui si trova il giocatore.
-     *
-     * @return piano corrente
-     */
     public Floor getCurrentFloor() {
         return tower.getFloor(currentFloorIndex);
     }
 
-    /**
-     * Verifica se il giocatore è sull'ultimo piano della Torre.
-     *
-     * @return {@code true} se non ci sono altri piani sopra
-     */
+    /** @return {@code true} se non ci sono altri piani sopra */
     public boolean isOnLastFloor() {
         return currentFloorIndex == tower.getTotalFloors() - 1;
     }
 
-    /**
-     * Verifica se la Torre è stata salita fino in cima.
-     *
-     * @return {@code true} se la partita è conclusa
-     */
+    /** @return {@code true} se la Torre è stata salita fino in cima */
     public boolean isGameCompleted() {
         return gameCompleted;
     }
 
-    /**
-     * Restituisce i tentativi della prova in corso.
-     *
-     * @return tentativi del piano corrente
-     */
     public FloorAttempts getAttempts() {
         return attempts;
     }
