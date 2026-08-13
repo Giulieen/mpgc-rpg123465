@@ -19,16 +19,19 @@ import java.util.Random;
 public final class RatMazeController {
 
     /** Topi da catturare per superare la prova. */
-    public static final int TARGET_RATS = 10;
+    public static final int TARGET_RATS = 12;
 
     /**
      * Quanti topi possono essere in circolazione insieme.
      *
-     * Si comincia con uno solo e si sale con le catture: la difficoltà cresce
-     * con quanto il giocatore ha già dimostrato di saper fare.
+     * Si parte già con due, perché con uno solo la stanza resta vuota e il
+     * giocatore non deve mai scegliere. Il terzo e il quarto arrivano con le
+     * catture: la pressione cresce con quanto ha già dimostrato di saper fare,
+     * e verso la fine bisogna decidere quale topo lasciar perdere.
      */
-    private static final int SECOND_RAT_AFTER = 3;
-    private static final int THIRD_RAT_AFTER = 7;
+    private static final int BASE_RATS = 2;
+    private static final int THIRD_RAT_AFTER = 4;
+    private static final int FOURTH_RAT_AFTER = 8;
 
     /** Lo stato della prova. */
     public enum MazeState {
@@ -272,14 +275,14 @@ public final class RatMazeController {
     }
 
     private int maxConcurrentRats() {
+        if (capturedRats >= FOURTH_RAT_AFTER) {
+            return 4;
+        }
+
         if (capturedRats >= THIRD_RAT_AFTER) {
             return 3;
         }
 
-        if (capturedRats >= SECOND_RAT_AFTER) {
-            return 2;
-        }
-
-        return 1;
+        return BASE_RATS;
     }
 }

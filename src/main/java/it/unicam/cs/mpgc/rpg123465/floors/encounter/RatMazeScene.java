@@ -18,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
@@ -54,13 +56,24 @@ public final class RatMazeScene implements FloorScene {
     private static final Duration RAT_STEP = Duration.millis(600);
 
     /** Ogni quanto si prova a far comparire un topo. */
-    private static final Duration SPAWN_INTERVAL = Duration.millis(2000);
+    private static final Duration SPAWN_INTERVAL = Duration.millis(1400);
 
     /** Ogni quanto cambia il fotogramma di topi e portatore di luce. */
     private static final Duration FRAME_STEP = Duration.millis(150);
 
     /** Per quanto il portatore di luce resta in posa di camminata dopo un passo. */
     private static final long WALK_HOLD_MS = 320;
+
+    /**
+     * Tinta della pietra.
+     *
+     * Il tileset esiste solo in varianti fredde — azzurro e viola — che accanto
+     * al resto della Torre stonano. Le caselle vengono quindi prima portate in
+     * scala di grigi e poi moltiplicate per questo oro spento: i muri diventano
+     * quasi neri, i corridoi pietra dorata, e il piano entra nella stessa
+     * gamma dei bordi e delle icone del gioco.
+     */
+    private static final Color STONE_TINT = Color.web("#b99a5e");
 
     private static final Color STONE = Color.web("#2a2620");
     private static final Color FLOOR = Color.web("#0f0d0a");
@@ -78,7 +91,17 @@ public final class RatMazeScene implements FloorScene {
     private final Random rng = new Random();
 
     private final StackPane root = new StackPane();
-    private final Pane board = new Pane();
+
+    /*
+     * Tre strati sovrapposti. La pietra viene tinta in blocco, quindi deve
+     * stare da sola: tane, uscite, topi e portatore di luce hanno colori loro
+     * e passano sopra senza essere toccati dalla tinta.
+     */
+    private final Pane stone = new Pane();
+    private final Pane marks = new Pane();
+    private final Pane actors = new Pane();
+    private final StackPane board = new StackPane();
+
     private final Label counter = new Label();
 
     private final Map<Rat, RatView> ratViews = new HashMap<>();
@@ -224,45 +247,70 @@ public final class RatMazeScene implements FloorScene {
         double width = maze.columns() * CELL;
         double height = maze.rows() * CELL;
 
-        board.setPrefSize(width, height);
-        board.setMinSize(width, height);
-        board.setMaxSize(width, height);
+        for (Pane layer : new Pane[] {stone, marks, actors}) {
+            layer.setPrefSize(width, height);
+            layer.setMinSize(width, height);
+            layer.setMaxSize(width, height);
+            layer.setMouseTransparent(true);
+        }
 
         for (int row = 0; row < maze.rows(); row++) {
             for (int column = 0; column < maze.columns(); column++) {
-                place(
-                        cellNode(new GridPosition(row, column)),
-                        new GridPosition(row, column)
-                );
+                GridPosition position = new GridPosition(row, column);
+
+                place(stone, pavementNode(position), position);
+
+                if (maze.isExit(position)) {
+                    place(marks, exitMark(), position);
+
+                } else if (maze.isDen(position)) {
+                    place(marks, denMark(), position);
+                }
             }
         }
 
         playerNode = buildPlayerNode();
-        board.getChildren().add(playerNode);
+        actors.getChildren().add(playerNode);
+
+        board.getChildren().setAll(tintedStone(width, height), marks, actors);
+        board.setMaxSize(width, height);
 
         movePlayerNode();
     }
 
-    private void place(Node node, GridPosition position) {
-        node.setLayoutX(position.column() * CELL);
-        node.setLayoutY(position.row() * CELL);
-        board.getChildren().add(node);
+    /**
+     * Porta la pietra in scala di grigi e la moltiplica per la tinta calda.
+     *
+     * L'ordine conta: prima si toglie il colore freddo dell'originale, poi si
+     * aggiunge il proprio. Facendo il contrario la desaturazione cancellerebbe
+     * anche la tinta appena data.
+     */
+    private Pane tintedStone(double width, double height) {
+        stone.setEffect(new ColorAdjust(0, -1, 0, 0));
+
+        Rectangle tint = new Rectangle(width, height, STONE_TINT);
+        tint.setBlendMode(BlendMode.MULTIPLY);
+
+        Pane tinted = new Pane(stone, tint);
+        tinted.setPrefSize(width, height);
+        tinted.setMinSize(width, height);
+        tinted.setMaxSize(width, height);
+        tinted.setMouseTransparent(true);
+
+        return tinted;
     }
 
-    private Node cellNode(GridPosition position) {
-        if (maze.isWall(position)) {
-            return wallNode();
-        }
+    private void place(Pane layer, Node node, GridPosition position) {
+        node.setLayoutX(position.column() * CELL);
+        node.setLayoutY(position.row() * CELL);
+        layer.getChildren().add(node);
+    }
 
-        if (maze.isExit(position)) {
-            return exitNode();
-        }
-
-        if (maze.isDen(position)) {
-            return denNode();
-        }
-
-        return floorNode();
+    /** La sola pietra: muro o corridoio, senza i segni che ci stanno sopra. */
+    private Node pavementNode(GridPosition position) {
+        return maze.isWall(position)
+                ? wallNode()
+                : floorNode();
     }
 
     private Node wallNode() {
@@ -291,8 +339,8 @@ public final class RatMazeScene implements FloorScene {
      * vanno. Il tileset non ha una casella adatta — quella più vicina è troppo
      * chiara e legge come una piastrella — quindi si compone qui.
      */
-    private Node denNode() {
-        StackPane cell = new StackPane(floorNode());
+    private Node denMark() {
+        StackPane cell = new StackPane();
         cell.setPrefSize(CELL, CELL);
 
         Rectangle mouth = new Rectangle(CELL * 0.52, CELL * 0.6,
@@ -321,8 +369,8 @@ public final class RatMazeScene implements FloorScene {
      * topi entrano nella stanza, dall'altra la lasciano — e solo il secondo
      * caso costa qualcosa al giocatore.
      */
-    private Node exitNode() {
-        StackPane cell = new StackPane(floorNode());
+    private Node exitMark() {
+        StackPane cell = new StackPane();
         cell.setPrefSize(CELL, CELL);
 
         Rectangle arch = new Rectangle(CELL * 0.52, CELL * 0.64, EXIT_GLOW);
@@ -429,7 +477,7 @@ public final class RatMazeScene implements FloorScene {
             ImageView sprite =
                     sprites.rat(rng.nextInt(sprites.ratVariants()), CELL);
 
-            board.getChildren().add(sprite);
+            actors.getChildren().add(sprite);
 
             return new RatView(sprite, sprite, rat.position());
         }
@@ -438,7 +486,7 @@ public final class RatMazeScene implements FloorScene {
         icon.setIconSize((int) (CELL * 0.6));
         icon.setIconColor(RAT_COLOR);
 
-        board.getChildren().add(icon);
+        actors.getChildren().add(icon);
 
         return new RatView(icon, null, rat.position());
     }
@@ -590,7 +638,7 @@ public final class RatMazeScene implements FloorScene {
                 return false;
             }
 
-            board.getChildren().remove(entry.getValue().node);
+            actors.getChildren().remove(entry.getValue().node);
             return true;
         });
 
