@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.engine;
 
 import it.unicam.cs.mpgc.rpg123465.domain.Floor;
+import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.domain.Player;
 import it.unicam.cs.mpgc.rpg123465.domain.Tower;
 
@@ -15,6 +16,16 @@ public class GameEngine {
 
     private final Player player;
     private final Tower tower;
+
+    /**
+     * Tentativi per la prova del piano corrente.
+     *
+     * Stanno qui e non nelle scene perché ogni piano è una prova autonoma:
+     * il motore sa quando si cambia piano ed è quindi l'unico punto che può
+     * garantire che si ricominci sempre dal massimo.
+     */
+    private final FloorAttempts attempts = new FloorAttempts();
+
     private int currentFloorIndex;
     private boolean gameCompleted;
 
@@ -94,8 +105,19 @@ public class GameEngine {
     }
 
     /**
+     * Restituisce i tentativi della prova in corso.
+     *
+     * @return tentativi del piano corrente
+     */
+    public FloorAttempts getAttempts() {
+        return attempts;
+    }
+
+    /**
      * Sale al piano successivo, una volta affrontato quello corrente. Se il
      * piano era l'ultimo, la Torre è conclusa.
+     *
+     * Il nuovo piano è una prova nuova: i tentativi ripartono dal massimo.
      */
     public void climb() {
         if (gameCompleted) {
@@ -107,10 +129,15 @@ public class GameEngine {
         } else {
             currentFloorIndex++;
         }
+
+        attempts.reset();
     }
 
     /**
      * Ripristina il punto della salita raggiunto in una partita salvata.
+     *
+     * Un salvataggio rappresenta l'ingresso di un piano, quindi i tentativi
+     * ripartono dal massimo: non serve conservarli nel file.
      *
      * @param currentFloorIndex indice del piano corrente
      * @param gameCompleted indica se la partita era già conclusa
@@ -123,5 +150,7 @@ public class GameEngine {
 
         this.currentFloorIndex = currentFloorIndex;
         this.gameCompleted = gameCompleted;
+
+        attempts.reset();
     }
 }

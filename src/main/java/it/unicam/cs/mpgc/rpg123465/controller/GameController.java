@@ -92,6 +92,41 @@ public class GameController {
                 || player().getMind().isSopraffatto();
     }
 
+    /**
+     * @return tentativi ancora disponibili sul piano corrente
+     */
+    public int getRemainingAttempts() {
+        return gameEngine.getAttempts().getRemaining();
+    }
+
+    /**
+     * @return tentativi concessi all'ingresso di ogni piano
+     */
+    public int getMaxAttempts() {
+        return gameEngine.getAttempts().getMax();
+    }
+
+    /**
+     * @return {@code true} se la prova corrente può continuare
+     */
+    public boolean hasAttemptsLeft() {
+        return gameEngine.getAttempts().hasLeft();
+    }
+
+    /**
+     * Consuma un tentativo per un errore grave del piano.
+     */
+    public void loseAttempt() {
+        gameEngine.getAttempts().lose();
+    }
+
+    /**
+     * Riporta i tentativi al massimo per ricominciare la prova.
+     */
+    public void resetAttempts() {
+        gameEngine.getAttempts().reset();
+    }
+
     public boolean hasSavedGame() {
         return saveManager.exists();
     }
