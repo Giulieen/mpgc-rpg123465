@@ -50,8 +50,14 @@ public class FileSaveManager implements SaveManager {
 
     @Override
     public GameSave load() throws IOException, ClassNotFoundException {
-        try (ObjectInputStream inputStream =
-                     new ObjectInputStream(new FileInputStream(filePath))) {
+        /*
+         * Il file è dichiarato come risorsa a sé: se la costruzione di
+         * ObjectInputStream fallisce — ed è quello che succede con un file
+         * corrotto, che è proprio il caso da gestire — un flusso annidato
+         * resterebbe aperto e il file bloccato.
+         */
+        try (FileInputStream file = new FileInputStream(filePath);
+             ObjectInputStream inputStream = new ObjectInputStream(file)) {
 
             Object loaded = inputStream.readObject();
 
