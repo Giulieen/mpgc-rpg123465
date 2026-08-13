@@ -100,8 +100,9 @@ public class IntroScreen {
         doors.setAlignment(Pos.CENTER);
 
         Label text = introText(
-                "Un cancello di ferro sbarra il sentiero.\n"
-              + "Una catena, un lucchetto. Di qui non si passa.");
+                "La Torre mette alla prova le tue abilità e le tue scelte.\n"
+              + "Quale profilo emergerà dalle tue risposte?\n\n"
+              + "Prendi la chiave e apri il cancello.");
 
         Button open = menuButton("Apri il cancello");
         open.setDisable(true);
@@ -109,13 +110,16 @@ public class IntroScreen {
         VBox overlay = panel(text, open);
         open.setOnAction(event -> openGate(leftHinge, rightHinge, overlay));
 
+        /*
+         * Il testo non cambia: raccolta la chiave restano lo scatto del
+         * lucchetto, la chiave che sparisce e il pulsante che si accende.
+         * Bastano a dire che ha funzionato, senza rimpiazzare una schermata
+         * che il giocatore sta ancora leggendo.
+         */
         Node key = keyGleam();
         key.setOnMouseClicked(event -> {
             Sound.play("/audio/padlock-unlock.mp3", 0.8);
             root.getChildren().remove(key);
-            text.setText(
-                    "Una chiave arrugginita, nascosta tra le radici.\n"
-                  + "Il lucchetto cede con uno scatto.");
             open.setDisable(false);
         });
 
