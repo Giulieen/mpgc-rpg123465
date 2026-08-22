@@ -64,6 +64,7 @@ public final class FloorSceneFactory {
                     new RatMazeScene(
                             encounter,
                             controller,
+                            records,
                             onSave,
                             onExit
                     )

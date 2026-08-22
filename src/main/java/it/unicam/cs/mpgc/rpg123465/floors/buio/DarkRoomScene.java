@@ -3,6 +3,7 @@ package it.unicam.cs.mpgc.rpg123465.floors.buio;
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
@@ -13,7 +14,9 @@ import it.unicam.cs.mpgc.rpg123465.ui.support.CloseupOverlay;
 import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
 import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
 import it.unicam.cs.mpgc.rpg123465.ui.support.RoomLighting;
+import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
 import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -30,7 +33,6 @@ import javafx.scene.shape.Rectangle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 /**
@@ -56,7 +58,7 @@ public class DarkRoomScene implements FloorScene {
     private final DarkRoom room;
     private final DarkRoomController controller;
     private final QuestionRepository questions;
-    private final RecordStore records;
+    private final TrialRecord record;
     private final HeaderBar header;
     private final Consumer<Runnable> onSave;
     private final Runnable onExit;
@@ -84,6 +86,9 @@ public class DarkRoomScene implements FloorScene {
     private Consumer<SceneOutcome> onFinished;
 
     private Region headerView;
+
+    private final ResultOverlay overlay =
+            new ResultOverlay(root, () -> headerView);
 
     private DarkRoomWalls walls;
     private Label countdown;
@@ -125,7 +130,12 @@ public class DarkRoomScene implements FloorScene {
 
         this.room = room;
         this.questions = questions;
-        this.records = records;
+        /* Sul Buio si misura quanto ci si mette: vince il tempo più basso. */
+        this.record =
+                TrialRecord.lowerIsBetter(
+                        records,
+                        RECORD_KEY
+                );
 
         this.controller =
                 new DarkRoomController(
@@ -294,69 +304,52 @@ public class DarkRoomScene implements FloorScene {
     private void showBriefing(
             Runnable onStart
     ) {
-        StackPane overlay =
-                new StackPane(
-                        SceneFx.veil(
-                                root,
-                                0.6
-                        )
-                );
-
-        Button enter =
-                new Button(
-                        "Entra nel buio"
-                );
-
-        enter.getStyleClass().add(
-                "menu-button"
+        overlay.show(
+                null,
+                room.intro(),
+                null,
+                "Entra nel buio",
+                () -> {
+                    overlay.hide();
+                    onStart.run();
+                }
         );
-
-        enter.setOnAction(event -> {
-            root.getChildren().remove(
-                    overlay
-            );
-
-            onStart.run();
-        });
-
-        VBox panel =
-                new VBox(
-                        26,
-                        SceneFx.paragraph(
-                                room.intro()
-                        ),
-                        enter
-                );
-
-        panel.setAlignment(
-                Pos.CENTER
-        );
-
-        panel.setMaxWidth(
-                760
-        );
-
-        panel.getStyleClass().add(
-                "fear-panel"
-        );
-
-        overlay.getChildren().add(
-                panel
-        );
-
-        StackPane.setAlignment(
-                panel,
-                Pos.CENTER
-        );
-
-        root.getChildren().add(
-                overlay
-        );
-
-        headerView.toFront();
     }
 
     private void startAttempt() {
+        resetAttemptState();
+
+        ImageView background =
+                buildBackground();
+
+        walls =
+                new DarkRoomWalls(
+                        root,
+                        room.combination()
+                );
+
+        Pane hotspots =
+                buildHotspots();
+
+        root.getChildren().setAll(
+                background,
+                lighting.lampGlow(),
+                lighting.darkness(),
+                hotspots,
+                headerView
+        );
+
+        StackPane.setAlignment(
+                headerView,
+                Pos.TOP_CENTER
+        );
+
+        updateHeader();
+        startClock();
+    }
+
+    /** Riporta la stanza a com'era all'ingresso: buio, serratura vuota. */
+    private void resetAttemptState() {
         interlude = null;
 
         resolved = false;
@@ -365,7 +358,10 @@ public class DarkRoomScene implements FloorScene {
 
         lockState.reset();
         lighting.setLit(false);
+    }
 
+    /** Lo sfondo, affidato all'illuminazione perché possa oscurarlo. */
+    private ImageView buildBackground() {
         ImageView background =
                 SceneFx.contain(
                         root,
@@ -377,12 +373,17 @@ public class DarkRoomScene implements FloorScene {
                 background
         );
 
-        walls =
-                new DarkRoomWalls(
-                        root,
-                        room.combination()
-                );
+        return background;
+    }
 
+    /**
+     * I punti vivi della stanza: le pareti con i numeri, la tastiera,
+     * l'interruttore e il conto alla rovescia.
+     *
+     * Il pannello non raccoglie i clic sul proprio rettangolo pieno, così il
+     * movimento della torcia continua ad arrivare allo sfondo.
+     */
+    private Pane buildHotspots() {
         Rectangle keypadHotspot =
                 new Rectangle(
                         96,
@@ -447,21 +448,7 @@ public class DarkRoomScene implements FloorScene {
                 false
         );
 
-        root.getChildren().setAll(
-                background,
-                lighting.lampGlow(),
-                lighting.darkness(),
-                hotspots,
-                headerView
-        );
-
-        StackPane.setAlignment(
-                headerView,
-                Pos.TOP_CENTER
-        );
-
-        updateHeader();
-        startClock();
+        return hotspots;
     }
 
     private void onMouseMoved(
@@ -597,127 +584,33 @@ public class DarkRoomScene implements FloorScene {
         updateHeader();
         showSuccessResult(
                 elapsed,
-                submitRecord(elapsed)
+                record.submit(elapsed)
         );
     }
 
-    /**
-     * Conserva il tempo se ha battuto il record.
-     *
-     * @return il record da mostrare dopo questa prova
-     */
-    private int submitRecord(
-            int elapsed
-    ) {
-        OptionalInt previous =
-                records.best(
-                        RECORD_KEY
-                );
-
-        if (previous.isEmpty()
-                || elapsed < previous.getAsInt()) {
-
-            records.save(
-                    RECORD_KEY,
-                    elapsed
-            );
-
-            return elapsed;
-        }
-
-        return previous.getAsInt();
-    }
-
-    private String formatTime(
-            int seconds
-    ) {
-        return String.format(
-                "%02d:%02d",
-                seconds / 60,
-                seconds % 60
-        );
-    }
 
     private void showSuccessResult(
             int elapsed,
-            int record
+            int best
     ) {
-        StackPane overlay =
-                new StackPane(
-                        SceneFx.veil(
-                                root,
-                                0.78
-                        )
-                );
-
-        Label result =
-                SceneFx.paragraph(
-                        room.outro()
-                );
-
-        Label times =
-                new Label(
+        overlay.show(
+                null,
+                room.outro(),
+                TrialStats.line(
                         "Tempo: "
-                                + formatTime(elapsed)
-                                + "     ·     Record: "
-                                + formatTime(record)
-                );
+                                + TrialStats.time(elapsed),
+                        "Record: "
+                                + TrialStats.time(best)
+                ),
+                "Continua",
+                () -> {
+                    cleanup();
 
-        times.getStyleClass().add(
-                "fear-effects"
+                    onFinished.accept(
+                            SceneOutcome.AVANTI
+                    );
+                }
         );
-
-        Button next =
-                new Button(
-                        "Continua"
-                );
-
-        next.getStyleClass().add(
-                "menu-button"
-        );
-
-        next.setOnAction(event -> {
-            cleanup();
-
-            onFinished.accept(
-                    SceneOutcome.AVANTI
-            );
-        });
-
-        VBox panel =
-                new VBox(
-                        24,
-                        result,
-                        times,
-                        next
-                );
-
-        panel.setAlignment(
-                Pos.CENTER
-        );
-
-        panel.setMaxWidth(
-                780
-        );
-
-        panel.getStyleClass().add(
-                "fear-panel"
-        );
-
-        overlay.getChildren().add(
-                panel
-        );
-
-        StackPane.setAlignment(
-                panel,
-                Pos.CENTER
-        );
-
-        root.getChildren().add(
-                overlay
-        );
-
-        headerView.toFront();
     }
 
     private void wrongCombination() {
@@ -818,78 +711,19 @@ public class DarkRoomScene implements FloorScene {
     private void showTrialFailed(
             String message
     ) {
-        StackPane overlay =
-                new StackPane(
-                        SceneFx.veil(
-                                root,
-                                0.86
-                        )
-                );
+        overlay.show(
+                "Prova fallita",
+                message,
+                null,
+                "Ricomincia la prova",
+                () -> {
+                    overlay.hide();
 
-        Label heading =
-                new Label(
-                        "Prova fallita"
-                );
-
-        heading.getStyleClass().add(
-                "fear-title"
+                    controller.restartTrial();
+                    updateHeader();
+                    startAttempt();
+                }
         );
-
-        Button again =
-                new Button(
-                        "Ricomincia la prova"
-                );
-
-        again.getStyleClass().add(
-                "menu-button"
-        );
-
-        again.setOnAction(event -> {
-            root.getChildren().remove(
-                    overlay
-            );
-
-            controller.restartTrial();
-            updateHeader();
-            startAttempt();
-        });
-
-        VBox panel =
-                new VBox(
-                        24,
-                        heading,
-                        SceneFx.paragraph(
-                                message
-                        ),
-                        again
-                );
-
-        panel.setAlignment(
-                Pos.CENTER
-        );
-
-        panel.setMaxWidth(
-                780
-        );
-
-        panel.getStyleClass().add(
-                "fear-panel"
-        );
-
-        overlay.getChildren().add(
-                panel
-        );
-
-        StackPane.setAlignment(
-                panel,
-                Pos.CENTER
-        );
-
-        root.getChildren().add(
-                overlay
-        );
-
-        headerView.toFront();
     }
 
     private void startClock() {

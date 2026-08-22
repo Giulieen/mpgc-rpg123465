@@ -4,6 +4,7 @@ import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
 import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
@@ -12,7 +13,9 @@ import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
 import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
 import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
+import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
 import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -21,24 +24,20 @@ import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -69,7 +68,7 @@ public class AltezzeScene implements FloorScene {
     private final AltezzeConfig config;
     private final AltezzeController controller;
     private final QuestionRepository questions;
-    private final RecordStore records;
+    private final TrialRecord record;
     private final HeaderBar header;
     private final Consumer<Runnable> onSave;
     private final Runnable onExit;
@@ -96,21 +95,16 @@ public class AltezzeScene implements FloorScene {
     private LevelState state =
             LevelState.INTRO;
 
-    private int currentBridge = -1;
-    private int destinationBridge = -1;
-
-    private double progress;
+    /** Ponte attuale, avanzamento e soglie di cambio. */
+    private final BridgeRoute route;
 
     private int balance;
-    private int nextThreshold;
-    private int routeStep;
 
-    private ArrowDirection currentArrow;
-    private ArrowDirection lastArrow;
+    /** Regole e punteggio delle frecce; la scena ne governa solo i tempi. */
+    private final ArrowChallenge arrows =
+            new ArrowChallenge(rng);
 
-    private int sameDirCount;
-    private int streak;
-    private int score;
+    /** Record del piano, mostrato accanto al punteggio della traversata. */
     private int best;
 
     private boolean cleanRun = true;
@@ -127,7 +121,8 @@ public class AltezzeScene implements FloorScene {
     private ImageView bg;
     private Rectangle dimOverlay;
     private BridgeBeacons beacons;
-    private StackPane overlay;
+    private final ResultOverlay overlay =
+            new ResultOverlay(root, () -> headerView);
 
     /*
      * Le quattro domande vengono mescolate una volta entrando nel piano.
@@ -157,8 +152,14 @@ public class AltezzeScene implements FloorScene {
 
         this.crossing = crossing;
         this.config = crossing.config();
+        this.route = new BridgeRoute(config, rng);
         this.questions = questions;
-        this.records = records;
+        /* Sulle Altezze si misura il punteggio: vince il più alto. */
+        this.record =
+                TrialRecord.higherIsBetter(
+                        records,
+                        RECORD_KEY
+                );
         this.onSave = onSave;
         this.onExit = onExit;
 
@@ -196,16 +197,31 @@ public class AltezzeScene implements FloorScene {
                 "fear-root"
         );
 
+        /*
+         * Le domande si estraggono una volta sola: rientrare dopo una caduta
+         * non deve rimescolarle.
+         */
         if (!entered) {
             prepareDilemmas();
             entered = true;
         }
 
         best =
-                records.best(
-                        RECORD_KEY
-                ).orElse(0);
+                record.best()
+                        .orElse(0);
 
+        buildScene();
+        bindInput();
+        startFrames();
+
+        startAmbience();
+        showIntro();
+
+        return root;
+    }
+
+    /** Fondale, ponti, fari e barra di gioco. */
+    private void buildScene() {
         headerView =
                 header.createView();
 
@@ -237,11 +253,19 @@ public class AltezzeScene implements FloorScene {
         );
 
         hud.setStats(
-                score,
+                arrows.score(),
                 best,
-                streak
+                arrows.streak()
         );
+    }
 
+    /**
+     * Mouse e tastiera.
+     *
+     * I tasti si legano quando la scena entra in una finestra, non adesso: a
+     * questo punto la Scene non esiste ancora.
+     */
+    private void bindInput() {
         root.setOnMouseClicked(
                 this::onSceneClick
         );
@@ -254,7 +278,10 @@ public class AltezzeScene implements FloorScene {
                 (obs, oldScene, newScene) ->
                         bindKeys(newScene)
         );
+    }
 
+    /** Avvia il battito che fa avanzare la traversata a ogni fotogramma. */
+    private void startFrames() {
         advance =
                 new AnimationTimer() {
                     @Override
@@ -264,12 +291,6 @@ public class AltezzeScene implements FloorScene {
                 };
 
         advance.start();
-
-        startAmbience();
-
-        showIntro();
-
-        return root;
     }
 
     // ---------------------------------------------------------------------
@@ -453,7 +474,7 @@ public class AltezzeScene implements FloorScene {
         }
 
         if (state != LevelState.PLAYING
-                || currentBridge < 0) {
+                || !route.hasBridge()) {
 
             return;
         }
@@ -463,17 +484,17 @@ public class AltezzeScene implements FloorScene {
                         + (momentum() - 1)
                         * ADV_FACTOR;
 
-        progress +=
+        route.advance(
                 config
                         .bridge(
-                                currentBridge
+                                route.current()
                         )
                         .advancePerSecond()
                         * advanceBoost
-                        * dt;
+                        * dt
+        );
 
-        if (progress >= 100) {
-            progress = 100;
+        if (route.isComplete()) {
             win();
             return;
         }
@@ -481,7 +502,7 @@ public class AltezzeScene implements FloorScene {
         double zoom =
                 1
                         + 0.13
-                        * progress
+                        * route.progress()
                         / 100.0;
 
         bg.setScaleX(
@@ -496,15 +517,7 @@ public class AltezzeScene implements FloorScene {
     }
 
     private void maybeReroute() {
-        double[] thresholds =
-                config.routeThresholds();
-
-        if (nextThreshold
-                < thresholds.length
-                && progress
-                >= thresholds[nextThreshold]) {
-
-            nextThreshold++;
+        if (route.consumeThreshold()) {
             startReroute();
         }
     }
@@ -523,16 +536,17 @@ public class AltezzeScene implements FloorScene {
 
         beacons.hide();
 
-        showOverlay(
+        overlay.show(
                 crossing.title(),
                 crossing.intro(),
+                null,
                 "Scegli il ponte",
                 this::toSelection
         );
     }
 
     private void toSelection() {
-        hideOverlay();
+        overlay.hide();
 
         state =
                 LevelState.BRIDGE_SELECTION;
@@ -551,7 +565,7 @@ public class AltezzeScene implements FloorScene {
     private void selectBridge(
             int index
     ) {
-        currentBridge = index;
+        route.select(index);
 
         beacons.hide();
 
@@ -578,9 +592,9 @@ public class AltezzeScene implements FloorScene {
         );
 
         hud.setStats(
-                score,
+                arrows.score(),
                 best,
-                streak
+                arrows.streak()
         );
 
         hud.showDpad(
@@ -610,7 +624,7 @@ public class AltezzeScene implements FloorScene {
                         MIN_INTERVAL,
                         config
                                 .bridge(
-                                        currentBridge
+                                        route.current()
                                 )
                                 .arrowIntervalMs()
                                 / momentum()
@@ -637,15 +651,15 @@ public class AltezzeScene implements FloorScene {
             return;
         }
 
-        currentArrow =
-                pickDirection();
+        ArrowDirection shown =
+                arrows.show();
 
         double response =
                 Math.max(
                         MIN_RESPONSE,
                         config
                                 .bridge(
-                                        currentBridge
+                                        route.current()
                                 )
                                 .responseMs()
                                 / Math.sqrt(
@@ -654,7 +668,7 @@ public class AltezzeScene implements FloorScene {
                 );
 
         hud.showArrow(
-                currentArrow,
+                shown,
                 response
         );
 
@@ -671,38 +685,11 @@ public class AltezzeScene implements FloorScene {
 
         responseTimer.setOnFinished(
                 event -> resolveArrow(
-                        false
+                        null
                 )
         );
 
         responseTimer.play();
-    }
-
-    private ArrowDirection pickDirection() {
-        ArrowDirection[] all =
-                ArrowDirection.values();
-
-        ArrowDirection chosen;
-
-        do {
-            chosen =
-                    all[
-                            rng.nextInt(
-                                    all.length
-                            )
-                            ];
-
-        } while (chosen == lastArrow
-                && sameDirCount >= 2);
-
-        if (chosen == lastArrow) {
-            sameDirCount++;
-        } else {
-            lastArrow = chosen;
-            sameDirCount = 1;
-        }
-
-        return chosen;
     }
 
     private void handleArrowInput(
@@ -710,21 +697,23 @@ public class AltezzeScene implements FloorScene {
     ) {
         if (state
                 != LevelState.PLAYING
-                || currentArrow == null) {
+                || !arrows.isWaiting()) {
 
             return;
         }
 
         resolveArrow(
                 pressed
-                        == currentArrow.opposite()
         );
     }
 
+    /**
+     * @param pressed direzione premuta, oppure null se il tempo è scaduto
+     */
     private void resolveArrow(
-            boolean correct
+            ArrowDirection pressed
     ) {
-        if (currentArrow == null) {
+        if (!arrows.isWaiting()) {
             return;
         }
 
@@ -732,25 +721,17 @@ public class AltezzeScene implements FloorScene {
                 responseTimer
         );
 
-        currentArrow = null;
-
         hud.hideArrow();
 
-        if (correct) {
-            streak++;
-
-            score +=
-                    10
-                            + streak;
-
-            if (score > best) {
-                best = score;
+        if (arrows.resolve(pressed)) {
+            if (arrows.score() > best) {
+                best = arrows.score();
             }
 
             hud.setStats(
-                    score,
+                    arrows.score(),
                     best,
-                    streak
+                    arrows.streak()
             );
 
             Sound.play(
@@ -773,7 +754,6 @@ public class AltezzeScene implements FloorScene {
 
     private void loseBalance() {
         balance--;
-        streak = 0;
         cleanRun = false;
 
         hud.setBalance(
@@ -781,9 +761,9 @@ public class AltezzeScene implements FloorScene {
         );
 
         hud.setStats(
-                score,
+                arrows.score(),
                 best,
-                streak
+                arrows.streak()
         );
 
         Sound.play(
@@ -802,7 +782,7 @@ public class AltezzeScene implements FloorScene {
         return Math.min(
                 MOM_CAP,
                 1
-                        + streak
+                        + arrows.streak()
                         * MOM_STEP
         );
     }
@@ -831,7 +811,11 @@ public class AltezzeScene implements FloorScene {
                 responseTimer
         );
 
-        currentArrow = null;
+        /*
+         * La freccia a schermo viene scartata, non sbagliata: il cambio di
+         * ponte non dipende dal giocatore e non deve costargli un errore.
+         */
+        arrows.discard();
 
         hud.hideArrow();
 
@@ -839,11 +823,8 @@ public class AltezzeScene implements FloorScene {
     }
 
     private void proceedReroute() {
-        destinationBridge =
-                chooseDestination();
-
         beacons.illuminate(
-                destinationBridge
+                route.chooseDestination()
         );
 
         hud.showReroute(
@@ -873,38 +854,12 @@ public class AltezzeScene implements FloorScene {
         rerouteDeadline.play();
     }
 
-    private int chooseDestination() {
-        int[] manual =
-                config.manualRoute();
-
-        if (manual != null
-                && routeStep
-                < manual.length) {
-
-            return manual[
-                    routeStep++
-                    ];
-        }
-
-        routeStep++;
-
-        int offset =
-                rng.nextInt(2)
-                        + 1;
-
-        return (currentBridge + offset)
-                % 3;
-    }
-
     private void performJump() {
         cancel(
                 rerouteDeadline
         );
 
-        currentBridge =
-                destinationBridge;
-
-        destinationBridge = -1;
+        route.jump();
 
         beacons.hide();
 
@@ -948,8 +903,7 @@ public class AltezzeScene implements FloorScene {
 
         } else if (state
                 == LevelState.CHANGING_BRIDGE
-                && index
-                == destinationBridge) {
+                && route.isDestination(index)) {
 
             performJump();
         }
@@ -1000,17 +954,7 @@ public class AltezzeScene implements FloorScene {
         state =
                 LevelState.VICTORY;
 
-        hud.showDpad(
-                false
-        );
-
-        hud.hideArrow();
-
-        beacons.hide();
-
-        stopTimers();
-
-        Sound.stopAll();
+        endGameplay();
 
         Sound.play(
                 "/audio/gate-open.mp3",
@@ -1024,59 +968,67 @@ public class AltezzeScene implements FloorScene {
         showVictoryResult();
     }
 
-    /**
-     * Conserva il punteggio se ha battuto il record.
-     *
-     * Qui più alto è meglio, al contrario del tempo del Piano II: è il piano
-     * a saperlo, non l'archivio.
-     */
+    /** Conserva il punteggio migliore raggiunto nella traversata. */
     private void submitRecord() {
-        OptionalInt previous =
-                records.best(
-                        RECORD_KEY
-                );
-
-        if (previous.isEmpty()
-                || best > previous.getAsInt()) {
-
-            records.save(
-                    RECORD_KEY,
-                    best
-            );
-        }
+        best = record.submit(best);
     }
 
     private void showVictoryResult() {
-        StringBuilder message =
-                new StringBuilder();
+        String message =
+                cleanRun
+                        ? crossing.victory()
+                                + "\n\nAttraversata senza un solo errore."
+                        : crossing.victory();
 
-        message
-                .append(
-                        crossing.victory()
-                )
-                .append("\n\n")
-                .append("Punteggio: ")
-                .append(
-                        score
-                );
-
-        if (cleanRun) {
-            message.append(
-                    "\nAttraversata senza errori."
-            );
-        }
-
-        showOverlay(
+        overlay.show(
                 "L'altra sponda",
-                message.toString(),
+                message,
+                trialStats(),
                 "Prosegui",
                 this::finish
+        );
+    }
+
+    /**
+     * Riepilogo della traversata: quante frecce sono state indovinate, quante
+     * sbagliate, il punteggio di questa prova e il record dell'installazione.
+     */
+    private Label trialStats() {
+        return TrialStats.line(
+                "Frecce indovinate: "
+                        + arrows.hits(),
+                "Errori: "
+                        + arrows.misses(),
+                "Punteggio: "
+                        + arrows.score(),
+                "Record: "
+                        + best
         );
     }
 
     // ---------------------------------------------------------------------
     // Caduta
     // ---------------------------------------------------------------------
+
+    /**
+     * Ferma il gioco lasciando la scena a schermo.
+     *
+     * Vittoria e caduta arrivano da strade opposte ma spengono le stesse cose:
+     * i comandi, gli indicatori e i tempi.
+     */
+    private void endGameplay() {
+        hud.showDpad(
+                false
+        );
+
+        hud.hideArrow();
+
+        beacons.hide();
+
+        stopTimers();
+
+        Sound.stopAll();
+    }
 
     private void fall() {
         if (state
@@ -1092,19 +1044,24 @@ public class AltezzeScene implements FloorScene {
 
         dilemmaOpen = false;
 
-        hud.showDpad(
-                false
-        );
+        endGameplay();
 
-        hud.hideArrow();
         hud.hideReroute();
 
-        beacons.hide();
+        playFallAudio();
 
-        stopTimers();
+        controller.registerFall();
 
-        Sound.stopAll();
+        submitRecord();
+        updateHeader();
 
+        showFallResult(
+                controller.canRetry()
+        );
+    }
+
+    /** Legno che cede, urlo e caduta, sfalsati per farli sentire in sequenza. */
+    private void playFallAudio() {
         Sound.play(
                 "/audio/wood-break.mp3",
                 0.85
@@ -1125,20 +1082,22 @@ public class AltezzeScene implements FloorScene {
                         0.75
                 )
         );
+    }
 
-        controller.registerFall();
-
-        submitRecord();
-
-        boolean canRetry =
-                controller.canRetry();
-
-        String note =
-                canRetry
-                        ? "\n\n" + attemptsNote()
-                        : "\n\nTentativi esauriti: la prova ricomincia da capo.";
-
-        updateHeader();
+    /**
+     * Il buio cala sulla scena e solo quando è pieno compare il cartello:
+     * mostrarlo subito sopra il ponte toglierebbe alla caduta il suo tempo.
+     *
+     * @param canRetry se restano tentativi per riprovare la traversata
+     */
+    private void showFallResult(
+            boolean canRetry
+    ) {
+        String message =
+                crossing.gameOver()
+                        + (canRetry
+                                ? "\n\n" + attemptsNote()
+                                : "\n\nTentativi esauriti: la prova ricomincia da capo.");
 
         Rectangle black =
                 SceneFx.veil(
@@ -1174,10 +1133,6 @@ public class AltezzeScene implements FloorScene {
                 1
         );
 
-        String message =
-                crossing.gameOver()
-                        + note;
-
         drop.setOnFinished(
                 event -> {
                     root
@@ -1186,11 +1141,12 @@ public class AltezzeScene implements FloorScene {
                                     black
                             );
 
-                    showOverlay(
+                    overlay.show(
                             canRetry
                                     ? "Sei caduto"
                                     : "Prova fallita",
                             message,
+                            null,
                             canRetry
                                     ? "Riprova"
                                     : "Ricomincia la prova",
@@ -1227,25 +1183,14 @@ public class AltezzeScene implements FloorScene {
 
     private void restartLevel() {
         stopTimers();
-        hideOverlay();
+        overlay.hide();
 
-        progress = 0;
+        route.restart();
 
         balance =
                 config.balancePoints();
 
-        currentBridge = -1;
-        destinationBridge = -1;
-
-        nextThreshold = 0;
-        routeStep = 0;
-
-        currentArrow = null;
-        lastArrow = null;
-
-        sameDirCount = 0;
-        streak = 0;
-        score = 0;
+        arrows.restart();
 
         cleanRun = true;
         dilemmaOpen = false;
@@ -1254,9 +1199,9 @@ public class AltezzeScene implements FloorScene {
         hud.hideReroute();
 
         hud.setStats(
-                score,
+                arrows.score(),
                 best,
-                streak
+                arrows.streak()
         );
 
         hud.setBalance(
@@ -1405,103 +1350,6 @@ public class AltezzeScene implements FloorScene {
 
     // ---------------------------------------------------------------------
     // Overlay
-    // ---------------------------------------------------------------------
-
-    private void showOverlay(
-            String title,
-            String message,
-            String buttonText,
-            Runnable action
-    ) {
-        Label heading =
-                new Label(
-                        title
-                );
-
-        heading
-                .getStyleClass()
-                .add(
-                        "fear-title"
-                );
-
-        Button button =
-                new Button(
-                        buttonText
-                );
-
-        button
-                .getStyleClass()
-                .add(
-                        "menu-button"
-                );
-
-        button.setOnAction(
-                event -> action.run()
-        );
-
-        VBox card =
-                new VBox(
-                        22,
-                        heading,
-                        SceneFx.paragraph(
-                                message
-                        ),
-                        button
-                );
-
-        card.setAlignment(
-                Pos.CENTER
-        );
-
-        card.setMaxWidth(
-                760
-        );
-
-        card
-                .getStyleClass()
-                .add(
-                        "fear-panel"
-                );
-
-        overlay =
-                new StackPane(
-                        SceneFx.veil(
-                                root,
-                                0.82
-                        ),
-                        card
-                );
-
-        StackPane.setAlignment(
-                card,
-                Pos.CENTER
-        );
-
-        root.getChildren().add(
-                overlay
-        );
-
-        if (headerView != null) {
-            headerView.toFront();
-        }
-    }
-
-    private void hideOverlay() {
-        if (overlay == null) {
-            return;
-        }
-
-        root
-                .getChildren()
-                .remove(
-                        overlay
-                );
-
-        overlay = null;
-    }
-
-    // ---------------------------------------------------------------------
-    // Timer e cleanup
     // ---------------------------------------------------------------------
 
     private void stopTimers() {

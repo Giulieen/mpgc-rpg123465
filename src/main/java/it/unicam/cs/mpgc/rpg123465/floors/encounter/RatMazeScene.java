@@ -3,9 +3,13 @@ package it.unicam.cs.mpgc.rpg123465.floors.encounter;
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
 import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
 import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -16,7 +20,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorAdjust;
@@ -75,6 +78,12 @@ public final class RatMazeScene implements FloorScene {
      */
     private static final Color STONE_TINT = Color.web("#b99a5e");
 
+    /** Identifica il record del piano nell'archivio condiviso. */
+    private static final String RECORD_KEY = "topi.tempo";
+
+    /** Ogni quanto avanza il cronometro della prova. */
+    private static final Duration CLOCK_STEP = Duration.seconds(1);
+
     private static final Color STONE = Color.web("#2a2620");
     private static final Color FLOOR = Color.web("#0f0d0a");
     private static final Color GOLD = Color.web("#f4c76b");
@@ -86,6 +95,7 @@ public final class RatMazeScene implements FloorScene {
     private final RatMazeController controller;
     private final MazeSprites sprites = MazeSprites.load();
     private final HeaderBar header;
+    private final TrialRecord record;
     private final Consumer<Runnable> onSave;
     private final Runnable onExit;
     private final Random rng = new Random();
@@ -124,7 +134,16 @@ public final class RatMazeScene implements FloorScene {
     private Timeline ratTimeline;
     private Timeline spawnTimeline;
     private Timeline frameTimeline;
-    private StackPane overlay;
+    private Timeline clockTimeline;
+
+    /*
+     * Quanto dura la prova. Il cronometro e' una Timeline come le altre, cosi'
+     * si ferma da se' quando la prova viene sospesa per salvare e quando
+     * l'esito e' deciso: il tempo misurato e' solo quello giocato.
+     */
+    private int elapsedSeconds;
+    private final ResultOverlay overlay =
+            new ResultOverlay(root, () -> headerView);
 
     /**
      * Ciò che serve a disegnare un topo: la sua vista, la variante di colore
@@ -150,10 +169,11 @@ public final class RatMazeScene implements FloorScene {
     public RatMazeScene(
             FearEncounter encounter,
             GameController game,
+            RecordStore records,
             Consumer<Runnable> onSave,
             Runnable onExit
     ) {
-        if (encounter == null || game == null) {
+        if (encounter == null || game == null || records == null) {
             throw new IllegalArgumentException(
                     "Gli argomenti non possono essere null."
             );
@@ -161,6 +181,10 @@ public final class RatMazeScene implements FloorScene {
 
         this.encounter = encounter;
         this.controller = new RatMazeController(maze, game);
+
+        /* Sui Topi si misura quanto ci si mette: vince il tempo piu' basso. */
+        this.record = TrialRecord.lowerIsBetter(records, RECORD_KEY);
+
         this.onSave = onSave;
         this.onExit = onExit;
 
@@ -219,7 +243,7 @@ public final class RatMazeScene implements FloorScene {
         counter.getStyleClass().add("maze-counter");
 
         Label hint = new Label(
-                "Muoviti con WASD o le frecce e chiudi loro la strada."
+                "Muoviti con le frecce e non far arrivare i topi alle uscite."
         );
         hint.getStyleClass().add("fear-memory");
 
@@ -422,6 +446,7 @@ public final class RatMazeScene implements FloorScene {
         ratTimeline = loop(RAT_STEP, event -> onRatStep());
         spawnTimeline = loop(SPAWN_INTERVAL, event -> onSpawnTick());
         frameTimeline = loop(FRAME_STEP, event -> onFrameTick());
+        clockTimeline = loop(CLOCK_STEP, event -> onClockTick());
 
         // Il primo topo non deve farsi attendere due secondi.
         onSpawnTick();
@@ -676,7 +701,14 @@ public final class RatMazeScene implements FloorScene {
                         + controller.capturedRats()
                         + " / "
                         + controller.targetRats()
+                        + "     ·     Tempo   "
+                        + TrialStats.time(elapsedSeconds)
         );
+    }
+
+    private void onClockTick() {
+        elapsedSeconds++;
+        updateCounter();
     }
 
     private void updateHeader() {
@@ -719,10 +751,11 @@ public final class RatMazeScene implements FloorScene {
                 Sound.stopAll();
                 Sound.play("/audio/gate-open.mp3", 0.7);
 
-                showOverlay(
+                overlay.show(
                         "PROVA SUPERATA",
                         "L'ultimo topo scompare tra le ombre.\n"
                                 + "Le uscite sono di nuovo al sicuro.",
+                        trialStats(record.submit(elapsedSeconds)),
                         "Continua",
                         this::finish
                 );
@@ -736,9 +769,14 @@ public final class RatMazeScene implements FloorScene {
                 Sound.stopAll();
                 Sound.play("/audio/rats-many.mp3", 0.6);
 
-                showOverlay(
+                /*
+                 * Il tempo di una prova fallita non entra nel record: si
+                 * confrontano solo le stanze ripulite fino all'ultimo topo.
+                 */
+                overlay.show(
                         "PROVA FALLITA",
                         "Troppi topi sono sfuggiti.",
+                        trialStats(record.best().orElse(0)),
                         "Riprova",
                         this::restartTrial
                 );
@@ -749,15 +787,40 @@ public final class RatMazeScene implements FloorScene {
     }
 
     /**
+     * Riepilogo della prova: quanti topi sono stati presi, quanto ci si e'
+     * messi e il miglior tempo mai registrato su questa installazione.
+     *
+     * @param best record da mostrare, zero se la prova non e' mai stata
+     *             superata
+     */
+    private Label trialStats(int best) {
+        String bestLabel =
+                best > 0
+                        ? TrialStats.time(best)
+                        : "—";
+
+        return TrialStats.line(
+                "Topi presi: "
+                        + controller.capturedRats()
+                        + " / "
+                        + controller.targetRats(),
+                "Tempo: " + TrialStats.time(elapsedSeconds),
+                "Record: " + bestLabel
+        );
+    }
+
+    /**
      * Riporta la prova all'inizio.
      *
      * Il dilemma non viene riproposto: era una fase precedente e la risposta
      * resta quella data allora.
      */
     private void restartTrial() {
-        hideOverlay();
+        overlay.hide();
 
         controller.reset();
+
+        elapsedSeconds = 0;
 
         syncRatNodes();
         movePlayerNode();
@@ -771,44 +834,6 @@ public final class RatMazeScene implements FloorScene {
     private void finish() {
         cleanup();
         onFinished.accept(SceneOutcome.AVANTI);
-    }
-
-    private void showOverlay(
-            String title,
-            String message,
-            String buttonText,
-            Runnable action
-    ) {
-        Label heading = new Label(title);
-        heading.getStyleClass().add("fear-title");
-
-        Button button = new Button(buttonText);
-        button.getStyleClass().add("menu-button");
-        button.setOnAction(event -> action.run());
-
-        VBox card = new VBox(
-                22,
-                heading,
-                SceneFx.paragraph(message),
-                button
-        );
-
-        card.setAlignment(Pos.CENTER);
-        card.setMaxWidth(720);
-        card.getStyleClass().add("fear-panel");
-
-        overlay = new StackPane(SceneFx.veil(root, 0.84), card);
-        StackPane.setAlignment(card, Pos.CENTER);
-
-        root.getChildren().add(overlay);
-        headerView.toFront();
-    }
-
-    private void hideOverlay() {
-        if (overlay != null) {
-            root.getChildren().remove(overlay);
-            overlay = null;
-        }
     }
 
     // ---------------------------------------------------------------------
@@ -853,7 +878,11 @@ public final class RatMazeScene implements FloorScene {
 
     private void forEachTimeline(Consumer<Timeline> action) {
         for (Timeline timeline :
-                new Timeline[] {ratTimeline, spawnTimeline, frameTimeline}) {
+                new Timeline[] {
+                        ratTimeline,
+                        spawnTimeline,
+                        frameTimeline,
+                        clockTimeline}) {
 
             if (timeline != null) {
                 action.accept(timeline);
@@ -868,6 +897,7 @@ public final class RatMazeScene implements FloorScene {
         ratTimeline = null;
         spawnTimeline = null;
         frameTimeline = null;
+        clockTimeline = null;
     }
 
     private void exitLevel() {
