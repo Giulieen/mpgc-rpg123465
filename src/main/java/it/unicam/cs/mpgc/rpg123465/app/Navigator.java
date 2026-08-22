@@ -17,6 +17,7 @@ import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
 import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
+import it.unicam.cs.mpgc.rpg123465.ui.ProfileGalleryScreen;
 import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
 import it.unicam.cs.mpgc.rpg123465.ui.StartMenu;
 import it.unicam.cs.mpgc.rpg123465.ui.WindowFrame;
@@ -113,15 +114,35 @@ public final class Navigator {
          */
         players.register(playerName);
 
+        /*
+         * Aperto il cancello si spiega la prova e si mostrano i sette profili:
+         * il giocatore deve sapere che sta rispondendo per davvero prima di
+         * dare la prima risposta, non scoprirlo alla fine.
+         */
         IntroScreen intro =
                 new IntroScreen(
-                        () -> showCurrentFloor(
+                        () -> showProfileGallery(
                                 controller
                         )
                 );
 
         frame.setContent(
                 intro.createView()
+        );
+    }
+
+    private void showProfileGallery(
+            GameController controller
+    ) {
+        ProfileGalleryScreen gallery =
+                new ProfileGalleryScreen(
+                        () -> showCurrentFloor(
+                                controller
+                        )
+                );
+
+        frame.setContent(
+                gallery.createView()
         );
     }
 

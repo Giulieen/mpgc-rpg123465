@@ -10,6 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -85,18 +88,9 @@ public final class ProfileResultScreen {
     }
 
     private VBox content() {
-        Label demo =
-                new Label(
-                        "FINE DELLA DEMO"
-                );
-
-        demo.getStyleClass().add(
-                "fear-effects"
-        );
-
         Label direction =
                 new Label(
-                        "LE TUE SCELTE HANNO DELINEATO"
+                        "IL TUO PROFILO STA ANDANDO VERSO"
                 );
 
         direction.getStyleClass().add(
@@ -117,13 +111,47 @@ public final class ProfileResultScreen {
                         profile.getDescrizione()
                 );
 
-        Label conclusion =
-                paragraph(
-                        "Questo profilo nasce dalle scelte "
-                                + "che hai compiuto durante la salita della Torre."
+        VBox words =
+                new VBox(
+                        14,
+                        direction,
+                        name,
+                        description
                 );
 
-        conclusion.getStyleClass().add(
+        words.setAlignment(
+                Pos.CENTER
+        );
+
+        words.setMaxWidth(
+                460
+        );
+
+        /*
+         * Ritratto a sinistra e parole a destra: il profilo si legge come una
+         * carta, non come un elenco. La figura è alta quanto il testo che
+         * accompagna, così la card resta equilibrata anche con le descrizioni
+         * più lunghe.
+         */
+        HBox card =
+                new HBox(
+                        34,
+                        portrait(),
+                        words
+                );
+
+        card.setAlignment(
+                Pos.CENTER
+        );
+
+        Label demo =
+                paragraph(
+                        "Grazie per aver giocato la demo di Tower of Self.\n"
+                                + "Completa la Torre per scoprire il profilo "
+                                + "che ti rispecchia davvero."
+                );
+
+        demo.getStyleClass().add(
                 "fear-memory"
         );
 
@@ -145,12 +173,9 @@ public final class ProfileResultScreen {
 
         VBox box =
                 new VBox(
-                        22,
+                        26,
+                        card,
                         demo,
-                        direction,
-                        name,
-                        description,
-                        conclusion,
                         menu
                 );
 
@@ -159,7 +184,7 @@ public final class ProfileResultScreen {
         );
 
         box.setMaxWidth(
-                780
+                900
         );
 
         box.getStyleClass().add(
@@ -167,6 +192,29 @@ public final class ProfileResultScreen {
         );
 
         return box;
+    }
+
+    private ImageView portrait() {
+        ImageView view =
+                new ImageView(
+                        new Image(
+                                getClass().getResourceAsStream(
+                                        profile.getRitratto()
+                                )
+                        )
+                );
+
+        /*
+         * Riquadro, non altezza fissa: le figure hanno proporzioni molto
+         * diverse — c'è chi sta in piedi e chi cammina a quattro zampe — e
+         * imporre l'altezza renderebbe le seconde larghe il doppio.
+         */
+        view.setPreserveRatio(true);
+        view.setFitWidth(300);
+        view.setFitHeight(340);
+        view.setSmooth(true);
+
+        return view;
     }
 
     private Label paragraph(
