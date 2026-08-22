@@ -1,100 +1,89 @@
-# Tower of Self RPG
+# Tower of Self
 
-Tower of Self è un progetto Java sviluppato per l'esame di Metodologie di Programmazione / Modellazione e Gestione della Conoscenza.
+RPG psicologico a piani, sviluppato per l'esame di **Metodologie di Programmazione / Modellazione e Gestione della Conoscenza** (AA 2025/26).
 
-Il progetto consiste in un RPG psicologico in cui il giocatore esplora una torre composta da piani simbolici, ognuno legato a un aspetto della mente. La versione attuale include due piani giocabili: **I Topi** e **Il Buio**. I piani successivi (Rabbia, Ansia, Solitudine, Speranza, Alter Ego) sono previsti per le prossime iterazioni.
+Il giocatore sale una Torre di tre piani. Ogni piano è una prova diversa — riflessi, memoria, equilibrio — e fra una prova e l'altra pone domande senza risposta giusta. **Le prove misurano le abilità; le domande misurano il giocatore**: dalle risposte, e solo da quelle, emerge alla fine uno di sette profili.
 
-La documentazione dettagliata (responsabilità delle classi, organizzazione dei dati, meccanismi di estensione) è disponibile nella **Wiki** del repository.
-
----
-
-## Stato del progetto
-
-🚧 In sviluppo attivo — **Piani 1 e 2 giocabili**
-
----
-
-## Funzionalità implementate
-
-- Menu iniziale con inserimento del nome del giocatore e introduzione narrativa
-- Modello del dominio (personaggi, statistiche, oggetti, inventario)
-- Piano 1 completo e giocabile: scelta di reazione alla paura dei topi
-- Piano 2 completo e giocabile: puzzle a tempo nella stanza buia, con cifre binarie e serratura
-- Stato interiore persistente: Lucidità, Stress e memoria delle reazioni che determinano l'alter ego
-- Persistenza tramite serializzazione: salvataggio dalla barra di gioco e caricamento dal menu
-- Interfaccia grafica JavaFX con tema dedicato (CSS)
-- Separazione della logica dalla vista tramite pattern MVC
-- Suite di test automatici con JUnit 5
-
----
-
-## Funzionalità previste
-
-- Aggiunta dei piani successivi (Rabbia, Ansia, Solitudine, Speranza, Alter Ego)
-- Nuove prove e reazioni specifiche per ciascun piano
-- Persistenza dell'inventario e di uno stato di gioco più ricco
-- Ulteriori viste (es. web, mobile) sopra lo stesso controller
-- Persistenza alternativa (XML, database)
-
----
-
-## Roadmap
-
-- [x] Configurazione del progetto
-- [x] Modello del dominio
-- [x] Sistema di combattimento
-- [x] Struttura della torre ed eventi
-- [x] Motore di gioco
-- [x] Persistenza (serializzazione)
-- [x] Interfaccia grafica (JavaFX)
-- [x] Separazione MVC
-- [x] Menu iniziale e introduzione narrativa
-- [x] Meccanica "Confrontati" (package challenge)
-- [x] Rifinitura dei Piani 1 e 2
-- [x] Test automatici (JUnit 5)
-- [ ] Aggiunta dei piani successivi
-- [ ] Documentazione completa nella Wiki
+La documentazione completa — responsabilità delle classi, organizzazione dei dati, meccanismi di estensione — è nella **[Wiki](../../wiki)** del repository.
 
 ---
 
 ## Requisiti
 
-- Java 21
-- Gradle Wrapper incluso nel progetto
+- **Java 21**
+- Nient'altro: Gradle arriva con il wrapper incluso nel repository.
 
----
-
-## Build
-
-### Windows
-
-```powershell
-.\gradlew.bat build
-```
-
-### Linux / macOS
+## Compilare ed eseguire
 
 ```bash
-./gradlew build
+./gradlew build     # compila ed esegue i test
+./gradlew run       # avvia il gioco
 ```
+
+Su Windows: `.\gradlew.bat build` e `.\gradlew.bat run`.
 
 ---
 
-## Esecuzione
+## I tre piani
 
-### Windows
+| piano | prova | comandi | misura |
+| --- | --- | --- | --- |
+| **I — I Topi** | catturare 12 topi prima che raggiungano le uscite | frecce direzionali | topi presi, tempo |
+| **II — Il Buio** | trovare al buio le cifre sulle pareti e comporre la combinazione in 60 secondi | mouse | tempo impiegato |
+| **III — Le Altezze** | attraversare tre ponti reagendo alle frecce senza perdere l'equilibrio | frecce direzionali | punteggio, errori |
 
-```powershell
-.\gradlew.bat run
-```
+Ogni piano conserva il proprio **record personale**, che sopravvive a «Nuova partita».
 
-### Linux / macOS
+## Il profilo
 
-```bash
-./gradlew run
-```
+Le risposte ai dilemmi alimentano tre tratti nascosti — **Coraggio**, **Curiosità**, **Avventura** — che il giocatore non vede mai. Dal loro equilibrio nasce uno di sette profili: *Il Coraggioso, Il Curioso, L'Avventuriero, L'Esploratore, Il Risoluto, Il Visionario, L'Imprevedibile*.
+
+Ciò che **non** influisce sul profilo: punteggi, record, tentativi persi e cadute. Sbagliare una prova non dice nulla su chi sta giocando, ed è verificato dai test.
+
+## I tentativi
+
+La Torre concede **tre tentativi** complessivi. Si perdono cadendo, sbagliando la combinazione o lasciando fuggire troppi topi. Esauriti, la prova del piano ricomincia da capo — ma le domande già risposte non vengono riproposte, così il profilo non viene mai conteggiato due volte.
 
 ---
+
+## Architettura
+
+Il progetto segue **MVC** con una regola precisa, verificabile a colpo d'occhio:
+
+> i package `domain`, `engine`, `controller`, `persistence` e `questions` **non contengono un solo import JavaFX**.
+
+È ciò che rende il progetto pronto per altre viste — web, mobile — sopra lo stesso motore e lo stesso controller.
+
+```text
+it.unicam.cs.mpgc.rpg123465
+├── domain        modello: giocatore, tratti, profili, Torre, piani, tentativi
+├── engine        motore della partita e fabbrica della Torre
+├── controller    GameController: unico tramite fra viste e modello
+├── questions     catalogo dei dilemmi e sequenza di avanzamento
+├── persistence   salvataggi, record delle prove, registro dei nomi
+├── floors        i tre piani: encounter (topi), buio, altezze
+├── ui            schermate JavaFX
+│   └── support   componenti grafici riusabili fra i piani
+├── audio         suoni e ambienti
+└── app           Navigator: composizione e passaggio fra le schermate
+```
+
+### Estendibilità
+
+- **Aggiungere un piano** significa scrivere un `FloorContent` e una `FloorScene`, e registrarli in `FloorSceneFactory`. Il motore e il controller non cambiano.
+- **Cambiare persistenza** significa implementare `SaveManager`, `RecordStore` o `PlayerRegistry`. Il gioco dipende dalle interfacce, mai dai file: passare a XML o a un database non tocca una riga di gioco.
+- **Cambiare catalogo di domande** significa implementare `QuestionRepository`, iniettato tramite costruttore.
+
+## Persistenza
+
+| dato | dove | come |
+| --- | --- | --- |
+| partita in corso | `saves/save.dat` | serializzazione Java |
+| record delle prove | `saves/records.properties` | file properties |
+| nomi già usati | `saves/players.txt` | file di testo |
+| catalogo dei dilemmi | `resources/data/questions.json` | JSON (Gson) |
+
+Il salvataggio fotografa **l'ingresso del piano**, non l'istante in cui si preme Salva: ricaricare riporta all'inizio della prova, mai a metà.
 
 ## Test
 
@@ -102,60 +91,29 @@ La documentazione dettagliata (responsabilità delle classi, organizzazione dei 
 ./gradlew test
 ```
 
----
-
-## Struttura del progetto
-
-```text
-it.unicam.cs.mpgc.rpg123465
-│
-├── domain        // modello: personaggi, statistiche, oggetti, torre, piani
-├── fear          // contenuti e reazioni delle paure, inclusa la stanza buia
-├── engine        // motore della partita, factory e stato di gioco
-├── persistence   // salvataggio/caricamento tramite serializzazione
-├── controller    // GameController: fa da tramite tra vista e modello (MVC)
-├── ui            // schermate JavaFX (menu, intro, gioco)
-└── MainApp       // entry point e navigazione tra schermate
-```
+**272 test** con JUnit 5, tutti eseguibili senza avviare l'interfaccia grafica. Coprono dominio, motore, controller, persistenza, catalogo delle domande e le regole di gioco estratte dalle scene (sequenza dei dilemmi, prova delle frecce, percorso fra i ponti).
 
 ---
 
-## Architettura
+## Tecnologie
 
-Il progetto segue il pattern **MVC (Model-View-Controller)**:
+Java 21 · Gradle · JavaFX 21.0.2 · Gson · Ikonli · JUnit 5 · Git e GitHub
 
-- **Model** — i package `domain`, `fear`, `engine` e `persistence` contengono la logica di gioco e non dipendono da alcuna libreria grafica.
-- **Controller** — `GameController` coordina eventi, combattimento e persistenza, esponendo alla vista solo messaggi e dati in sola lettura. Non dipende da JavaFX, quindi è riutilizzabile da viste diverse e testabile senza avviare la GUI.
-- **View** — `MainApp` coordina le schermate JavaFX e inoltra le azioni dell'utente al controller.
+## Asset
 
----
-
-## Tecnologie utilizzate
-
-- Java 21
-- Gradle
-- JavaFX
-- JUnit 5
-- Git e GitHub
-
----
+Grafica e suoni di terze parti sono elencati con autore e licenza in **[CREDITS.md](CREDITS.md)**.
 
 ## Uso di strumenti di Intelligenza Artificiale
 
-Durante lo sviluppo del progetto è stato utilizzato ChatGPT come supporto per:
+Durante lo sviluppo è stato utilizzato **ChatGPT** come supporto per:
 
-- analisi della specifica;
-- definizione dell'idea progettuale;
-- pianificazione dello sviluppo;
-- progettazione dell'architettura software;
-- revisione del codice;
-- supporto alla documentazione;
-- suggerimenti sulle buone pratiche di sviluppo.
+- analisi della specifica e definizione dell'idea progettuale;
+- progettazione dell'architettura e revisione del codice;
+- pianificazione dello sviluppo e supporto alla documentazione;
+- suggerimenti sulle buone pratiche di programmazione.
 
-Il codice prodotto viene sempre verificato, compreso e validato dallo studente prima di essere integrato nel progetto.
-
----
+Il codice prodotto è stato sempre letto, compreso e verificato prima di essere integrato. La dichiarazione dettagliata è nella [Wiki](../../wiki).
 
 ## Licenza
 
-Progetto sviluppato esclusivamente a scopo didattico per l'esame universitario.
+Progetto realizzato a scopo didattico per un esame universitario.
