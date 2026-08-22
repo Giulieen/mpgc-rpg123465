@@ -6,21 +6,13 @@ package it.unicam.cs.mpgc.rpg123465.floors.encounter;
  * @param row riga, da zero in alto
  * @param column colonna, da zero a sinistra
  */
-public record GridPosition(
-        int row,
-        int column
-) {
+public record GridPosition(int row, int column) {
 
     /**
      * @param direction direzione dello spostamento
      * @return la cella adiacente nella direzione indicata
      */
-    public GridPosition step(
-            Direction direction
-    ) {
-        return new GridPosition(
-                row + direction.rowDelta(),
-                column + direction.columnDelta()
-        );
+    public GridPosition step(Direction direction) {
+        return new GridPosition(row + direction.rowDelta(), column + direction.columnDelta());
     }
 }

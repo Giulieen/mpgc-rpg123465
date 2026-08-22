@@ -173,8 +173,7 @@ class ArrowChallengeTest {
             consecutive = shown == precedente ? consecutive + 1 : 1;
             precedente = shown;
 
-            assertTrue(consecutive <= 2,
-                    "tre volte di fila la stessa direzione al giro " + i);
+            assertTrue(consecutive <= 2, "tre volte di fila la stessa direzione al giro " + i);
         }
     }
 
@@ -214,7 +213,6 @@ class ArrowChallengeTest {
 
     @Test
     void laProvaRifiutaUnaSorgenteCasualeMancante() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new ArrowChallenge(null));
+        assertThrows(IllegalArgumentException.class, () -> new ArrowChallenge(null));
     }
 }

@@ -62,11 +62,7 @@ public enum PlayerProfile {
     private final String descrizione;
     private final String ritratto;
 
-    PlayerProfile(
-            String nome,
-            String descrizione,
-            String ritratto
-    ) {
+    PlayerProfile(String nome, String descrizione, String ritratto) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.ritratto = ritratto;

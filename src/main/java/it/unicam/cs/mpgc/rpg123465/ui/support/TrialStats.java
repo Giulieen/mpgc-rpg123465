@@ -22,34 +22,18 @@ public final class TrialStats {
      * @param seconds durata in secondi
      * @return la durata come {@code mm:ss}
      */
-    public static String time(
-            int seconds
-    ) {
-        return String.format(
-                "%02d:%02d",
-                seconds / 60,
-                seconds % 60
-        );
+    public static String time(int seconds) {
+        return String.format("%02d:%02d", seconds / 60, seconds % 60);
     }
 
     /**
      * @param parts voci già formattate, ad esempio {@code "Tempo: 01:12"}
      * @return la riga di riepilogo pronta da inserire in un pannello
      */
-    public static Label line(
-            String... parts
-    ) {
-        Label label =
-                new Label(
-                        String.join(
-                                SEPARATOR,
-                                parts
-                        )
-                );
+    public static Label line(String... parts) {
+        Label label = new Label(String.join(SEPARATOR, parts));
 
-        label.getStyleClass().add(
-                "fear-effects"
-        );
+        label.getStyleClass().add("fear-effects");
 
         return label;
     }

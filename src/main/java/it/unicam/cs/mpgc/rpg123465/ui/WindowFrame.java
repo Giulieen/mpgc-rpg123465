@@ -70,9 +70,7 @@ public final class WindowFrame {
 
     public WindowFrame(Stage stage) {
         if (stage == null) {
-            throw new IllegalArgumentException(
-                    "La finestra non può essere null."
-            );
+            throw new IllegalArgumentException("La finestra non può essere null.");
         }
 
         this.stage = stage;
@@ -140,8 +138,7 @@ public final class WindowFrame {
                 barButton(new FontIcon("mdi2w-window-minimize"),
                         () -> stage.setIconified(true), false),
                 barButton(maximizeIcon, this::toggleMaximize, false),
-                barButton(new FontIcon("mdi2w-window-close"),
-                        stage::close, true)
+                barButton(new FontIcon("mdi2w-window-close"), stage::close, true)
         );
 
         bar.setAlignment(Pos.CENTER_LEFT);
@@ -196,11 +193,7 @@ public final class WindowFrame {
             stage.setY(event.getScreenY() - grabY);
         });
 
-        bar.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                toggleMaximize();
-            }
-        });
+        bar.setOnMouseClicked(event -> { if (event.getClickCount() == 2) { toggleMaximize(); } });
     }
 
     private void toggleMaximize() {
@@ -278,13 +271,11 @@ public final class WindowFrame {
             }
 
             if (resizingRight) {
-                stage.setWidth(Math.max(MIN_WIDTH,
-                        event.getScreenX() - stage.getX()));
+                stage.setWidth(Math.max(MIN_WIDTH, event.getScreenX() - stage.getX()));
             }
 
             if (resizingBottom) {
-                stage.setHeight(Math.max(MIN_HEIGHT,
-                        event.getScreenY() - stage.getY()));
+                stage.setHeight(Math.max(MIN_HEIGHT, event.getScreenY() - stage.getY()));
             }
 
             if (resizingLeft) {
@@ -328,9 +319,7 @@ public final class WindowFrame {
         return event.getY() > root.getHeight() - RESIZE_MARGIN;
     }
 
-    private Cursor cursorFor(
-            boolean left, boolean right, boolean top, boolean bottom
-    ) {
+    private Cursor cursorFor(boolean left, boolean right, boolean top, boolean bottom) {
         if (top && left) {
             return Cursor.NW_RESIZE;
         }

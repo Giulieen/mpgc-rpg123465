@@ -20,8 +20,7 @@ import java.util.Map;
 public final class JsonQuestionRepository
         implements QuestionRepository {
 
-    public static final String DEFAULT_RESOURCE =
-            "/data/questions.json";
+    public static final String DEFAULT_RESOURCE = "/data/questions.json";
 
     private final Map<String, List<Dilemma>> questions;
 
@@ -35,59 +34,35 @@ public final class JsonQuestionRepository
     /**
      * @param resourcePath percorso del JSON nel classpath
      */
-    public JsonQuestionRepository(
-            String resourcePath
-    ) {
-        if (resourcePath == null
-                || resourcePath.isBlank()) {
+    public JsonQuestionRepository(String resourcePath) {
+        if (resourcePath == null || resourcePath.isBlank()) {
 
-            throw new IllegalArgumentException(
-                    "Il percorso del catalogo non può essere vuoto."
-            );
+            throw new IllegalArgumentException("Il percorso del catalogo non può essere vuoto.");
         }
 
-        questions =
-                load(
-                        resourcePath
-                );
+        questions = load(resourcePath);
     }
 
     @Override
-    public List<Dilemma> randomQuestions(
-            String category,
-            int count
-    ) {
-        if (category == null
-                || category.isBlank()) {
+    public List<Dilemma> randomQuestions(String category, int count) {
+        if (category == null || category.isBlank()) {
 
-            throw new IllegalArgumentException(
-                    "La categoria non può essere vuota."
-            );
+            throw new IllegalArgumentException("La categoria non può essere vuota.");
         }
 
         if (count <= 0) {
-            throw new IllegalArgumentException(
-                    "Il numero di domande deve essere positivo."
-            );
+            throw new IllegalArgumentException("Il numero di domande deve essere positivo.");
         }
 
         String key =
                 category
                         .trim()
-                        .toLowerCase(
-                                Locale.ROOT
-                        );
+                        .toLowerCase(Locale.ROOT);
 
-        List<Dilemma> source =
-                questions.get(
-                        key
-                );
+        List<Dilemma> source = questions.get(key);
 
         if (source == null) {
-            throw new QuestionCatalogException(
-                    "Categoria di domande sconosciuta: "
-                            + category
-            );
+            throw new QuestionCatalogException("Categoria di domande sconosciuta: " + category);
         }
 
         if (source.size() < count) {
@@ -102,31 +77,17 @@ public final class JsonQuestionRepository
             );
         }
 
-        List<Dilemma> shuffled =
-                new ArrayList<>(
-                        source
-                );
+        List<Dilemma> shuffled = new ArrayList<>(source);
 
-        Collections.shuffle(
-                shuffled
-        );
+        Collections.shuffle(shuffled);
 
-        return List.copyOf(
-                shuffled.subList(
-                        0,
-                        count
-                )
-        );
+        return List.copyOf(shuffled.subList(0, count));
     }
 
-    private Map<String, List<Dilemma>> load(
-            String resourcePath
-    ) {
+    private Map<String, List<Dilemma>> load(String resourcePath) {
         InputStream stream =
                 JsonQuestionRepository.class
-                        .getResourceAsStream(
-                                resourcePath
-                        );
+                        .getResourceAsStream(resourcePath);
 
         if (stream == null) {
             throw new QuestionCatalogException(
@@ -141,21 +102,10 @@ public final class JsonQuestionRepository
                         >() {
                 }.getType();
 
-        try (
-                InputStreamReader reader =
-                        new InputStreamReader(
-                                stream,
-                                StandardCharsets.UTF_8
-                        )
-        ) {
-            Map<String, List<Dilemma>> loaded =
-                    new Gson().fromJson(
-                            reader,
-                            type
-                    );
+        try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+            Map<String, List<Dilemma>> loaded = new Gson().fromJson(reader, type);
 
-            if (loaded == null
-                    || loaded.isEmpty()) {
+            if (loaded == null || loaded.isEmpty()) {
 
                 throw new QuestionCatalogException(
                         "Il catalogo delle domande è vuoto: "
@@ -163,9 +113,7 @@ public final class JsonQuestionRepository
                 );
             }
 
-            return Map.copyOf(
-                    loaded
-            );
+            return Map.copyOf(loaded);
 
         } catch (QuestionCatalogException exception) {
             throw exception;

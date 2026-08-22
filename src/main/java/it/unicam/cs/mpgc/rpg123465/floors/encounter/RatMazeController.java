@@ -46,10 +46,7 @@ public final class RatMazeController {
      * @param captured topi finiti addosso al giocatore
      * @param escaped topi arrivati a un'uscita
      */
-    public record TickOutcome(
-            int captured,
-            int escaped
-    ) { }
+    public record TickOutcome(int captured, int escaped) { }
 
     private final RatMaze maze;
     private final GameController game;
@@ -61,25 +58,16 @@ public final class RatMazeController {
     private int capturedRats;
     private MazeState state = MazeState.PLAYING;
 
-    public RatMazeController(
-            RatMaze maze,
-            GameController game
-    ) {
+    public RatMazeController(RatMaze maze, GameController game) {
         this(maze, game, new Random());
     }
 
     /**
      * @param rng sorgente casuale, iniettabile per rendere deterministici i test
      */
-    public RatMazeController(
-            RatMaze maze,
-            GameController game,
-            Random rng
-    ) {
+    public RatMazeController(RatMaze maze, GameController game, Random rng) {
         if (maze == null || game == null || rng == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.maze = maze;
@@ -126,9 +114,7 @@ public final class RatMazeController {
      * @param direction direzione richiesta
      * @return quanti topi sono stati catturati entrando nella nuova cella
      */
-    public int movePlayer(
-            Direction direction
-    ) {
+    public int movePlayer(Direction direction) {
         if (state != MazeState.PLAYING || direction == null) {
             return 0;
         }

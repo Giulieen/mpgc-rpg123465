@@ -24,8 +24,7 @@ import java.util.Properties;
  */
 public final class FileRecordStore implements RecordStore {
 
-    private static final String COMMENT =
-            "Record personali di Tower of Self";
+    private static final String COMMENT = "Record personali di Tower of Self";
 
     private final Path path;
 
@@ -102,8 +101,7 @@ public final class FileRecordStore implements RecordStore {
 
     private void requireKey(String key) {
         if (key == null || key.isBlank()) {
-            throw new IllegalArgumentException(
-                    "La chiave del record non può essere vuota.");
+            throw new IllegalArgumentException("La chiave del record non può essere vuota.");
         }
     }
 }

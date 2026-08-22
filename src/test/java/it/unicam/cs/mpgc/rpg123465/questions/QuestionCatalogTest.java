@@ -30,10 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class QuestionCatalogTest {
 
     /** Quante domande ogni piano estrae dalla propria categoria. */
-    private static final Map<String, Integer> REQUIRED = Map.of(
-            "topi", 1,
-            "buio", 3,
-            "altezze", 4);
+    private static final Map<String, Integer> REQUIRED = Map.of("topi", 1, "buio", 3, "altezze", 4);
 
     private static Map<String, List<Dilemma>> catalog() {
         Type type = new TypeToken<Map<String, List<Dilemma>>>() { }.getType();
@@ -43,8 +40,7 @@ class QuestionCatalogTest {
 
             assertNotNull(stream, "catalogo del gioco non trovato");
 
-            return new Gson().fromJson(
-                    new InputStreamReader(stream, StandardCharsets.UTF_8), type);
+            return new Gson().fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), type);
 
         } catch (Exception exception) {
             throw new AssertionError("catalogo del gioco illeggibile", exception);
@@ -73,10 +69,8 @@ class QuestionCatalogTest {
 
         catalog().forEach((category, questions) ->
                 questions.forEach(dilemma -> {
-                    assertTrue(dilemma.id() > 0,
-                            "identificatore non positivo in " + category);
-                    assertTrue(seen.add(dilemma.id()),
-                            "identificatore ripetuto: " + dilemma.id());
+                    assertTrue(dilemma.id() > 0, "identificatore non positivo in " + category);
+                    assertTrue(seen.add(dilemma.id()), "identificatore ripetuto: " + dilemma.id());
                 }));
     }
 
@@ -84,8 +78,7 @@ class QuestionCatalogTest {
     void ogniDomandaHaUnTestoEDueRisposteComplete() {
         catalog().forEach((category, questions) ->
                 questions.forEach(dilemma -> {
-                    assertFalse(dilemma.question().isBlank(),
-                            "domanda vuota, id " + dilemma.id());
+                    assertFalse(dilemma.question().isBlank(), "domanda vuota, id " + dilemma.id());
 
                     assertNotNull(dilemma.first(), "prima risposta mancante, id " + dilemma.id());
                     assertNotNull(dilemma.second(), "seconda risposta mancante, id " + dilemma.id());

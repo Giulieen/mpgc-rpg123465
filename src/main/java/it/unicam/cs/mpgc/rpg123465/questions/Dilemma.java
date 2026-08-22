@@ -8,30 +8,19 @@ package it.unicam.cs.mpgc.rpg123465.questions;
  * @param first prima risposta
  * @param second seconda risposta
  */
-public record Dilemma(
-        int id,
-        String question,
-        DilemmaOption first,
-        DilemmaOption second
-) {
+public record Dilemma(int id, String question, DilemmaOption first, DilemmaOption second) {
 
     public Dilemma {
         if (id <= 0) {
-            throw new IllegalArgumentException(
-                    "L'id della domanda deve essere positivo."
-            );
+            throw new IllegalArgumentException("L'id della domanda deve essere positivo.");
         }
 
         if (question == null || question.isBlank()) {
-            throw new IllegalArgumentException(
-                    "La domanda non può essere vuota."
-            );
+            throw new IllegalArgumentException("La domanda non può essere vuota.");
         }
 
         if (first == null || second == null) {
-            throw new IllegalArgumentException(
-                    "Un dilemma deve avere due risposte."
-            );
+            throw new IllegalArgumentException("Un dilemma deve avere due risposte.");
         }
     }
 }

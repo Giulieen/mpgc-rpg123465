@@ -17,8 +17,7 @@ import java.util.function.IntConsumer;
  */
 public final class CountdownClock {
 
-    private static final PseudoClass URGENT =
-            PseudoClass.getPseudoClass("urgent");
+    private static final PseudoClass URGENT = PseudoClass.getPseudoClass("urgent");
 
     private AnimationTimer timer;
     private MediaPlayer heartbeat;
@@ -39,17 +38,8 @@ public final class CountdownClock {
     /**
      * Avvia un countdown senza callback sui singoli secondi.
      */
-    public void start(
-            int seconds,
-            Label countdown,
-            Runnable onTimeout
-    ) {
-        start(
-                seconds,
-                countdown,
-                onTimeout,
-                null
-        );
+    public void start(int seconds, Label countdown, Runnable onTimeout) {
+        start(seconds, countdown, onTimeout, null);
     }
 
     /**
@@ -66,9 +56,7 @@ public final class CountdownClock {
             Runnable onTimeout,
             IntConsumer onSecondChanged
     ) {
-        if (seconds <= 0
-                || countdown == null
-                || onTimeout == null) {
+        if (seconds <= 0 || countdown == null || onTimeout == null) {
 
             throw new IllegalArgumentException(
                     "Durata, etichetta e callback devono essere validi."
@@ -92,9 +80,7 @@ public final class CountdownClock {
 
         heartbeat = createHeartbeat();
 
-        updateCountdown(
-                remainingSeconds
-        );
+        updateCountdown(remainingSeconds);
 
         timer = new AnimationTimer() {
             @Override
@@ -146,12 +132,7 @@ public final class CountdownClock {
      * @return secondi interi ancora disponibili
      */
     public int remainingSeconds() {
-        return (int) Math.ceil(
-                Math.max(
-                        0,
-                        remainingSeconds
-                )
-        );
+        return (int) Math.ceil(Math.max(0, remainingSeconds));
     }
 
     public void stop() {
@@ -207,38 +188,19 @@ public final class CountdownClock {
             return;
         }
 
-        remainingSeconds =
-                Math.max(
-                        0,
-                        remainingSeconds - delta
-                );
+        remainingSeconds = Math.max(0, remainingSeconds - delta);
 
-        updateCountdown(
-                remainingSeconds
-        );
+        updateCountdown(remainingSeconds);
 
-        if (heartbeat != null
-                && totalSeconds > 0) {
+        if (heartbeat != null && totalSeconds > 0) {
 
             double elapsed =
                     totalSeconds
                             - remainingSeconds;
 
-            double fraction =
-                    Math.max(
-                            0,
-                            Math.min(
-                                    1,
-                                    elapsed / totalSeconds
-                            )
-                    );
+            double fraction = Math.max(0, Math.min(1, elapsed / totalSeconds));
 
-            heartbeat.setRate(
-                    1.0
-                            + 1.1
-                            * fraction
-                            * fraction
-            );
+            heartbeat.setRate(1.0 + 1.1 * fraction * fraction);
         }
 
         if (remainingSeconds <= 0) {
@@ -248,8 +210,7 @@ public final class CountdownClock {
                 timer.stop();
             }
 
-            Runnable callback =
-                    onTimeout;
+            Runnable callback = onTimeout;
 
             if (callback != null) {
                 callback.run();
@@ -257,70 +218,40 @@ public final class CountdownClock {
         }
     }
 
-    private void updateCountdown(
-            double remaining
-    ) {
+    private void updateCountdown(double remaining) {
         if (countdown == null) {
             return;
         }
 
-        int total =
-                (int) Math.ceil(
-                        remaining
-                );
+        int total = (int) Math.ceil(remaining);
 
-        countdown.setText(
-                String.format(
-                        "%02d:%02d",
-                        total / 60,
-                        total % 60
-                )
-        );
+        countdown.setText(String.format("%02d:%02d", total / 60, total % 60));
 
-        countdown.pseudoClassStateChanged(
-                URGENT,
-                remaining <= 10
-        );
+        countdown.pseudoClassStateChanged(URGENT, remaining <= 10);
 
         if (total != lastDisplayedSecond) {
             lastDisplayedSecond = total;
 
             if (onSecondChanged != null) {
-                onSecondChanged.accept(
-                        total
-                );
+                onSecondChanged.accept(total);
             }
         }
     }
 
     private MediaPlayer createHeartbeat() {
-        URL url =
-                getClass().getResource(
-                        "/audio/heartbeat.mp3"
-                );
+        URL url = getClass().getResource("/audio/heartbeat.mp3");
 
         if (url == null) {
             return null;
         }
 
-        MediaPlayer player =
-                new MediaPlayer(
-                        new Media(
-                                url.toExternalForm()
-                        )
-                );
+        MediaPlayer player = new MediaPlayer(new Media(url.toExternalForm()));
 
-        player.setCycleCount(
-                MediaPlayer.INDEFINITE
-        );
+        player.setCycleCount(MediaPlayer.INDEFINITE);
 
-        player.setVolume(
-                0.9
-        );
+        player.setVolume(0.9);
 
-        player.setOnReady(
-                player::play
-        );
+        player.setOnReady(player::play);
 
         return player;
     }

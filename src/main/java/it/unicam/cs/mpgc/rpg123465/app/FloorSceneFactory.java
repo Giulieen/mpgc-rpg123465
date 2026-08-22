@@ -55,45 +55,18 @@ public final class FloorSceneFactory {
              * come due scene lascia a SceneFlow il compito di incatenarli.
              */
             return List.of(
-                    new FearEncounterScreen(
-                            encounter,
-                            controller,
-                            onSave,
-                            onExit
-                    ),
-                    new RatMazeScene(
-                            encounter,
-                            controller,
-                            records,
-                            onSave,
-                            onExit
-                    )
+                    new FearEncounterScreen(encounter, controller, onSave, onExit),
+                    new RatMazeScene(encounter, controller, records, onSave, onExit)
             );
         }
 
         if (content instanceof DarkRoom room) {
-            return List.of(
-                    new DarkRoomScene(
-                            room,
-                            controller,
-                            questions,
-                            records,
-                            onSave,
-                            onExit
-                    )
-            );
+            return List.of(new DarkRoomScene(room, controller, questions, records, onSave, onExit));
         }
 
         if (content instanceof AltitudeCrossing crossing) {
             return List.of(
-                    new AltezzeScene(
-                            crossing,
-                            controller,
-                            questions,
-                            records,
-                            onSave,
-                            onExit
-                    )
+                    new AltezzeScene(crossing, controller, questions, records, onSave, onExit)
             );
         }
 

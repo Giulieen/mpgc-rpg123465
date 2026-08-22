@@ -41,9 +41,7 @@ public class FogOverlay {
      */
     public FogOverlay(double speedFactor) {
         if (speedFactor < 0) {
-            throw new IllegalArgumentException(
-                    "Il fattore di velocità non può essere negativo."
-            );
+            throw new IllegalArgumentException("Il fattore di velocità non può essere negativo.");
         }
 
         this.speedFactor = speedFactor;
@@ -58,20 +56,8 @@ public class FogOverlay {
         fog.setMouseTransparent(true);
 
         fog.getChildren().addAll(
-                fogLayer(
-                        -9,
-                        -5,
-                        0.26,
-                        0.46,
-                        7.5
-                ),
-                fogLayer(
-                        -16,
-                        -9,
-                        0.32,
-                        0.55,
-                        9.5
-                )
+                fogLayer(-9, -5, 0.26, 0.46, 7.5),
+                fogLayer(-16, -9, 0.32, 0.55, 9.5)
         );
 
         return fog;
@@ -117,21 +103,13 @@ public class FogOverlay {
             for (int col = 0; col < 3; col++) {
                 ImageView tile = new ImageView(FOG);
 
-                tile.fitWidthProperty().bind(
-                        view.widthProperty()
-                );
+                tile.fitWidthProperty().bind(view.widthProperty());
 
-                tile.fitHeightProperty().bind(
-                        view.heightProperty()
-                );
+                tile.fitHeightProperty().bind(view.heightProperty());
 
-                tile.layoutXProperty().bind(
-                        view.widthProperty().multiply(col)
-                );
+                tile.layoutXProperty().bind(view.widthProperty().multiply(col));
 
-                tile.layoutYProperty().bind(
-                        view.heightProperty().multiply(row)
-                );
+                tile.layoutYProperty().bind(view.heightProperty().multiply(row));
 
                 if (col % 2 == 1) {
                     tile.setScaleX(-1);
@@ -147,29 +125,15 @@ public class FogOverlay {
 
         Rectangle clip = new Rectangle();
 
-        clip.widthProperty().bind(
-                view.widthProperty()
-        );
+        clip.widthProperty().bind(view.widthProperty());
 
-        clip.heightProperty().bind(
-                view.heightProperty()
-        );
+        clip.heightProperty().bind(view.heightProperty());
 
         view.setClip(clip);
 
-        DriftTimer drift = new DriftTimer(
-                view,
-                track,
-                vx * speedFactor,
-                vy * speedFactor
-        );
+        DriftTimer drift = new DriftTimer(view, track, vx * speedFactor, vy * speedFactor);
 
-        FadeTransition breath = createBreath(
-                view,
-                minOpacity,
-                maxOpacity,
-                breathSeconds
-        );
+        FadeTransition breath = createBreath(view, minOpacity, maxOpacity, breathSeconds);
 
         /*
          * Le animazioni sono attive soltanto quando questo layer appartiene
@@ -213,11 +177,7 @@ public class FogOverlay {
     ) {
         layer.setOpacity(maxOpacity);
 
-        FadeTransition breath =
-                new FadeTransition(
-                        Duration.seconds(seconds),
-                        layer
-                );
+        FadeTransition breath = new FadeTransition(Duration.seconds(seconds), layer);
 
         breath.setFromValue(maxOpacity);
         breath.setToValue(minOpacity);
@@ -240,12 +200,7 @@ public class FogOverlay {
 
         private long last;
 
-        private DriftTimer(
-                Region view,
-                Pane track,
-                double vx,
-                double vy
-        ) {
+        private DriftTimer(Region view, Pane track, double vx, double vy) {
             this.view = view;
             this.track = track;
             this.vx = vx;
@@ -271,8 +226,7 @@ public class FogOverlay {
                 return;
             }
 
-            double elapsed =
-                    (now - last) / 1_000_000_000.0;
+            double elapsed = (now - last) / 1_000_000_000.0;
 
             last = now;
 
@@ -318,9 +272,7 @@ public class FogOverlay {
      */
     private static Image loadFog() {
         var stream =
-                FogOverlay.class.getResourceAsStream(
-                        "/images/bg/fog.jpg"
-                );
+                FogOverlay.class.getResourceAsStream("/images/bg/fog.jpg");
 
         if (stream == null) {
             throw new IllegalStateException(

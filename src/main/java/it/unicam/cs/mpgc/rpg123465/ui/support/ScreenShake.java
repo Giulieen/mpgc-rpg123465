@@ -14,23 +14,17 @@ import java.util.Random;
 public final class ScreenShake {
 
     private static final double MAX_OFFSET = 1.8;
-    private static final long UPDATE_INTERVAL =
-            90_000_000L;
+    private static final long UPDATE_INTERVAL = 90_000_000L;
 
     private final Node target;
-    private final Random random =
-            new Random();
+    private final Random random = new Random();
 
     private AnimationTimer timer;
     private long lastUpdate;
 
-    public ScreenShake(
-            Node target
-    ) {
+    public ScreenShake(Node target) {
         if (target == null) {
-            throw new IllegalArgumentException(
-                    "Il nodo da animare non può essere null."
-            );
+            throw new IllegalArgumentException("Il nodo da animare non può essere null.");
         }
 
         this.target = target;
@@ -47,25 +41,17 @@ public final class ScreenShake {
         timer =
                 new AnimationTimer() {
                     @Override
-                    public void handle(
-                            long now
-                    ) {
-                        if (lastUpdate != 0
-                                && now - lastUpdate
-                                < UPDATE_INTERVAL) {
+                    public void handle(long now) {
+                        if (lastUpdate != 0 && now - lastUpdate < UPDATE_INTERVAL) {
 
                             return;
                         }
 
                         lastUpdate = now;
 
-                        target.setTranslateX(
-                                randomOffset()
-                        );
+                        target.setTranslateX(randomOffset());
 
-                        target.setTranslateY(
-                                randomOffset()
-                        );
+                        target.setTranslateY(randomOffset());
                     }
                 };
 

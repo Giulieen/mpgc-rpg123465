@@ -20,8 +20,7 @@ class RatMazeTest {
             int distance = Math.abs(previous.row() - current.row())
                     + Math.abs(previous.column() - current.column());
 
-            assertEquals(1, distance,
-                    "passo non adiacente fra " + previous + " e " + current);
+            assertEquals(1, distance, "passo non adiacente fra " + previous + " e " + current);
         }
     }
 

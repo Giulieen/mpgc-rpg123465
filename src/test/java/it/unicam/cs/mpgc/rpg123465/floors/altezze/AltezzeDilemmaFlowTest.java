@@ -44,8 +44,7 @@ class AltezzeDilemmaFlowTest {
 
         controller = new AltezzeController(crossing(), game);
 
-        dilemmas = new DilemmaSequence(
-                new FakeQuestionRepository().randomQuestions("altezze", 4));
+        dilemmas = new DilemmaSequence(new FakeQuestionRepository().randomQuestions("altezze", 4));
     }
 
     /** Come la scena: risolve, e registra solo se il consumo è avvenuto. */

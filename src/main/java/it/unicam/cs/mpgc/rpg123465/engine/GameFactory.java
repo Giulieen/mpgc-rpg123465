@@ -33,14 +33,9 @@ public final class GameFactory {
      * @return motore di una nuova partita
      * @throws IllegalArgumentException se il catalogo è null
      */
-    public static GameEngine createNewGame(
-            String playerName,
-            QuestionRepository questions
-    ) {
+    public static GameEngine createNewGame(String playerName, QuestionRepository questions) {
         if (questions == null) {
-            throw new IllegalArgumentException(
-                    "Il catalogo delle domande non può essere null."
-            );
+            throw new IllegalArgumentException("Il catalogo delle domande non può essere null.");
         }
 
         String name = (playerName == null || playerName.isBlank())
@@ -49,10 +44,7 @@ public final class GameFactory {
 
         Player player = new Player(name);
 
-        return new GameEngine(
-                player,
-                createTower(questions)
-        );
+        return new GameEngine(player, createTower(questions));
     }
 
     /**
@@ -64,30 +56,12 @@ public final class GameFactory {
      * @return la Torre da salire
      */
     private static Tower createTower(QuestionRepository questions) {
-        Floor primoPiano = new Floor(
-                1,
-                "I Topi",
-                EncounterFloors.topi(questions)
-        );
+        Floor primoPiano = new Floor(1, "I Topi", EncounterFloors.topi(questions));
 
-        Floor secondoPiano = new Floor(
-                2,
-                "Il Buio",
-                BuioFloor.buio()
-        );
+        Floor secondoPiano = new Floor(2, "Il Buio", BuioFloor.buio());
 
-        Floor terzoPiano = new Floor(
-                3,
-                "Le Altezze",
-                AltezzeFloors.altezze()
-        );
+        Floor terzoPiano = new Floor(3, "Le Altezze", AltezzeFloors.altezze());
 
-        return new Tower(
-                List.of(
-                        primoPiano,
-                        secondoPiano,
-                        terzoPiano
-                )
-        );
+        return new Tower(List.of(primoPiano, secondoPiano, terzoPiano));
     }
 }

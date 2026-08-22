@@ -39,8 +39,7 @@ class PlayerProfileTest {
         Set<String> descrizioni = new HashSet<>();
 
         for (PlayerProfile profilo : PlayerProfile.values()) {
-            assertTrue(nomi.add(profilo.getNome()),
-                    "nome ripetuto: " + profilo.getNome());
+            assertTrue(nomi.add(profilo.getNome()), "nome ripetuto: " + profilo.getNome());
             assertTrue(descrizioni.add(profilo.getDescrizione()),
                     "descrizione ripetuta in " + profilo.name());
         }

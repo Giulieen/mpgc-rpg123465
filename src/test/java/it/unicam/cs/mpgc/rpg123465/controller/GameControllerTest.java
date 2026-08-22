@@ -324,7 +324,6 @@ class GameControllerTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new GameController(engine, null, questions));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new GameController(engine, saves, null));
+        assertThrows(IllegalArgumentException.class, () -> new GameController(engine, saves, null));
     }
 }

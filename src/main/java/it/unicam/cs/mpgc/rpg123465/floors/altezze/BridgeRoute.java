@@ -31,10 +31,7 @@ public final class BridgeRoute {
     private int nextThreshold;
     private int routeStep;
 
-    public BridgeRoute(
-            AltezzeConfig config,
-            Random rng
-    ) {
+    public BridgeRoute(AltezzeConfig config, Random rng) {
         if (config == null || rng == null) {
             throw new IllegalArgumentException(
                     "Configurazione e sorgente casuale sono obbligatorie."
@@ -66,9 +63,7 @@ public final class BridgeRoute {
     }
 
     /** Sceglie il ponte da cui partire. */
-    public void select(
-            int index
-    ) {
+    public void select(int index) {
         current = index;
     }
 
@@ -77,9 +72,7 @@ public final class BridgeRoute {
      *
      * @param amount quanto si è avanzato, già calcolato dalla scena
      */
-    public void advance(
-            double amount
-    ) {
+    public void advance(double amount) {
         progress = Math.min(GOAL, progress + amount);
     }
 
@@ -96,8 +89,7 @@ public final class BridgeRoute {
     public boolean consumeThreshold() {
         double[] thresholds = config.routeThresholds();
 
-        if (nextThreshold < thresholds.length
-                && progress >= thresholds[nextThreshold]) {
+        if (nextThreshold < thresholds.length && progress >= thresholds[nextThreshold]) {
 
             nextThreshold++;
             return true;
@@ -119,8 +111,7 @@ public final class BridgeRoute {
     public int chooseDestination() {
         int[] manual = config.manualRoute();
 
-        if (manual != null
-                && routeStep < manual.length) {
+        if (manual != null && routeStep < manual.length) {
 
             destination = manual[routeStep++];
             return destination;
@@ -141,9 +132,7 @@ public final class BridgeRoute {
     }
 
     /** @return true se l'indice è il ponte verso cui si sta passando */
-    public boolean isDestination(
-            int index
-    ) {
+    public boolean isDestination(int index) {
         return destination != NONE
                 && index == destination;
     }

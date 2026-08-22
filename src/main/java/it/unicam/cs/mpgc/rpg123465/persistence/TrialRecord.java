@@ -17,18 +17,10 @@ public final class TrialRecord {
     private final String key;
     private final boolean lowerWins;
 
-    private TrialRecord(
-            RecordStore store,
-            String key,
-            boolean lowerWins
-    ) {
-        if (store == null
-                || key == null
-                || key.isBlank()) {
+    private TrialRecord(RecordStore store, String key, boolean lowerWins) {
+        if (store == null || key == null || key.isBlank()) {
 
-            throw new IllegalArgumentException(
-                    "Archivio e chiave del record sono obbligatori."
-            );
+            throw new IllegalArgumentException("Archivio e chiave del record sono obbligatori.");
         }
 
         this.store = store;
@@ -37,18 +29,12 @@ public final class TrialRecord {
     }
 
     /** Record in cui vince il valore più basso, come un tempo di fuga. */
-    public static TrialRecord lowerIsBetter(
-            RecordStore store,
-            String key
-    ) {
+    public static TrialRecord lowerIsBetter(RecordStore store, String key) {
         return new TrialRecord(store, key, true);
     }
 
     /** Record in cui vince il valore più alto, come un punteggio. */
-    public static TrialRecord higherIsBetter(
-            RecordStore store,
-            String key
-    ) {
+    public static TrialRecord higherIsBetter(RecordStore store, String key) {
         return new TrialRecord(store, key, false);
     }
 
@@ -63,13 +49,10 @@ public final class TrialRecord {
      * @param value risultato appena ottenuto
      * @return il record da mostrare al giocatore dopo questa prova
      */
-    public int submit(
-            int value
-    ) {
+    public int submit(int value) {
         OptionalInt previous = best();
 
-        if (previous.isEmpty()
-                || beats(value, previous.getAsInt())) {
+        if (previous.isEmpty() || beats(value, previous.getAsInt())) {
 
             store.save(key, value);
             return value;
@@ -78,10 +61,7 @@ public final class TrialRecord {
         return previous.getAsInt();
     }
 
-    private boolean beats(
-            int value,
-            int previous
-    ) {
+    private boolean beats(int value, int previous) {
         return lowerWins
                 ? value < previous
                 : value > previous;

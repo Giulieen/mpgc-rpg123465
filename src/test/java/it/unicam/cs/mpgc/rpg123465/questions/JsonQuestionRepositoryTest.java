@@ -84,29 +84,23 @@ class JsonQuestionRepositoryTest {
 
     @Test
     void chiederePiuDomandeDiQuanteCeNeSonoEUnErroreDelCatalogo() {
-        assertThrows(QuestionCatalogException.class,
-                () -> valid().randomQuestions("beta", 3));
+        assertThrows(QuestionCatalogException.class, () -> valid().randomQuestions("beta", 3));
     }
 
     @Test
     void unaCategoriaInesistenteEUnErroreDelCatalogo() {
-        assertThrows(QuestionCatalogException.class,
-                () -> valid().randomQuestions("gamma", 1));
+        assertThrows(QuestionCatalogException.class, () -> valid().randomQuestions("gamma", 1));
     }
 
     @Test
     void unaRichiestaMalPostaEUnErroreDiProgrammazione() {
-        assertThrows(IllegalArgumentException.class,
-                () -> valid().randomQuestions("alfa", 0));
+        assertThrows(IllegalArgumentException.class, () -> valid().randomQuestions("alfa", 0));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> valid().randomQuestions("alfa", -1));
+        assertThrows(IllegalArgumentException.class, () -> valid().randomQuestions("alfa", -1));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> valid().randomQuestions("", 1));
+        assertThrows(IllegalArgumentException.class, () -> valid().randomQuestions("", 1));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> valid().randomQuestions(null, 1));
+        assertThrows(IllegalArgumentException.class, () -> valid().randomQuestions(null, 1));
     }
 
     // --- errori del file -------------------------------------------------
@@ -129,14 +123,12 @@ class JsonQuestionRepositoryTest {
      */
     @Test
     void unTrattoInesistenteEUnErroreControllato() {
-        assertThrows(QuestionCatalogException.class,
-                () -> new JsonQuestionRepository(BAD_TRAIT));
+        assertThrows(QuestionCatalogException.class, () -> new JsonQuestionRepository(BAD_TRAIT));
     }
 
     @Test
     void unCatalogoVuotoEUnErroreControllato() {
-        assertThrows(QuestionCatalogException.class,
-                () -> new JsonQuestionRepository(EMPTY));
+        assertThrows(QuestionCatalogException.class, () -> new JsonQuestionRepository(EMPTY));
     }
 
     @Test
@@ -147,8 +139,7 @@ class JsonQuestionRepositoryTest {
 
     @Test
     void unPercorsoVuotoEUnErroreDiProgrammazione() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new JsonQuestionRepository(""));
+        assertThrows(IllegalArgumentException.class, () -> new JsonQuestionRepository(""));
 
         assertThrows(IllegalArgumentException.class,
                 () -> new JsonQuestionRepository((String) null));
@@ -164,11 +155,9 @@ class JsonQuestionRepositoryTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Dilemma(0, "domanda", option, option));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new Dilemma(1, "  ", option, option));
+        assertThrows(IllegalArgumentException.class, () -> new Dilemma(1, "  ", option, option));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new Dilemma(1, "domanda", null, option));
+        assertThrows(IllegalArgumentException.class, () -> new Dilemma(1, "domanda", null, option));
     }
 
     @Test
@@ -177,7 +166,6 @@ class JsonQuestionRepositoryTest {
                 () -> new DilemmaOption("", it.unicam.cs.mpgc.rpg123465
                         .domain.ProfileTrait.CORAGGIO));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new DilemmaOption("testo", null));
+        assertThrows(IllegalArgumentException.class, () -> new DilemmaOption("testo", null));
     }
 }

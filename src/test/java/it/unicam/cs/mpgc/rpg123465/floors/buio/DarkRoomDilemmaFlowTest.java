@@ -47,8 +47,7 @@ class DarkRoomDilemmaFlowTest {
 
         controller = new DarkRoomController(room(), game);
 
-        dilemmas = new DilemmaSequence(
-                new FakeQuestionRepository().randomQuestions("buio", 3));
+        dilemmas = new DilemmaSequence(new FakeQuestionRepository().randomQuestions("buio", 3));
     }
 
     /** Come la scena: risolve, e registra solo se il consumo è avvenuto. */

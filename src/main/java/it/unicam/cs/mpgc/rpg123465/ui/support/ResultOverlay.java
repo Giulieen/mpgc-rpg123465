@@ -37,10 +37,7 @@ public final class ResultOverlay {
      *                  di gioco — letto al momento in cui il cartello appare,
      *                  perché la scena lo costruisce dopo di questo
      */
-    public ResultOverlay(
-            StackPane root,
-            Supplier<Node> keepOnTop
-    ) {
+    public ResultOverlay(StackPane root, Supplier<Node> keepOnTop) {
         if (root == null || keepOnTop == null) {
             throw new IllegalArgumentException(
                     "Contenitore e nodo in primo piano sono obbligatori."
@@ -72,13 +69,9 @@ public final class ResultOverlay {
             String buttonText,
             Runnable action
     ) {
-        if (message == null
-                || buttonText == null
-                || action == null) {
+        if (message == null || buttonText == null || action == null) {
 
-            throw new IllegalArgumentException(
-                    "Messaggio, pulsante e azione sono obbligatori."
-            );
+            throw new IllegalArgumentException("Messaggio, pulsante e azione sono obbligatori.");
         }
 
         hide();

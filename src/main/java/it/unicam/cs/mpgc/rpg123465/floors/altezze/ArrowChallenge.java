@@ -38,13 +38,9 @@ public final class ArrowChallenge {
     private int hits;
     private int misses;
 
-    public ArrowChallenge(
-            Random rng
-    ) {
+    public ArrowChallenge(Random rng) {
         if (rng == null) {
-            throw new IllegalArgumentException(
-                    "La sorgente casuale non può essere null."
-            );
+            throw new IllegalArgumentException("La sorgente casuale non può essere null.");
         }
 
         this.rng = rng;
@@ -63,8 +59,7 @@ public final class ArrowChallenge {
         do {
             chosen = all[rng.nextInt(all.length)];
 
-        } while (chosen == last
-                && sameCount >= MAX_SAME_DIRECTION);
+        } while (chosen == last && sameCount >= MAX_SAME_DIRECTION);
 
         if (chosen == last) {
             sameCount++;
@@ -93,9 +88,7 @@ public final class ArrowChallenge {
      * @param pressed direzione premuta, oppure null se il tempo è scaduto
      * @return true se la risposta era giusta
      */
-    public boolean resolve(
-            ArrowDirection pressed
-    ) {
+    public boolean resolve(ArrowDirection pressed) {
         if (current == null) {
             return false;
         }

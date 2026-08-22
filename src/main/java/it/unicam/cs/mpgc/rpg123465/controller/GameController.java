@@ -42,21 +42,15 @@ public class GameController {
             QuestionRepository questions
     ) {
         if (gameEngine == null) {
-            throw new IllegalArgumentException(
-                    "Il motore di gioco non può essere null."
-            );
+            throw new IllegalArgumentException("Il motore di gioco non può essere null.");
         }
 
         if (saveManager == null) {
-            throw new IllegalArgumentException(
-                    "Il gestore di salvataggio non può essere null."
-            );
+            throw new IllegalArgumentException("Il gestore di salvataggio non può essere null.");
         }
 
         if (questions == null) {
-            throw new IllegalArgumentException(
-                    "Il catalogo delle domande non può essere null."
-            );
+            throw new IllegalArgumentException("Il catalogo delle domande non può essere null.");
         }
 
         this.gameEngine = gameEngine;
@@ -174,10 +168,7 @@ public class GameController {
             GameEngine loadedEngine =
                     GameFactory.createNewGame(save.getPlayerName(), questions);
 
-            loadedEngine.restoreState(
-                    save.getCurrentFloor(),
-                    save.isGameCompleted()
-            );
+            loadedEngine.restoreState(save.getCurrentFloor(), save.isGameCompleted());
 
             loadedEngine.getPlayer()
                     .getMind()
@@ -193,9 +184,7 @@ public class GameController {
 
             return OperationResult.ok();
 
-        } catch (IOException
-                 | ClassNotFoundException
-                 | IllegalArgumentException e) {
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
 
             return OperationResult.failure(e.getMessage());
         }

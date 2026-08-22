@@ -32,24 +32,14 @@ public class StartMenu {
      */
     private final Predicate<String> nameTaken;
 
-    private final TextField nameField =
-            new TextField();
+    private final TextField nameField = new TextField();
 
-    private final Label nameError =
-            new Label();
+    private final Label nameError = new Label();
 
-    public StartMenu(
-            Consumer<String> onNewGame,
-            Runnable onLoadGame,
-            Predicate<String> nameTaken
-    ) {
-        if (onNewGame == null
-                || onLoadGame == null
-                || nameTaken == null) {
+    public StartMenu(Consumer<String> onNewGame, Runnable onLoadGame, Predicate<String> nameTaken) {
+        if (onNewGame == null || onLoadGame == null || nameTaken == null) {
 
-            throw new IllegalArgumentException(
-                    "I callback non possono essere null."
-            );
+            throw new IllegalArgumentException("I callback non possono essere null.");
         }
 
         this.onNewGame = onNewGame;
@@ -58,58 +48,35 @@ public class StartMenu {
     }
 
     public Parent createView() {
-        StackPane root =
-                new StackPane();
+        StackPane root = new StackPane();
 
-        root.getStyleClass().add(
-                "menu-root"
-        );
+        root.getStyleClass().add("menu-root");
 
-        Rectangle darkOverlay =
-                new Rectangle();
+        Rectangle darkOverlay = new Rectangle();
 
-        darkOverlay.getStyleClass().add(
-                "menu-dark-overlay"
-        );
+        darkOverlay.getStyleClass().add("menu-dark-overlay");
 
-        darkOverlay.widthProperty().bind(
-                root.widthProperty()
-        );
+        darkOverlay.widthProperty().bind(root.widthProperty());
 
-        darkOverlay.heightProperty().bind(
-                root.heightProperty()
-        );
+        darkOverlay.heightProperty().bind(root.heightProperty());
 
         Region fog =
                 new FogOverlay()
                         .createView();
 
-        VBox card =
-                createMenuCard();
+        VBox card = createMenuCard();
 
-        StackPane.setAlignment(
-                card,
-                Pos.CENTER
-        );
+        StackPane.setAlignment(card, Pos.CENTER);
 
-        root.getChildren().addAll(
-                darkOverlay,
-                fog,
-                card
-        );
+        root.getChildren().addAll(darkOverlay, fog, card);
 
         return root;
     }
 
     private VBox createMenuCard() {
-        Label title =
-                new Label(
-                        "TOWER OF SELF"
-                );
+        Label title = new Label("TOWER OF SELF");
 
-        title.getStyleClass().add(
-                "menu-title"
-        );
+        title.getStyleClass().add("menu-title");
 
         Label subtitle =
                 new Label("""
@@ -117,109 +84,55 @@ public class StartMenu {
                         Solo salendo scoprirai cosa raccontano di te.
                         """);
 
-        subtitle.getStyleClass().add(
-                "menu-subtitle"
-        );
+        subtitle.getStyleClass().add("menu-subtitle");
 
-        Label description =
-                new Label(
-                        "Come ti chiami?"
-                );
+        Label description = new Label("Come ti chiami?");
 
-        description.getStyleClass().add(
-                "narrative"
-        );
+        description.getStyleClass().add("narrative");
 
         configureNameField();
         configureErrorLabel();
 
-        Button newGameButton =
-                new Button(
-                        "Nuova partita"
-                );
+        Button newGameButton = new Button("Nuova partita");
 
-        Button loadButton =
-                new Button(
-                        "Carica partita"
-                );
+        Button loadButton = new Button("Carica partita");
 
-        newGameButton.getStyleClass().add(
-                "menu-button"
-        );
+        newGameButton.getStyleClass().add("menu-button");
 
-        loadButton.getStyleClass().add(
-                "menu-button"
-        );
+        loadButton.getStyleClass().add("menu-button");
 
-        newGameButton.setOnAction(
-                event -> startNewGame()
-        );
+        newGameButton.setOnAction(event -> startNewGame());
 
-        nameField.setOnAction(
-                event -> startNewGame()
-        );
+        nameField.setOnAction(event -> startNewGame());
 
-        loadButton.setOnAction(
-                event -> onLoadGame.run()
-        );
+        loadButton.setOnAction(event -> onLoadGame.run());
 
-        HBox buttons =
-                new HBox(
-                        22,
-                        newGameButton,
-                        loadButton
-                );
+        HBox buttons = new HBox(22, newGameButton, loadButton);
 
-        buttons.setAlignment(
-                Pos.CENTER
-        );
+        buttons.setAlignment(Pos.CENTER);
 
         VBox menu =
-                new VBox(
-                        18,
-                        title,
-                        subtitle,
-                        description,
-                        nameField,
-                        nameError,
-                        buttons
-                );
+                new VBox(18, title, subtitle, description, nameField, nameError, buttons);
 
-        menu.setAlignment(
-                Pos.CENTER
-        );
+        menu.setAlignment(Pos.CENTER);
 
-        menu.setPadding(
-                new Insets(40)
-        );
+        menu.setPadding(new Insets(40));
 
-        menu.setMaxWidth(
-                820
-        );
+        menu.setMaxWidth(820);
 
-        menu.setMaxHeight(
-                620
-        );
+        menu.setMaxHeight(620);
 
-        menu.getStyleClass().add(
-                "menu-card"
-        );
+        menu.getStyleClass().add("menu-card");
 
         return menu;
     }
 
     private void configureNameField() {
-        nameField.setPromptText(
-                "Nome del giocatore"
-        );
+        nameField.setPromptText("Nome del giocatore");
 
-        nameField.setMaxWidth(
-                280
-        );
+        nameField.setMaxWidth(280);
 
-        nameField.getStyleClass().add(
-                "name-field"
-        );
+        nameField.getStyleClass().add("name-field");
 
         /*
          * Impedisce di superare i 20 caratteri.
@@ -240,36 +153,21 @@ public class StartMenu {
          * Appena il giocatore modifica il testo,
          * rimuoviamo l'eventuale errore precedente.
          */
-        nameField.textProperty().addListener(
-                (observable, oldValue, newValue) ->
-                        hideNameError()
-        );
+        nameField.textProperty().addListener((observable, oldValue, newValue) -> hideNameError());
     }
 
     private void configureErrorLabel() {
-        nameError.setWrapText(
-                true
-        );
+        nameError.setWrapText(true);
 
-        nameError.setMaxWidth(
-                320
-        );
+        nameError.setMaxWidth(320);
 
-        nameError.setAlignment(
-                Pos.CENTER
-        );
+        nameError.setAlignment(Pos.CENTER);
 
-        nameError.setStyle(
-                "-fx-text-fill: #d97979;"
-        );
+        nameError.setStyle("-fx-text-fill: #d97979;");
 
-        nameError.setVisible(
-                false
-        );
+        nameError.setVisible(false);
 
-        nameError.setManaged(
-                false
-        );
+        nameError.setManaged(false);
     }
 
     private void startNewGame() {
@@ -278,15 +176,10 @@ public class StartMenu {
                         .getText()
                         .trim();
 
-        String validationError =
-                validateName(
-                        name
-                );
+        String validationError = validateName(name);
 
         if (validationError != null) {
-            showNameError(
-                    validationError
-            );
+            showNameError(validationError);
 
             return;
         }
@@ -297,20 +190,15 @@ public class StartMenu {
          * Utilizziamo il nome già ripulito dagli
          * spazi iniziali e finali.
          */
-        onNewGame.accept(
-                name
-        );
+        onNewGame.accept(name);
     }
 
-    private String validateName(
-            String name
-    ) {
+    private String validateName(String name) {
         if (name.isBlank()) {
             return "Inserisci un nome.";
         }
 
-        if (name.length()
-                < MIN_NAME_LENGTH) {
+        if (name.length() < MIN_NAME_LENGTH) {
 
             return "Il nome deve contenere almeno "
                     + MIN_NAME_LENGTH
@@ -324,9 +212,7 @@ public class StartMenu {
          * - apostrofo;
          * - trattino.
          */
-        if (!name.matches(
-                "[\\p{L}][\\p{L} '\\-]*"
-        )) {
+        if (!name.matches("[\\p{L}][\\p{L} '\\-]*")) {
             return "Il nome può contenere solo lettere, spazi, apostrofi e trattini.";
         }
 
@@ -341,30 +227,18 @@ public class StartMenu {
         return null;
     }
 
-    private void showNameError(
-            String message
-    ) {
-        nameError.setText(
-                message
-        );
+    private void showNameError(String message) {
+        nameError.setText(message);
 
-        nameError.setManaged(
-                true
-        );
+        nameError.setManaged(true);
 
-        nameError.setVisible(
-                true
-        );
+        nameError.setVisible(true);
     }
 
     private void hideNameError() {
-        nameError.setVisible(
-                false
-        );
+        nameError.setVisible(false);
 
-        nameError.setManaged(
-                false
-        );
+        nameError.setManaged(false);
     }
 
 }

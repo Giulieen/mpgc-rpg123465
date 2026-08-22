@@ -58,9 +58,7 @@ public class FearEncounterScreen implements FloorScene {
             Runnable onExit
     ) {
         if (encounter == null || controller == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.encounter = encounter;
@@ -81,13 +79,9 @@ public class FearEncounterScreen implements FloorScene {
     }
 
     @Override
-    public Parent createView(
-            Consumer<SceneOutcome> onFinished
-    ) {
+    public Parent createView(Consumer<SceneOutcome> onFinished) {
         if (onFinished == null) {
-            throw new IllegalArgumentException(
-                    "Il callback di fine scena non può essere null."
-            );
+            throw new IllegalArgumentException("Il callback di fine scena non può essere null.");
         }
 
         this.onFinished = onFinished;
@@ -96,34 +90,23 @@ public class FearEncounterScreen implements FloorScene {
 
         startAmbience();
 
-        background = SceneFx.cover(
-                root,
-                encounter.backgroundResource()
-        );
+        background = SceneFx.cover(root, encounter.backgroundResource());
 
         dark = darkOverlay();
 
-        fog = new FogOverlay(
-                0.5
-        ).createView();
+        fog = new FogOverlay(0.5).createView();
 
         headerView = header.createView();
 
-        header.setProva(
-                encounter.title()
-        );
+        header.setProva(encounter.title());
 
         updateHeader();
 
-        shake = new ScreenShake(
-                background
-        );
+        shake = new ScreenShake(background);
 
         shake.startAmbient();
 
-        showCenter(
-                dilemmaView()
-        );
+        showCenter(dilemmaView());
 
         return root;
     }
@@ -131,116 +114,53 @@ public class FearEncounterScreen implements FloorScene {
     private void startAmbience() {
         Sound.stopAll();
 
-        Sound.loop(
-                "/audio/ambience-topi.mp3",
-                0.35
-        );
+        Sound.loop("/audio/ambience-topi.mp3", 0.35);
 
-        Sound.loop(
-                "/audio/fire-crackle.mp3",
-                0.22
-        );
+        Sound.loop("/audio/fire-crackle.mp3", 0.22);
 
-        Sound.play(
-                "/audio/scurrying.mp3",
-                0.5
-        );
+        Sound.play("/audio/scurrying.mp3", 0.5);
 
-        Sound.occasional(
-                "/audio/squeak.mp3",
-                0.4,
-                5,
-                14
-        );
+        Sound.occasional("/audio/squeak.mp3", 0.4, 5, 14);
     }
 
     private void showCenter(Node center) {
-        root.getChildren().setAll(
-                background,
-                dark,
-                fog,
-                center,
-                headerView
-        );
+        root.getChildren().setAll(background, dark, fog, center, headerView);
 
-        StackPane.setAlignment(
-                center,
-                Pos.CENTER
-        );
+        StackPane.setAlignment(center, Pos.CENTER);
 
-        StackPane.setMargin(
-                center,
-                new Insets(
-                        90,
-                        40,
-                        60,
-                        40
-                )
-        );
+        StackPane.setMargin(center, new Insets(90, 40, 60, 40));
 
-        StackPane.setAlignment(
-                headerView,
-                Pos.TOP_CENTER
-        );
+        StackPane.setAlignment(headerView, Pos.TOP_CENTER);
     }
 
     private void updateHeader() {
-        header.setTentativi(
-                controller.getRemainingAttempts(),
-                controller.getMaxAttempts()
-        );
+        header.setTentativi(controller.getRemainingAttempts(), controller.getMaxAttempts());
     }
 
     private VBox dilemmaView() {
-        Label title =
-                new Label(
-                        encounter.title()
-                );
+        Label title = new Label(encounter.title());
 
-        title.getStyleClass().add(
-                "fear-title"
-        );
+        title.getStyleClass().add("fear-title");
 
-        Label question =
-                SceneFx.paragraph(
-                        encounter.situation()
-                );
+        Label question = SceneFx.paragraph(encounter.situation());
 
-        VBox buttons =
-                new VBox(12);
+        VBox buttons = new VBox(12);
 
-        buttons.setAlignment(
-                Pos.CENTER
-        );
+        buttons.setAlignment(Pos.CENTER);
 
         for (FearChoice choice : encounter.choices()) {
-            Button button =
-                    new Button(
-                            choice.label()
-                    );
+            Button button = new Button(choice.label());
 
-            button.getStyleClass().add(
-                    "menu-button"
-            );
+            button.getStyleClass().add("menu-button");
 
-            button.setMaxWidth(
-                    Double.MAX_VALUE
-            );
+            button.setMaxWidth(Double.MAX_VALUE);
 
-            button.setOnAction(
-                    event -> choose(choice)
-            );
+            button.setOnAction(event -> choose(choice));
 
-            buttons.getChildren().add(
-                    button
-            );
+            buttons.getChildren().add(button);
         }
 
-        return panel(
-                title,
-                question,
-                buttons
-        );
+        return panel(title, question, buttons);
     }
 
     private void choose(FearChoice choice) {
@@ -254,9 +174,7 @@ public class FearEncounterScreen implements FloorScene {
          * Il giocatore non vede il tratto associato.
          * La risposta contribuisce soltanto al profilo finale.
          */
-        mind.registerTrait(
-                choice.trait()
-        );
+        mind.registerTrait(choice.trait());
 
         updateHeader();
         showBriefing();
@@ -269,31 +187,15 @@ public class FearEncounterScreen implements FloorScene {
      * piu' il profilo, qualunque cosa succeda nel labirinto.
      */
     private void showBriefing() {
-        Label heading =
-                new Label(
-                        "La Torre ha raccolto la tua scelta."
-                );
+        Label heading = new Label("La Torre ha raccolto la tua scelta.");
 
-        heading.getStyleClass().add(
-                "fear-title"
-        );
+        heading.getStyleClass().add("fear-title");
 
-        Button enter =
-                new Button(
-                        "Entra nel labirinto"
-                );
+        Button enter = new Button("Entra nel labirinto");
 
-        enter.getStyleClass().add(
-                "menu-button"
-        );
+        enter.getStyleClass().add("menu-button");
 
-        enter.setOnAction(event -> {
-            cleanup();
-
-            onFinished.accept(
-                    SceneOutcome.AVANTI
-            );
-        });
+        enter.setOnAction(event -> { cleanup(); onFinished.accept(SceneOutcome.AVANTI); });
 
         showCenter(
                 panel(
@@ -309,42 +211,25 @@ public class FearEncounterScreen implements FloorScene {
     }
 
     private VBox panel(Node... children) {
-        VBox box =
-                new VBox(
-                        22,
-                        children
-                );
+        VBox box = new VBox(22, children);
 
-        box.setAlignment(
-                Pos.CENTER
-        );
+        box.setAlignment(Pos.CENTER);
 
-        box.setMaxWidth(
-                760
-        );
+        box.setMaxWidth(760);
 
-        box.getStyleClass().add(
-                "fear-panel"
-        );
+        box.getStyleClass().add("fear-panel");
 
         return box;
     }
 
     private Rectangle darkOverlay() {
-        Rectangle rectangle =
-                new Rectangle();
+        Rectangle rectangle = new Rectangle();
 
-        rectangle.getStyleClass().add(
-                "fear-dark"
-        );
+        rectangle.getStyleClass().add("fear-dark");
 
-        rectangle.widthProperty().bind(
-                root.widthProperty()
-        );
+        rectangle.widthProperty().bind(root.widthProperty());
 
-        rectangle.heightProperty().bind(
-                root.heightProperty()
-        );
+        rectangle.heightProperty().bind(root.heightProperty());
 
         return rectangle;
     }

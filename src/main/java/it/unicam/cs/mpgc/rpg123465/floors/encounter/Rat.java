@@ -24,13 +24,9 @@ public final class Rat {
      * @param path percorso dalla tana all'uscita, tana inclusa
      * @throws IllegalArgumentException se il percorso è vuoto
      */
-    public Rat(
-            List<GridPosition> path
-    ) {
+    public Rat(List<GridPosition> path) {
         if (path == null || path.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Un topo deve avere un percorso."
-            );
+            throw new IllegalArgumentException("Un topo deve avere un percorso.");
         }
 
         this.path = List.copyOf(path);

@@ -59,11 +59,7 @@ public final class RoomLighting {
         lightSwitch.setIconSize(44);
         lightSwitch.setCursor(Cursor.HAND);
         lightSwitch.setEffect(SceneFx.glow(12, 0.30));   // un fioco riflesso, per trovarlo al buio
-        lightSwitch.setOnMouseClicked(event -> {
-            if (canToggle.getAsBoolean()) {
-                toggle();
-            }
-        });
+        lightSwitch.setOnMouseClicked(event -> { if (canToggle.getAsBoolean()) { toggle(); } });
 
         setLit(false);
     }

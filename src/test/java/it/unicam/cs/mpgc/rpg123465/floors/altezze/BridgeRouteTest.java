@@ -262,8 +262,7 @@ class BridgeRouteTest {
 
     @Test
     void ilPercorsoRifiutaArgomentiMancanti() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new BridgeRoute(null, new Random()));
+        assertThrows(IllegalArgumentException.class, () -> new BridgeRoute(null, new Random()));
 
         assertThrows(IllegalArgumentException.class,
                 () -> new BridgeRoute(AltezzeConfig.standard(), null));

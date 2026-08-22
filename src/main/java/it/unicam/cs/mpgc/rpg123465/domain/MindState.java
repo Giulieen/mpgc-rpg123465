@@ -36,13 +36,9 @@ public class MindState implements Serializable {
      *
      * @param trait tratto associato alla risposta
      */
-    public void registerTrait(
-            ProfileTrait trait
-    ) {
+    public void registerTrait(ProfileTrait trait) {
         if (trait == null) {
-            throw new IllegalArgumentException(
-                    "Il tratto non può essere null."
-            );
+            throw new IllegalArgumentException("Il tratto non può essere null.");
         }
 
         switch (trait) {
@@ -86,36 +82,20 @@ public class MindState implements Serializable {
             return PlayerProfile.IMPREVEDIBILE;
         }
 
-        int max =
-                Math.max(
-                        coraggio,
-                        Math.max(
-                                curiosita,
-                                avventura
-                        )
-                );
+        int max = Math.max(coraggio, Math.max(curiosita, avventura));
 
-        int min =
-                Math.min(
-                        coraggio,
-                        Math.min(
-                                curiosita,
-                                avventura
-                        )
-                );
+        int min = Math.min(coraggio, Math.min(curiosita, avventura));
 
         if (max - min <= 1) {
             return PlayerProfile.IMPREVEDIBILE;
         }
 
-        if (Math.abs(coraggio - curiosita) <= 1
-                && Math.min(coraggio, curiosita) - avventura >= 2) {
+        if (Math.abs(coraggio - curiosita) <= 1 && Math.min(coraggio, curiosita) - avventura >= 2) {
 
             return PlayerProfile.ESPLORATORE;
         }
 
-        if (Math.abs(coraggio - avventura) <= 1
-                && Math.min(coraggio, avventura) - curiosita >= 2) {
+        if (Math.abs(coraggio - avventura) <= 1 && Math.min(coraggio, avventura) - curiosita >= 2) {
 
             return PlayerProfile.RISOLUTO;
         }
@@ -126,14 +106,12 @@ public class MindState implements Serializable {
             return PlayerProfile.VISIONARIO;
         }
 
-        if (coraggio >= curiosita
-                && coraggio >= avventura) {
+        if (coraggio >= curiosita && coraggio >= avventura) {
 
             return PlayerProfile.CORAGGIOSO;
         }
 
-        if (curiosita >= coraggio
-                && curiosita >= avventura) {
+        if (curiosita >= coraggio && curiosita >= avventura) {
 
             return PlayerProfile.CURIOSO;
         }
@@ -148,17 +126,13 @@ public class MindState implements Serializable {
      * all'ingresso, così ricaricando non vengono contate due volte.
      */
     public MindState copy() {
-        MindState copy =
-                new MindState();
+        MindState copy = new MindState();
 
-        copy.coraggio =
-                this.coraggio;
+        copy.coraggio = this.coraggio;
 
-        copy.curiosita =
-                this.curiosita;
+        copy.curiosita = this.curiosita;
 
-        copy.avventura =
-                this.avventura;
+        copy.avventura = this.avventura;
 
         return copy;
     }
@@ -168,29 +142,15 @@ public class MindState implements Serializable {
      *
      * @param salvato conteggi salvati
      */
-    public void restoreFrom(
-            MindState salvato
-    ) {
+    public void restoreFrom(MindState salvato) {
         if (salvato == null) {
             return;
         }
 
-        this.coraggio =
-                Math.max(
-                        0,
-                        salvato.coraggio
-                );
+        this.coraggio = Math.max(0, salvato.coraggio);
 
-        this.curiosita =
-                Math.max(
-                        0,
-                        salvato.curiosita
-                );
+        this.curiosita = Math.max(0, salvato.curiosita);
 
-        this.avventura =
-                Math.max(
-                        0,
-                        salvato.avventura
-                );
+        this.avventura = Math.max(0, salvato.avventura);
     }
 }

@@ -140,10 +140,7 @@ public final class RatMaze {
      * @return il percorso, da {@code start} a {@code destination} inclusi,
      *         oppure una lista vuota se la destinazione non è raggiungibile
      */
-    public List<GridPosition> findPath(
-            GridPosition start,
-            GridPosition destination
-    ) {
+    public List<GridPosition> findPath(GridPosition start, GridPosition destination) {
         if (!isWalkable(start) || !isWalkable(destination)) {
             return List.of();
         }

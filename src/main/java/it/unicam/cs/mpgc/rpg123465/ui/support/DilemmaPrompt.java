@@ -27,21 +27,14 @@ public final class DilemmaPrompt {
      * @param label testo del pulsante
      * @param trait tratto nascosto associato alla risposta
      */
-    public record Option(
-            String label,
-            ProfileTrait trait
-    ) {
+    public record Option(String label, ProfileTrait trait) {
         public Option {
             if (label == null || label.isBlank()) {
-                throw new IllegalArgumentException(
-                        "Il testo della risposta non può essere vuoto."
-                );
+                throw new IllegalArgumentException("Il testo della risposta non può essere vuoto.");
             }
 
             if (trait == null) {
-                throw new IllegalArgumentException(
-                        "Il tratto non può essere null."
-                );
+                throw new IllegalArgumentException("Il tratto non può essere null.");
             }
         }
     }
@@ -56,32 +49,16 @@ public final class DilemmaPrompt {
      * @param dilemma dilemma da mostrare
      * @return le due risposte, nell'ordine del dilemma
      */
-    public static List<Option> optionsOf(
-            Dilemma dilemma
-    ) {
+    public static List<Option> optionsOf(Dilemma dilemma) {
         if (dilemma == null) {
-            throw new IllegalArgumentException(
-                    "Il dilemma non può essere null."
-            );
+            throw new IllegalArgumentException("Il dilemma non può essere null.");
         }
 
-        return List.of(
-                toOption(
-                        dilemma.first()
-                ),
-                toOption(
-                        dilemma.second()
-                )
-        );
+        return List.of(toOption(dilemma.first()), toOption(dilemma.second()));
     }
 
-    private static Option toOption(
-            DilemmaOption option
-    ) {
-        return new Option(
-                option.text(),
-                option.trait()
-        );
+    private static Option toOption(DilemmaOption option) {
+        return new Option(option.text(), option.trait());
     }
 
     /**
@@ -107,121 +84,65 @@ public final class DilemmaPrompt {
                 || options.size() != 2
                 || onChosen == null) {
 
-            throw new IllegalArgumentException(
-                    "Il dilemma deve avere una domanda e due risposte."
-            );
+            throw new IllegalArgumentException("Il dilemma deve avere una domanda e due risposte.");
         }
 
-        StackPane overlay =
-                new StackPane(
-                        SceneFx.veil(root, 0.65)
-                );
+        StackPane overlay = new StackPane(SceneFx.veil(root, 0.65));
 
-        Label prompt =
-                SceneFx.paragraph(question);
+        Label prompt = SceneFx.paragraph(question);
 
-        prompt.getStyleClass().add(
-                "fear-title"
-        );
+        prompt.getStyleClass().add("fear-title");
 
-        VBox buttons =
-                new VBox(12);
+        VBox buttons = new VBox(12);
 
-        buttons.setAlignment(
-                Pos.CENTER
-        );
+        buttons.setAlignment(Pos.CENTER);
 
         for (Option option : options) {
-            Button button =
-                    new Button(
-                            option.label()
-                    );
+            Button button = new Button(option.label());
 
-            button.getStyleClass().add(
-                    "menu-button"
-            );
+            button.getStyleClass().add("menu-button");
 
-            button.setMaxWidth(
-                    Double.MAX_VALUE
-            );
+            button.setMaxWidth(Double.MAX_VALUE);
 
             button.setOnAction(event -> {
-                root.getChildren().remove(
-                        overlay
-                );
+                root.getChildren().remove(overlay);
 
-                onChosen.accept(
-                        option
-                );
+                onChosen.accept(option);
 
-                keepOnTop(
-                        root,
-                        keepOnTop
-                );
+                keepOnTop(root, keepOnTop);
             });
 
-            buttons.getChildren().add(
-                    button
-            );
+            buttons.getChildren().add(button);
         }
 
-        VBox panel =
-                new VBox(
-                        26,
-                        prompt,
-                        buttons
-                );
+        VBox panel = new VBox(26, prompt, buttons);
 
-        panel.setAlignment(
-                Pos.CENTER
-        );
+        panel.setAlignment(Pos.CENTER);
 
-        panel.setMaxWidth(
-                760
-        );
+        panel.setMaxWidth(760);
 
-        panel.getStyleClass().add(
-                "fear-panel"
-        );
+        panel.getStyleClass().add("fear-panel");
 
-        overlay.getChildren().add(
-                panel
-        );
+        overlay.getChildren().add(panel);
 
-        StackPane.setAlignment(
-                panel,
-                Pos.CENTER
-        );
+        StackPane.setAlignment(panel, Pos.CENTER);
 
-        root.getChildren().add(
-                overlay
-        );
+        root.getChildren().add(overlay);
 
-        keepOnTop(
-                root,
-                keepOnTop
-        );
+        keepOnTop(root, keepOnTop);
     }
 
-    private static void keepOnTop(
-            StackPane root,
-            Node node
-    ) {
+    private static void keepOnTop(StackPane root, Node node) {
         if (node == null) {
             return;
         }
 
         if (!root.getChildren().contains(node)) {
-            root.getChildren().add(
-                    node
-            );
+            root.getChildren().add(node);
         }
 
         node.toFront();
 
-        StackPane.setAlignment(
-                node,
-                Pos.TOP_CENTER
-        );
+        StackPane.setAlignment(node, Pos.TOP_CENTER);
     }
 }

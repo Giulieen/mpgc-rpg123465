@@ -132,8 +132,7 @@ class TrialRecordTest {
         assertThrows(IllegalArgumentException.class,
                 () -> TrialRecord.lowerIsBetter(null, "buio.tempo"));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> TrialRecord.higherIsBetter(store, null));
+        assertThrows(IllegalArgumentException.class, () -> TrialRecord.higherIsBetter(store, null));
 
         assertThrows(IllegalArgumentException.class,
                 () -> TrialRecord.higherIsBetter(store, "   "));
@@ -143,9 +142,7 @@ class TrialRecordTest {
     void ilRecordSopravviveAUnaNuovaLetturaDelloStessoArchivio() {
         TrialRecord.lowerIsBetter(store, "topi.tempo").submit(44);
 
-        assertTrue(TrialRecord.lowerIsBetter(store, "topi.tempo")
-                .best().isPresent());
-        assertEquals(44, TrialRecord.lowerIsBetter(store, "topi.tempo")
-                .best().getAsInt());
+        assertTrue(TrialRecord.lowerIsBetter(store, "topi.tempo") .best().isPresent());
+        assertEquals(44, TrialRecord.lowerIsBetter(store, "topi.tempo") .best().getAsInt());
     }
 }

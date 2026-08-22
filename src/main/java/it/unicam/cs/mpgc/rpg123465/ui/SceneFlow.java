@@ -22,27 +22,17 @@ public class SceneFlow {
      * @param display operazione che mostra una vista
      * @param onFloorCompleted operazione eseguita alla fine del piano
      */
-    public SceneFlow(
-            List<FloorScene> scenes,
-            Consumer<Parent> display,
-            Runnable onFloorCompleted
-    ) {
+    public SceneFlow(List<FloorScene> scenes, Consumer<Parent> display, Runnable onFloorCompleted) {
         if (scenes == null || scenes.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Un piano deve avere almeno una scena."
-            );
+            throw new IllegalArgumentException("Un piano deve avere almeno una scena.");
         }
 
-        if (display == null
-                || onFloorCompleted == null) {
+        if (display == null || onFloorCompleted == null) {
 
-            throw new IllegalArgumentException(
-                    "I callback non possono essere null."
-            );
+            throw new IllegalArgumentException("I callback non possono essere null.");
         }
 
-        this.scenes =
-                new ArrayList<>(scenes);
+        this.scenes = new ArrayList<>(scenes);
 
         this.display = display;
         this.onFloorCompleted = onFloorCompleted;
@@ -57,19 +47,12 @@ public class SceneFlow {
     }
 
     private void showCurrent() {
-        FloorScene scene =
-                scenes.get(current);
+        FloorScene scene = scenes.get(current);
 
-        display.accept(
-                scene.createView(
-                        this::onSceneFinished
-                )
-        );
+        display.accept(scene.createView(this::onSceneFinished));
     }
 
-    private void onSceneFinished(
-            SceneOutcome outcome
-    ) {
+    private void onSceneFinished(SceneOutcome outcome) {
         if (outcome == SceneOutcome.RIPETI) {
             showCurrent();
             return;

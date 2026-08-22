@@ -20,8 +20,5 @@ public interface QuestionRepository {
      * @throws QuestionCatalogException se la categoria non esiste nel catalogo
      *         o non contiene abbastanza domande
      */
-    List<Dilemma> randomQuestions(
-            String category,
-            int count
-    );
+    List<Dilemma> randomQuestions(String category, int count);
 }

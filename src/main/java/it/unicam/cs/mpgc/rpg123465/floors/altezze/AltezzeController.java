@@ -22,14 +22,9 @@ public final class AltezzeController {
      * @param game controller della partita
      * @throws IllegalArgumentException se un parametro è null
      */
-    public AltezzeController(
-            AltitudeCrossing crossing,
-            GameController game
-    ) {
+    public AltezzeController(AltitudeCrossing crossing, GameController game) {
         if (crossing == null || game == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.game = game;
@@ -44,12 +39,8 @@ public final class AltezzeController {
      *
      * @param trait tratto associato alla risposta
      */
-    public void registerChoice(
-            ProfileTrait trait
-    ) {
-        mind.registerTrait(
-                trait
-        );
+    public void registerChoice(ProfileTrait trait) {
+        mind.registerTrait(trait);
     }
 
     /**

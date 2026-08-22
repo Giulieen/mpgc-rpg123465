@@ -137,11 +137,9 @@ class AltezzeControllerTest {
 
     @Test
     void ilControllerRifiutaArgomentiMancanti() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new AltezzeController(null, game));
+        assertThrows(IllegalArgumentException.class, () -> new AltezzeController(null, game));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new AltezzeController(crossing(), null));
+        assertThrows(IllegalArgumentException.class, () -> new AltezzeController(crossing(), null));
     }
 
     // --- configurazione --------------------------------------------------

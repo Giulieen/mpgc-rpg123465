@@ -21,27 +21,19 @@ public record FearEncounter(
 
     public FearEncounter {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Il titolo non può essere vuoto."
-            );
+            throw new IllegalArgumentException("Il titolo non può essere vuoto.");
         }
 
         if (backgroundResource == null || backgroundResource.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Lo sfondo non può essere vuoto."
-            );
+            throw new IllegalArgumentException("Lo sfondo non può essere vuoto.");
         }
 
         if (situation == null || situation.isBlank()) {
-            throw new IllegalArgumentException(
-                    "La domanda non può essere vuota."
-            );
+            throw new IllegalArgumentException("La domanda non può essere vuota.");
         }
 
         if (choices == null || choices.size() != 2) {
-            throw new IllegalArgumentException(
-                    "Un dilemma deve avere esattamente due risposte."
-            );
+            throw new IllegalArgumentException("Un dilemma deve avere esattamente due risposte.");
         }
 
         choices = List.copyOf(choices);

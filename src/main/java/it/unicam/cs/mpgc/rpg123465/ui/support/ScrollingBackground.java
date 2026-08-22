@@ -28,14 +28,9 @@ public class ScrollingBackground {
      * @param resourcePath percorso dell'immagine nel classpath
      * @param pixelsPerSecond velocità di scorrimento verso sinistra
      */
-    public ScrollingBackground(
-            String resourcePath,
-            double pixelsPerSecond
-    ) {
+    public ScrollingBackground(String resourcePath, double pixelsPerSecond) {
         if (resourcePath == null || resourcePath.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Il percorso dell'immagine non può essere vuoto."
-            );
+            throw new IllegalArgumentException("Il percorso dell'immagine non può essere vuoto.");
         }
 
         if (pixelsPerSecond < 0) {
@@ -47,9 +42,7 @@ public class ScrollingBackground {
         var stream = getClass().getResourceAsStream(resourcePath);
 
         if (stream == null) {
-            throw new IllegalArgumentException(
-                    "Risorsa grafica non trovata: " + resourcePath
-            );
+            throw new IllegalArgumentException("Risorsa grafica non trovata: " + resourcePath);
         }
 
         this.image = new Image(stream);
@@ -85,17 +78,11 @@ public class ScrollingBackground {
         for (int i = 0; i < TILES; i++) {
             ImageView tile = new ImageView(image);
 
-            tile.fitWidthProperty().bind(
-                    view.widthProperty()
-            );
+            tile.fitWidthProperty().bind(view.widthProperty());
 
-            tile.fitHeightProperty().bind(
-                    view.heightProperty()
-            );
+            tile.fitHeightProperty().bind(view.heightProperty());
 
-            tile.layoutXProperty().bind(
-                    view.widthProperty().multiply(i)
-            );
+            tile.layoutXProperty().bind(view.widthProperty().multiply(i));
 
             if (i % 2 == 1) {
                 // La copia specchiata rende invisibile la giuntura.
@@ -107,21 +94,13 @@ public class ScrollingBackground {
 
         Rectangle clip = new Rectangle();
 
-        clip.widthProperty().bind(
-                view.widthProperty()
-        );
+        clip.widthProperty().bind(view.widthProperty());
 
-        clip.heightProperty().bind(
-                view.heightProperty()
-        );
+        clip.heightProperty().bind(view.heightProperty());
 
         view.setClip(clip);
 
-        ScrollingTimer timer = new ScrollingTimer(
-                view,
-                track,
-                pixelsPerSecond
-        );
+        ScrollingTimer timer = new ScrollingTimer(view, track, pixelsPerSecond);
 
         /*
          * Il timer esiste soltanto finché questa vista è effettivamente
@@ -154,11 +133,7 @@ public class ScrollingBackground {
 
         private long last;
 
-        private ScrollingTimer(
-                Region view,
-                Pane track,
-                double pixelsPerSecond
-        ) {
+        private ScrollingTimer(Region view, Pane track, double pixelsPerSecond) {
             this.view = view;
             this.track = track;
             this.pixelsPerSecond = pixelsPerSecond;
@@ -182,8 +157,7 @@ public class ScrollingBackground {
                 return;
             }
 
-            double elapsed =
-                    (now - last) / 1_000_000_000.0;
+            double elapsed = (now - last) / 1_000_000_000.0;
 
             last = now;
 

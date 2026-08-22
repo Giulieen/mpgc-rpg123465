@@ -63,32 +63,21 @@ public class DarkRoomScene implements FloorScene {
     private final Consumer<Runnable> onSave;
     private final Runnable onExit;
 
-    private final StackPane root =
-            new StackPane();
+    private final StackPane root = new StackPane();
 
-    private final RoomLighting lighting =
-            new RoomLighting(
-                    root
-            );
+    private final RoomLighting lighting = new RoomLighting(root);
 
-    private final CloseupOverlay closeup =
-            new CloseupOverlay(
-                    root,
-                    () -> closeupOpen = false
-            );
+    private final CloseupOverlay closeup = new CloseupOverlay(root, () -> closeupOpen = false);
 
-    private final CountdownClock clock =
-            new CountdownClock();
+    private final CountdownClock clock = new CountdownClock();
 
-    private final CombinationLockState lockState =
-            new CombinationLockState(4);
+    private final CombinationLockState lockState = new CombinationLockState(4);
 
     private Consumer<SceneOutcome> onFinished;
 
     private Region headerView;
 
-    private final ResultOverlay overlay =
-            new ResultOverlay(root, () -> headerView);
+    private final ResultOverlay overlay = new ResultOverlay(root, () -> headerView);
 
     private DarkRoomWalls walls;
     private Label countdown;
@@ -97,10 +86,7 @@ public class DarkRoomScene implements FloorScene {
     private boolean closeupOpen;
     private boolean entered;
 
-    private DilemmaSequence dilemmas =
-            new DilemmaSequence(
-                    List.of()
-            );
+    private DilemmaSequence dilemmas = new DilemmaSequence(List.of());
 
     private boolean dilemmaOpen;
     private boolean successWaitingForDilemmas;
@@ -123,25 +109,15 @@ public class DarkRoomScene implements FloorScene {
             Runnable onExit
     ) {
         if (room == null || game == null || questions == null || records == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.room = room;
         this.questions = questions;
         /* Sul Buio si misura quanto ci si mette: vince il tempo più basso. */
-        this.record =
-                TrialRecord.lowerIsBetter(
-                        records,
-                        RECORD_KEY
-                );
+        this.record = TrialRecord.lowerIsBetter(records, RECORD_KEY);
 
-        this.controller =
-                new DarkRoomController(
-                        room,
-                        game
-                );
+        this.controller = new DarkRoomController(room, game);
 
         this.onSave = onSave;
         this.onExit = onExit;
@@ -157,15 +133,10 @@ public class DarkRoomScene implements FloorScene {
                                 : this::exitLevel
                 );
 
-        lighting.setToggleGuard(
-                () -> !resolved
-                        && !closeupOpen
-                        && !dilemmaOpen
-        );
+        lighting.setToggleGuard(() -> !resolved && !closeupOpen && !dilemmaOpen);
 
         lighting.setOnChange(() -> {
-            if (lighting.isLit()
-                    && walls != null) {
+            if (lighting.isLit() && walls != null) {
 
                 walls.hideNumbers();
             }
@@ -173,41 +144,27 @@ public class DarkRoomScene implements FloorScene {
     }
 
     @Override
-    public Parent createView(
-            Consumer<SceneOutcome> onFinished
-    ) {
+    public Parent createView(Consumer<SceneOutcome> onFinished) {
         if (onFinished == null) {
-            throw new IllegalArgumentException(
-                    "Il callback di fine scena non può essere null."
-            );
+            throw new IllegalArgumentException("Il callback di fine scena non può essere null.");
         }
 
         this.onFinished = onFinished;
 
-        root.getStyleClass().add(
-                "fear-root"
-        );
+        root.getStyleClass().add("fear-root");
 
         if (!entered) {
             prepareDilemmas();
             entered = true;
         }
 
-        headerView =
-                header.createView();
+        headerView = header.createView();
 
-        header.setProva(
-                room.title()
-        );
+        header.setProva(room.title());
 
         updateHeader();
 
-        root.setOnMouseMoved(
-                event -> onMouseMoved(
-                        event.getX(),
-                        event.getY()
-                )
-        );
+        root.setOnMouseMoved(event -> onMouseMoved(event.getX(), event.getY()));
 
         showEntryDilemma();
 
@@ -219,44 +176,22 @@ public class DarkRoomScene implements FloorScene {
      */
     private void prepareDilemmas() {
         dilemmas =
-                new DilemmaSequence(
-                        questions
-                                .randomQuestions(
-                                        "buio",
-                                        3
-                                )
-                );
+                new DilemmaSequence(questions .randomQuestions("buio", 3));
     }
 
     private void showEntryDilemma() {
         root.getChildren().setAll(
-                SceneFx.contain(
-                        root,
-                        room.backgroundResource(),
-                        SCENE_SCALE
-                ),
+                SceneFx.contain(root, room.backgroundResource(), SCENE_SCALE),
                 headerView
         );
 
-        StackPane.setAlignment(
-                headerView,
-                Pos.TOP_CENTER
-        );
+        StackPane.setAlignment(headerView, Pos.TOP_CENTER);
 
-        showNextDilemma(
-                () -> showBriefing(
-                        this::startAttempt
-                ),
-                false
-        );
+        showNextDilemma(() -> showBriefing(this::startAttempt), false);
     }
 
-    private void showNextDilemma(
-            Runnable afterChoice,
-            boolean pauseClock
-    ) {
-        if (dilemmaOpen
-                || !dilemmas.hasNext()) {
+    private void showNextDilemma(Runnable afterChoice, boolean pauseClock) {
+        if (dilemmaOpen || !dilemmas.hasNext()) {
 
             if (afterChoice != null) {
                 afterChoice.run();
@@ -271,20 +206,15 @@ public class DarkRoomScene implements FloorScene {
 
         dilemmaOpen = true;
 
-        Dilemma dilemma =
-                dilemmas.current();
+        Dilemma dilemma = dilemmas.current();
 
         DilemmaPrompt.show(
                 root,
                 dilemma.question(),
-                DilemmaPrompt.optionsOf(
-                        dilemma
-                ),
+                DilemmaPrompt.optionsOf(dilemma),
                 option -> {
                     if (dilemmas.resolve(dilemma)) {
-                        controller.registerChoice(
-                                option.trait()
-                        );
+                        controller.registerChoice(option.trait());
                     }
 
                     dilemmaOpen = false;
@@ -301,9 +231,7 @@ public class DarkRoomScene implements FloorScene {
         );
     }
 
-    private void showBriefing(
-            Runnable onStart
-    ) {
+    private void showBriefing(Runnable onStart) {
         overlay.show(
                 null,
                 room.intro(),
@@ -319,17 +247,11 @@ public class DarkRoomScene implements FloorScene {
     private void startAttempt() {
         resetAttemptState();
 
-        ImageView background =
-                buildBackground();
+        ImageView background = buildBackground();
 
-        walls =
-                new DarkRoomWalls(
-                        root,
-                        room.combination()
-                );
+        walls = new DarkRoomWalls(root, room.combination());
 
-        Pane hotspots =
-                buildHotspots();
+        Pane hotspots = buildHotspots();
 
         root.getChildren().setAll(
                 background,
@@ -339,10 +261,7 @@ public class DarkRoomScene implements FloorScene {
                 headerView
         );
 
-        StackPane.setAlignment(
-                headerView,
-                Pos.TOP_CENTER
-        );
+        StackPane.setAlignment(headerView, Pos.TOP_CENTER);
 
         updateHeader();
         startClock();
@@ -363,15 +282,9 @@ public class DarkRoomScene implements FloorScene {
     /** Lo sfondo, affidato all'illuminazione perché possa oscurarlo. */
     private ImageView buildBackground() {
         ImageView background =
-                SceneFx.contain(
-                        root,
-                        room.backgroundResource(),
-                        SCENE_SCALE
-                );
+                SceneFx.contain(root, room.backgroundResource(), SCENE_SCALE);
 
-        lighting.attach(
-                background
-        );
+        lighting.attach(background);
 
         return background;
     }
@@ -384,113 +297,52 @@ public class DarkRoomScene implements FloorScene {
      * movimento della torcia continua ad arrivare allo sfondo.
      */
     private Pane buildHotspots() {
-        Rectangle keypadHotspot =
-                new Rectangle(
-                        96,
-                        128,
-                        Color.TRANSPARENT
-                );
+        Rectangle keypadHotspot = new Rectangle(96, 128, Color.TRANSPARENT);
 
-        keypadHotspot.setCursor(
-                Cursor.HAND
-        );
+        keypadHotspot.setCursor(Cursor.HAND);
 
-        keypadHotspot.setOnMouseClicked(
-                event -> openCloseup()
-        );
+        keypadHotspot.setOnMouseClicked(event -> openCloseup());
 
-        SceneFx.place(
-                root,
-                keypadHotspot,
-                96,
-                128,
-                KEYPAD_X,
-                KEYPAD_Y
-        );
+        SceneFx.place(root, keypadHotspot, 96, 128, KEYPAD_X, KEYPAD_Y);
 
-        FontIcon lightSwitch =
-                lighting.switchIcon();
+        FontIcon lightSwitch = lighting.switchIcon();
 
-        SceneFx.place(
-                root,
-                lightSwitch,
-                44,
-                44,
-                0.07,
-                0.90
-        );
+        SceneFx.place(root, lightSwitch, 44, 44, 0.07, 0.90);
 
-        countdown =
-                new Label();
+        countdown = new Label();
 
-        countdown.getStyleClass().add(
-                "dark-timer"
-        );
+        countdown.getStyleClass().add("dark-timer");
 
-        SceneFx.place(
-                root,
-                countdown,
-                120,
-                40,
-                0.90,
-                0.15
-        );
+        SceneFx.place(root, countdown, 120, 40, 0.90, 0.15);
 
         Pane hotspots =
-                new Pane(
-                        walls.createView(),
-                        keypadHotspot,
-                        lightSwitch,
-                        countdown
-                );
+                new Pane(walls.createView(), keypadHotspot, lightSwitch, countdown);
 
-        hotspots.setPickOnBounds(
-                false
-        );
+        hotspots.setPickOnBounds(false);
 
         return hotspots;
     }
 
-    private void onMouseMoved(
-            double x,
-            double y
-    ) {
-        if (walls == null
-                || lighting.isLit()
-                || resolved
-                || closeupOpen
-                || dilemmaOpen) {
+    private void onMouseMoved(double x, double y) {
+        if (walls == null || lighting.isLit() || resolved || closeupOpen || dilemmaOpen) {
 
             return;
         }
 
-        walls.updateTorch(
-                lighting.darkness(),
-                x,
-                y,
-                lockState.getActiveSlot()
-        );
+        walls.updateTorch(lighting.darkness(), x, y, lockState.getActiveSlot());
     }
 
     private void openCloseup() {
-        if (resolved
-                || closeupOpen
-                || dilemmaOpen) {
+        if (resolved || closeupOpen || dilemmaOpen) {
 
             return;
         }
 
         closeupOpen = true;
 
-        CombinationLockView lock =
-                new CombinationLockView(
-                        lockState,
-                        this::submit
-                );
+        CombinationLockView lock = new CombinationLockView(lockState, this::submit);
 
-        closeup.open(
-                lock.createView()
-        );
+        closeup.open(lock.createView());
 
         /*
          * Il close-up copre l'intera scena: senza questo, i tentativi, Salva
@@ -501,9 +353,7 @@ public class DarkRoomScene implements FloorScene {
         headerView.toFront();
     }
 
-    private void submit(
-            String code
-    ) {
+    private void submit(String code) {
         if (controller.opens(code)) {
             beforeSuccess();
         } else {
@@ -546,10 +396,7 @@ public class DarkRoomScene implements FloorScene {
             return;
         }
 
-        showNextDilemma(
-                this::showRemainingDilemmasBeforeSuccess,
-                false
-        );
+        showNextDilemma(this::showRemainingDilemmasBeforeSuccess, false);
     }
 
     private void succeed() {
@@ -576,23 +423,13 @@ public class DarkRoomScene implements FloorScene {
 
         Sound.stopAll();
 
-        Sound.play(
-                "/audio/gate-open.mp3",
-                0.7
-        );
+        Sound.play("/audio/gate-open.mp3", 0.7);
 
         updateHeader();
-        showSuccessResult(
-                elapsed,
-                record.submit(elapsed)
-        );
+        showSuccessResult(elapsed, record.submit(elapsed));
     }
 
-
-    private void showSuccessResult(
-            int elapsed,
-            int best
-    ) {
+    private void showSuccessResult(int elapsed, int best) {
         overlay.show(
                 null,
                 room.outro(),
@@ -606,9 +443,7 @@ public class DarkRoomScene implements FloorScene {
                 () -> {
                     cleanup();
 
-                    onFinished.accept(
-                            SceneOutcome.AVANTI
-                    );
+                    onFinished.accept(SceneOutcome.AVANTI);
                 }
         );
     }
@@ -627,14 +462,9 @@ public class DarkRoomScene implements FloorScene {
 
         Sound.stopAll();
 
-        Sound.play(
-                "/audio/padlock-unlock.mp3",
-                0.35
-        );
+        Sound.play("/audio/padlock-unlock.mp3", 0.35);
 
-        failAttempt(
-                room.wrongText()
-        );
+        failAttempt(room.wrongText());
     }
 
     private void timeOut() {
@@ -649,9 +479,7 @@ public class DarkRoomScene implements FloorScene {
             closeup.close();
         }
 
-        failAttempt(
-                room.timeoutText()
-        );
+        failAttempt(room.timeoutText());
     }
 
     /**
@@ -660,42 +488,27 @@ public class DarkRoomScene implements FloorScene {
      * Finché restano tentativi si torna alla serratura dopo un breve
      * interludio; esauriti, la prova è fallita e va ricominciata da capo.
      */
-    private void failAttempt(
-            String message
-    ) {
+    private void failAttempt(String message) {
         controller.registerFailedAttempt();
         updateHeader();
 
         if (controller.canRetry()) {
-            showInterlude(
-                    message
-            );
+            showInterlude(message);
         } else {
-            showTrialFailed(
-                    message
-            );
+            showTrialFailed(message);
         }
     }
 
-    private void showInterlude(
-            String message
-    ) {
+    private void showInterlude(String message) {
         stopInterlude();
 
-        interlude = SceneFx.interlude(
-                root,
-                message,
-                attemptsNote(),
-                3.4,
-                this::startAttempt
-        );
+        interlude = SceneFx.interlude(root, message, attemptsNote(), 3.4, this::startAttempt);
 
         headerView.toFront();
     }
 
     private String attemptsNote() {
-        int left =
-                controller.remainingAttempts();
+        int left = controller.remainingAttempts();
 
         return left == 1
                 ? "Ti resta un tentativo."
@@ -708,9 +521,7 @@ public class DarkRoomScene implements FloorScene {
      * Le risposte gia' date restano registrate e le domande non vengono
      * riproposte, quindi ricominciare non altera il profilo.
      */
-    private void showTrialFailed(
-            String message
-    ) {
+    private void showTrialFailed(String message) {
         overlay.show(
                 "Prova fallita",
                 message,
@@ -729,17 +540,9 @@ public class DarkRoomScene implements FloorScene {
     private void startClock() {
         Sound.stopAll();
 
-        Sound.loop(
-                "/audio/ambience-dark.mp3",
-                0.25
-        );
+        Sound.loop("/audio/ambience-dark.mp3", 0.25);
 
-        clock.start(
-                room.seconds(),
-                countdown,
-                this::timeOut,
-                this::onClockSecondChanged
-        );
+        clock.start(room.seconds(), countdown, this::timeOut, this::onClockSecondChanged);
     }
 
     /**
@@ -747,42 +550,27 @@ public class DarkRoomScene implements FloorScene {
      * Se il close-up della serratura è aperto, aspetta il tick
      * successivo invece di coprire l'interazione in corso.
      */
-    private void onClockSecondChanged(
-            int remaining
-    ) {
-        if (resolved
-                || dilemmaOpen
-                || closeupOpen) {
+    private void onClockSecondChanged(int remaining) {
+        if (resolved || dilemmaOpen || closeupOpen) {
 
             return;
         }
 
-        if (dilemmas.resolvedCount() == 1
-                && remaining <= SECOND_DILEMMA_AT) {
+        if (dilemmas.resolvedCount() == 1 && remaining <= SECOND_DILEMMA_AT) {
 
-            showNextDilemma(
-                    null,
-                    true
-            );
+            showNextDilemma(null, true);
 
             return;
         }
 
-        if (dilemmas.resolvedCount() == 2
-                && remaining <= THIRD_DILEMMA_AT) {
+        if (dilemmas.resolvedCount() == 2 && remaining <= THIRD_DILEMMA_AT) {
 
-            showNextDilemma(
-                    null,
-                    true
-            );
+            showNextDilemma(null, true);
         }
     }
 
     private void updateHeader() {
-        header.setTentativi(
-                controller.remainingAttempts(),
-                controller.maxAttempts()
-        );
+        header.setTentativi(controller.remainingAttempts(), controller.maxAttempts());
     }
 
     /**
@@ -799,11 +587,7 @@ public class DarkRoomScene implements FloorScene {
 
         clock.pause();
 
-        onSave.accept(() -> {
-            if (running) {
-                clock.resume();
-            }
-        });
+        onSave.accept(() -> { if (running) { clock.resume(); } });
     }
 
     private void exitLevel() {

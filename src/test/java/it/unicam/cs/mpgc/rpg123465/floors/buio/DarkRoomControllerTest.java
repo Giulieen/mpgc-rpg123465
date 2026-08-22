@@ -158,11 +158,9 @@ class DarkRoomControllerTest {
 
     @Test
     void ilControllerRifiutaArgomentiMancanti() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new DarkRoomController(null, game));
+        assertThrows(IllegalArgumentException.class, () -> new DarkRoomController(null, game));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new DarkRoomController(room(), null));
+        assertThrows(IllegalArgumentException.class, () -> new DarkRoomController(room(), null));
     }
 
     @Test

@@ -29,103 +29,55 @@ public final class ProfileResultScreen {
     private final PlayerProfile profile;
     private final Runnable onBackToMenu;
 
-    private final StackPane root =
-            new StackPane();
+    private final StackPane root = new StackPane();
 
-    public ProfileResultScreen(
-            MindState mind,
-            Runnable onBackToMenu
-    ) {
-        if (mind == null
-                || onBackToMenu == null) {
+    public ProfileResultScreen(MindState mind, Runnable onBackToMenu) {
+        if (mind == null || onBackToMenu == null) {
 
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
-        this.profile =
-                mind.profile();
+        this.profile = mind.profile();
 
-        this.onBackToMenu =
-                onBackToMenu;
+        this.onBackToMenu = onBackToMenu;
     }
 
     /**
      * @return radice della schermata finale
      */
     public Parent createView() {
-        root.getStyleClass().add(
-                "fear-root"
-        );
+        root.getStyleClass().add("fear-root");
 
         Sound.stopAll();
 
-        Sound.loop(
-                "/audio/ambience-night.mp3",
-                0.25
-        );
+        Sound.loop("/audio/ambience-night.mp3", 0.25);
 
         Region background =
-                new ScrollingBackground(
-                        "/images/bg/forest.jpg",
-                        12
-                ).createView();
+                new ScrollingBackground("/images/bg/forest.jpg", 12).createView();
 
-        Region fog =
-                new FogOverlay(
-                        0.4
-                ).createView();
+        Region fog = new FogOverlay(0.4).createView();
 
-        root.getChildren().setAll(
-                background,
-                darkOverlay(),
-                fog,
-                content()
-        );
+        root.getChildren().setAll(background, darkOverlay(), fog, content());
 
         return root;
     }
 
     private VBox content() {
-        Label direction =
-                new Label(
-                        "IL TUO PROFILO STA ANDANDO VERSO"
-                );
+        Label direction = new Label("IL TUO PROFILO STA ANDANDO VERSO");
 
-        direction.getStyleClass().add(
-                "fear-memory"
-        );
+        direction.getStyleClass().add("fear-memory");
 
-        Label name =
-                new Label(
-                        profile.getNome()
-                );
+        Label name = new Label(profile.getNome());
 
-        name.getStyleClass().add(
-                "fear-title"
-        );
+        name.getStyleClass().add("fear-title");
 
-        Label description =
-                paragraph(
-                        profile.getDescrizione()
-                );
+        Label description = paragraph(profile.getDescrizione());
 
-        VBox words =
-                new VBox(
-                        14,
-                        direction,
-                        name,
-                        description
-                );
+        VBox words = new VBox(14, direction, name, description);
 
-        words.setAlignment(
-                Pos.CENTER
-        );
+        words.setAlignment(Pos.CENTER);
 
-        words.setMaxWidth(
-                460
-        );
+        words.setMaxWidth(460);
 
         /*
          * Ritratto a sinistra e parole a destra: il profilo si legge come una
@@ -133,16 +85,9 @@ public final class ProfileResultScreen {
          * accompagna, così la card resta equilibrata anche con le descrizioni
          * più lunghe.
          */
-        HBox card =
-                new HBox(
-                        34,
-                        portrait(),
-                        words
-                );
+        HBox card = new HBox(34, portrait(), words);
 
-        card.setAlignment(
-                Pos.CENTER
-        );
+        card.setAlignment(Pos.CENTER);
 
         Label demo =
                 paragraph(
@@ -151,58 +96,28 @@ public final class ProfileResultScreen {
                                 + "che ti rispecchia davvero."
                 );
 
-        demo.getStyleClass().add(
-                "fear-memory"
-        );
+        demo.getStyleClass().add("fear-memory");
 
-        Button menu =
-                new Button(
-                        "Torna al menu"
-                );
+        Button menu = new Button("Torna al menu");
 
-        menu.getStyleClass().add(
-                "menu-button"
-        );
+        menu.getStyleClass().add("menu-button");
 
-        menu.setOnAction(
-                event -> {
-                    Sound.stopAll();
-                    onBackToMenu.run();
-                }
-        );
+        menu.setOnAction(event -> { Sound.stopAll(); onBackToMenu.run(); });
 
-        VBox box =
-                new VBox(
-                        26,
-                        card,
-                        demo,
-                        menu
-                );
+        VBox box = new VBox(26, card, demo, menu);
 
-        box.setAlignment(
-                Pos.CENTER
-        );
+        box.setAlignment(Pos.CENTER);
 
-        box.setMaxWidth(
-                900
-        );
+        box.setMaxWidth(900);
 
-        box.getStyleClass().add(
-                "fear-panel"
-        );
+        box.getStyleClass().add("fear-panel");
 
         return box;
     }
 
     private ImageView portrait() {
         ImageView view =
-                new ImageView(
-                        new Image(
-                                getClass().getResourceAsStream(
-                                        profile.getRitratto()
-                                )
-                        )
-                );
+                new ImageView(new Image(getClass().getResourceAsStream(profile.getRitratto())));
 
         /*
          * Riquadro, non altezza fissa: le figure hanno proporzioni molto
@@ -217,44 +132,26 @@ public final class ProfileResultScreen {
         return view;
     }
 
-    private Label paragraph(
-            String content
-    ) {
-        Label label =
-                new Label(
-                        content
-                );
+    private Label paragraph(String content) {
+        Label label = new Label(content);
 
-        label.setWrapText(
-                true
-        );
+        label.setWrapText(true);
 
-        label.setMaxWidth(
-                720
-        );
+        label.setMaxWidth(720);
 
-        label.getStyleClass().add(
-                "fear-text"
-        );
+        label.getStyleClass().add("fear-text");
 
         return label;
     }
 
     private Node darkOverlay() {
-        Rectangle rectangle =
-                new Rectangle();
+        Rectangle rectangle = new Rectangle();
 
-        rectangle.getStyleClass().add(
-                "fear-dark"
-        );
+        rectangle.getStyleClass().add("fear-dark");
 
-        rectangle.widthProperty().bind(
-                root.widthProperty()
-        );
+        rectangle.widthProperty().bind(root.widthProperty());
 
-        rectangle.heightProperty().bind(
-                root.heightProperty()
-        );
+        rectangle.heightProperty().bind(root.heightProperty());
 
         return rectangle;
     }

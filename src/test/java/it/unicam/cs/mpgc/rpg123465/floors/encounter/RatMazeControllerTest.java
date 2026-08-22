@@ -84,8 +84,7 @@ class RatMazeControllerTest {
         List<GridPosition> path = maze.findPath(controller.playerPosition(), target);
 
         for (int i = 1; i < path.size(); i++) {
-            captured += controller.movePlayer(
-                    directionBetween(path.get(i - 1), path.get(i)));
+            captured += controller.movePlayer(directionBetween(path.get(i - 1), path.get(i)));
         }
 
         return captured;
@@ -383,8 +382,7 @@ class RatMazeControllerTest {
      */
     @Test
     void ricominciareNonAlteraIlProfilo() {
-        game.getMind().registerTrait(
-                it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait.CORAGGIO);
+        game.getMind().registerTrait(it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait.CORAGGIO);
 
         controller.spawnRat();
         runUntilEmpty();

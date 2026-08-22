@@ -51,18 +51,13 @@ public record DarkRoom(
             );
         }
 
-        if (combination == null
-                || !combination.matches("\\d{4}")) {
+        if (combination == null || !combination.matches("\\d{4}")) {
 
-            throw new IllegalArgumentException(
-                    "La combinazione deve contenere quattro cifre."
-            );
+            throw new IllegalArgumentException("La combinazione deve contenere quattro cifre.");
         }
 
         if (seconds <= 0) {
-            throw new IllegalArgumentException(
-                    "Il tempo deve essere positivo."
-            );
+            throw new IllegalArgumentException("Il tempo deve essere positivo.");
         }
     }
 

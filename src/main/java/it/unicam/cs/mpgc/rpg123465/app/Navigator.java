@@ -27,29 +27,20 @@ import it.unicam.cs.mpgc.rpg123465.ui.WindowFrame;
  */
 public final class Navigator {
 
-    private static final String SAVE_PATH =
-            "saves/save.dat";
+    private static final String SAVE_PATH = "saves/save.dat";
 
-    private static final String RECORDS_PATH =
-            "saves/records.properties";
+    private static final String RECORDS_PATH = "saves/records.properties";
 
-    private static final String PLAYERS_PATH =
-            "saves/players.txt";
+    private static final String PLAYERS_PATH = "saves/players.txt";
 
     /**
      * I record sopravvivono alle partite: uno solo per tutta l'applicazione,
      * creato all'avvio e non insieme al salvataggio.
      */
-    private final RecordStore records =
-            new FileRecordStore(
-                    RECORDS_PATH
-            );
+    private final RecordStore records = new FileRecordStore(RECORDS_PATH);
 
     /** I nomi già usati, per non farli riprendere da una partita nuova. */
-    private final PlayerRegistry players =
-            new FilePlayerRegistry(
-                    PLAYERS_PATH
-            );
+    private final PlayerRegistry players = new FilePlayerRegistry(PLAYERS_PATH);
 
     /**
      * Catalogo condiviso da tutta l'esecuzione.
@@ -63,13 +54,9 @@ public final class Navigator {
 
     private final WindowFrame frame;
 
-    public Navigator(
-            WindowFrame frame
-    ) {
+    public Navigator(WindowFrame frame) {
         if (frame == null) {
-            throw new IllegalArgumentException(
-                    "La cornice non può essere null."
-            );
+            throw new IllegalArgumentException("La cornice non può essere null.");
         }
 
         this.frame = frame;
@@ -79,32 +66,19 @@ public final class Navigator {
         Sound.stopAll();
 
         StartMenu menu =
-                new StartMenu(
-                        this::startNewGame,
-                        this::loadGame,
-                        players::isTaken
-                );
+                new StartMenu(this::startNewGame, this::loadGame, players::isTaken);
 
-        frame.setContent(
-                menu.createView()
-        );
+        frame.setContent(menu.createView());
     }
 
-    private void startNewGame(
-            String playerName
-    ) {
+    private void startNewGame(String playerName) {
         GameController controller;
 
         try {
-            controller =
-                    createController(
-                            playerName
-                    );
+            controller = createController(playerName);
 
         } catch (QuestionCatalogException exception) {
-            showCatalogError(
-                    exception
-            );
+            showCatalogError(exception);
             return;
         }
 
@@ -119,46 +93,26 @@ public final class Navigator {
          * il giocatore deve sapere che sta rispondendo per davvero prima di
          * dare la prima risposta, non scoprirlo alla fine.
          */
-        IntroScreen intro =
-                new IntroScreen(
-                        () -> showProfileGallery(
-                                controller
-                        )
-                );
+        IntroScreen intro = new IntroScreen(() -> showProfileGallery(controller));
 
-        frame.setContent(
-                intro.createView()
-        );
+        frame.setContent(intro.createView());
     }
 
-    private void showProfileGallery(
-            GameController controller
-    ) {
+    private void showProfileGallery(GameController controller) {
         ProfileGalleryScreen gallery =
-                new ProfileGalleryScreen(
-                        () -> showCurrentFloor(
-                                controller
-                        )
-                );
+                new ProfileGalleryScreen(() -> showCurrentFloor(controller));
 
-        frame.setContent(
-                gallery.createView()
-        );
+        frame.setContent(gallery.createView());
     }
 
     private void loadGame() {
         GameController controller;
 
         try {
-            controller =
-                    createController(
-                            null
-                    );
+            controller = createController(null);
 
         } catch (QuestionCatalogException exception) {
-            showCatalogError(
-                    exception
-            );
+            showCatalogError(exception);
             return;
         }
 
@@ -171,38 +125,28 @@ public final class Navigator {
             return;
         }
 
-        OperationResult result =
-                controller.loadGame();
+        OperationResult result = controller.loadGame();
 
         if (!result.success()) {
             showInfo(
                     "Caricamento non riuscito",
-                    errorMessage(
-                            "Si è verificato un errore durante il caricamento.",
-                            result
-                    ),
+                    errorMessage("Si è verificato un errore durante il caricamento.", result),
                     "Torna al menu"
             );
             return;
         }
 
         if (controller.isGameCompleted()) {
-            showDemoResult(
-                    controller
-            );
+            showDemoResult(controller);
         } else {
-            showCurrentFloor(
-                    controller
-            );
+            showCurrentFloor(controller);
         }
     }
 
     /**
      * Crea il checkpoint prima della scena e lo salva da solo.
      */
-    private void showCurrentFloor(
-            GameController controller
-    ) {
+    private void showCurrentFloor(GameController controller) {
         controller.beginFloorCheckpoint();
         autoSave(controller);
 
@@ -216,58 +160,37 @@ public final class Navigator {
                         controller,
                         questions(),
                         records,
-                        onDismissed -> showSaveResult(
-                                controller,
-                                onDismissed
-                        ),
-                        () -> exitCurrentFloor(
-                                controller
-                        )
+                        onDismissed -> showSaveResult(controller, onDismissed),
+                        () -> exitCurrentFloor(controller)
                 );
 
         new SceneFlow(
-                scenes.scenesFor(
-                        content
-                ),
+                scenes.scenesFor(content),
                 frame::setContent,
-                () -> onFloorCompleted(
-                        controller
-                )
+                () -> onFloorCompleted(controller)
         ).start();
     }
 
-    private void onFloorCompleted(
-            GameController controller
-    ) {
+    private void onFloorCompleted(GameController controller) {
         controller.climbToNextFloor();
 
         if (controller.isGameCompleted()) {
-            showDemoResult(
-                    controller
-            );
+            showDemoResult(controller);
         } else {
-            showCurrentFloor(
-                    controller
-            );
+            showCurrentFloor(controller);
         }
     }
 
     /**
      * Salva il checkpoint del piano e torna al menu.
      */
-    private void exitCurrentFloor(
-            GameController controller
-    ) {
-        OperationResult result =
-                controller.saveGame();
+    private void exitCurrentFloor(GameController controller) {
+        OperationResult result = controller.saveGame();
 
         if (!result.success()) {
             showInfo(
                     "Uscita non riuscita",
-                    errorMessage(
-                            "Non è stato possibile salvare il punto di ripresa.",
-                            result
-                    ),
+                    errorMessage("Non è stato possibile salvare il punto di ripresa.", result),
                     "Riprendi"
             );
             return;
@@ -291,50 +214,28 @@ public final class Navigator {
      * del problema. Se ne accorgerà semmai salvando a mano, dove l'esito si
      * vede.
      */
-    private void autoSave(
-            GameController controller
-    ) {
+    private void autoSave(GameController controller) {
         controller.saveGame();
     }
 
     /**
      * Mostra direttamente il risultato della demo.
      */
-    private void showDemoResult(
-            GameController controller
-    ) {
+    private void showDemoResult(GameController controller) {
         autoSave(controller);
 
         ProfileResultScreen finale =
-                new ProfileResultScreen(
-                        controller.getMind(),
-                        this::showStartMenu
-                );
+                new ProfileResultScreen(controller.getMind(), this::showStartMenu);
 
-        frame.setContent(
-                finale.createView()
-        );
+        frame.setContent(finale.createView());
     }
 
-    private GameController createController(
-            String playerName
-    ) {
-        GameEngine engine =
-                GameFactory.createNewGame(
-                        playerName,
-                        questions()
-                );
+    private GameController createController(String playerName) {
+        GameEngine engine = GameFactory.createNewGame(playerName, questions());
 
-        SaveManager saveManager =
-                new FileSaveManager(
-                        SAVE_PATH
-                );
+        SaveManager saveManager = new FileSaveManager(SAVE_PATH);
 
-        return new GameController(
-                engine,
-                saveManager,
-                questions()
-        );
+        return new GameController(engine, saveManager, questions());
     }
 
     /**
@@ -358,12 +259,8 @@ public final class Navigator {
      *
      * @param onDismissed avvisa il piano che il messaggio è stato chiuso
      */
-    private void showSaveResult(
-            GameController controller,
-            Runnable onDismissed
-    ) {
-        OperationResult result =
-                controller.saveGame();
+    private void showSaveResult(GameController controller, Runnable onDismissed) {
+        OperationResult result = controller.saveGame();
 
         if (result.success()) {
             showInfo(
@@ -376,10 +273,7 @@ public final class Navigator {
         } else {
             showInfo(
                     "Salvataggio non riuscito",
-                    errorMessage(
-                            "Si è verificato un errore durante il salvataggio.",
-                            result
-                    ),
+                    errorMessage("Si è verificato un errore durante il salvataggio.", result),
                     "Riprendi",
                     onDismissed
             );
@@ -392,9 +286,7 @@ public final class Navigator {
      * Il dettaglio arriva dal repository e indica il file e il punto del
      * problema: senza, resterebbe soltanto uno stack trace nella console.
      */
-    private void showCatalogError(
-            QuestionCatalogException exception
-    ) {
+    private void showCatalogError(QuestionCatalogException exception) {
         showInfo(
                 "Domande non disponibili",
                 "Non è stato possibile avviare la partita perché il catalogo "
@@ -405,12 +297,8 @@ public final class Navigator {
         );
     }
 
-    private String errorMessage(
-            String fallback,
-            OperationResult result
-    ) {
-        if (result.detail() == null
-                || result.detail().isBlank()) {
+    private String errorMessage(String fallback, OperationResult result) {
+        if (result.detail() == null || result.detail().isBlank()) {
 
             return fallback;
         }
@@ -429,25 +317,11 @@ public final class Navigator {
      *
      * @param buttonLabel cosa succede chiudendo
      */
-    private void showInfo(
-            String title,
-            String content,
-            String buttonLabel
-    ) {
+    private void showInfo(String title, String content, String buttonLabel) {
         showInfo(title, content, buttonLabel, null);
     }
 
-    private void showInfo(
-            String title,
-            String content,
-            String buttonLabel,
-            Runnable onDismissed
-    ) {
-        frame.showMessage(
-                title,
-                content,
-                buttonLabel,
-                onDismissed
-        );
+    private void showInfo(String title, String content, String buttonLabel, Runnable onDismissed) {
+        frame.showMessage(title, content, buttonLabel, onDismissed);
     }
 }

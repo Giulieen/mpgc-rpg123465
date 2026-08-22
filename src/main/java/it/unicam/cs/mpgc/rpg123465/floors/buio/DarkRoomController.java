@@ -22,14 +22,9 @@ public final class DarkRoomController {
      * @param room contenuto del piano
      * @param game controller della partita
      */
-    public DarkRoomController(
-            DarkRoom room,
-            GameController game
-    ) {
+    public DarkRoomController(DarkRoom room, GameController game) {
         if (room == null || game == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.room = room;
@@ -40,13 +35,9 @@ public final class DarkRoomController {
     /**
      * Verifica la combinazione.
      */
-    public boolean opens(
-            String enteredCode
-    ) {
+    public boolean opens(String enteredCode) {
         return room.combination()
-                .equals(
-                        enteredCode
-                );
+                .equals(enteredCode);
     }
 
     /**
@@ -55,12 +46,8 @@ public final class DarkRoomController {
      * Il tratto è nascosto al giocatore e non ha alcun effetto sulla prova:
      * contribuisce soltanto al profilo finale.
      */
-    public void registerChoice(
-            ProfileTrait trait
-    ) {
-        mind.registerTrait(
-                trait
-        );
+    public void registerChoice(ProfileTrait trait) {
+        mind.registerTrait(trait);
     }
 
     /**

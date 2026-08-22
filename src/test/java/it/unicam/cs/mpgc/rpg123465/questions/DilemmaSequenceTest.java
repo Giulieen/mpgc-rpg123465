@@ -166,15 +166,13 @@ class DilemmaSequenceTest {
 
     @Test
     void laSequenzaRifiutaUnaListaNullOConElementiNull() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new DilemmaSequence(null));
+        assertThrows(IllegalArgumentException.class, () -> new DilemmaSequence(null));
 
         List<Dilemma> conNull = new ArrayList<>();
         conNull.add(dilemma(1));
         conNull.add(null);
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new DilemmaSequence(conNull));
+        assertThrows(IllegalArgumentException.class, () -> new DilemmaSequence(conNull));
     }
 
     /**

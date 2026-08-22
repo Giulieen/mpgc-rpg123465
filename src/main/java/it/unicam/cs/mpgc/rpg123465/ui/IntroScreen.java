@@ -197,10 +197,7 @@ public class IntroScreen {
 
         // Si chiude a dissolvenza finita e non prima, così il cigolio del
         // cancello e gli ambienti accompagnano l'uscita invece di troncarla.
-        fade.setOnFinished(event -> {
-            cleanup();
-            onEnter.run();
-        });
+        fade.setOnFinished(event -> { cleanup(); onEnter.run(); });
 
         fade.play();
     }

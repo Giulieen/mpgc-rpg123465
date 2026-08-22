@@ -27,11 +27,9 @@ final class MazeSprites {
 
     // --- Fogli -----------------------------------------------------------
 
-    private static final String TILESET =
-            "/images/topi/tiles/tileset_world_1.png";
+    private static final String TILESET = "/images/topi/tiles/tileset_world_1.png";
 
-    private static final String PLAYER =
-            "/images/topi/player/character_sheet.png";
+    private static final String PLAYER = "/images/topi/player/character_sheet.png";
 
     private static final String[] RAT_SHEETS = {
             "/images/topi/rats/Rat-DarkGrey-Walk.png",
@@ -125,11 +123,7 @@ final class MazeSprites {
             }
         }
 
-        return new MazeSprites(
-                read(TILESET),
-                read(PLAYER),
-                ratSheets
-        );
+        return new MazeSprites(read(TILESET), read(PLAYER), ratSheets);
     }
 
     boolean hasTiles() {
@@ -175,9 +169,7 @@ final class MazeSprites {
      * @return la vista, già posizionata sul primo fotogramma
      */
     ImageView rat(int variant, double side) {
-        ImageView view = new ImageView(
-                rats.get(Math.floorMod(variant, rats.size()))
-        );
+        ImageView view = new ImageView(rats.get(Math.floorMod(variant, rats.size())));
 
         view.setSmooth(false);
         view.setFitWidth(side);
@@ -223,11 +215,7 @@ final class MazeSprites {
      * @param walking {@code true} per la camminata, {@code false} da fermo
      * @return il ritaglio del fotogramma richiesto
      */
-    Rectangle2D playerViewport(
-            Facing facing,
-            int frame,
-            boolean walking
-    ) {
+    Rectangle2D playerViewport(Facing facing, int frame, boolean walking) {
         int columns = walking
                 ? PLAYER_WALK_FRAMES
                 : PLAYER_IDLE_FRAMES;
@@ -251,14 +239,7 @@ final class MazeSprites {
         view.setFitWidth(side);
         view.setFitHeight(side);
 
-        view.setViewport(
-                new Rectangle2D(
-                        (double) column * TILE,
-                        (double) row * TILE,
-                        TILE,
-                        TILE
-                )
-        );
+        view.setViewport(new Rectangle2D((double) column * TILE, (double) row * TILE, TILE, TILE));
 
         return view;
     }
@@ -269,8 +250,7 @@ final class MazeSprites {
      * @return l'immagine, oppure {@code null} se manca o è illeggibile
      */
     private static Image read(String resource) {
-        try (InputStream stream =
-                     MazeSprites.class.getResourceAsStream(resource)) {
+        try (InputStream stream = MazeSprites.class.getResourceAsStream(resource)) {
 
             if (stream == null) {
                 System.getLogger(MazeSprites.class.getName())

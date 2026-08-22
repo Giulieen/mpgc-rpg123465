@@ -116,8 +116,7 @@ public final class RatMazeScene implements FloorScene {
 
     private final Map<Rat, RatView> ratViews = new HashMap<>();
 
-    private final javafx.event.EventHandler<KeyEvent> keyHandler =
-            this::onKeyPressed;
+    private final javafx.event.EventHandler<KeyEvent> keyHandler = this::onKeyPressed;
 
     private Consumer<SceneOutcome> onFinished;
     private Region headerView;
@@ -142,8 +141,7 @@ public final class RatMazeScene implements FloorScene {
      * l'esito e' deciso: il tempo misurato e' solo quello giocato.
      */
     private int elapsedSeconds;
-    private final ResultOverlay overlay =
-            new ResultOverlay(root, () -> headerView);
+    private final ResultOverlay overlay = new ResultOverlay(root, () -> headerView);
 
     /**
      * Ciò che serve a disegnare un topo: la sua vista, la variante di colore
@@ -174,9 +172,7 @@ public final class RatMazeScene implements FloorScene {
             Runnable onExit
     ) {
         if (encounter == null || game == null || records == null) {
-            throw new IllegalArgumentException(
-                    "Gli argomenti non possono essere null."
-            );
+            throw new IllegalArgumentException("Gli argomenti non possono essere null.");
         }
 
         this.encounter = encounter;
@@ -200,13 +196,9 @@ public final class RatMazeScene implements FloorScene {
     // ---------------------------------------------------------------------
 
     @Override
-    public Parent createView(
-            Consumer<SceneOutcome> onFinished
-    ) {
+    public Parent createView(Consumer<SceneOutcome> onFinished) {
         if (onFinished == null) {
-            throw new IllegalArgumentException(
-                    "Il callback di fine scena non può essere null."
-            );
+            throw new IllegalArgumentException("Il callback di fine scena non può essere null.");
         }
 
         this.onFinished = onFinished;
@@ -229,9 +221,7 @@ public final class RatMazeScene implements FloorScene {
 
         StackPane.setAlignment(headerView, Pos.TOP_CENTER);
 
-        root.sceneProperty().addListener(
-                (obs, oldScene, newScene) -> bindKeys(newScene)
-        );
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> bindKeys(newScene));
 
         startAmbience();
         startTimelines();
@@ -242,9 +232,7 @@ public final class RatMazeScene implements FloorScene {
     private VBox centerPanel() {
         counter.getStyleClass().add("maze-counter");
 
-        Label hint = new Label(
-                "Muoviti con le frecce e non far arrivare i topi alle uscite."
-        );
+        Label hint = new Label("Muoviti con le frecce e non far arrivare i topi alle uscite.");
         hint.getStyleClass().add("fear-memory");
 
         StackPane frame = new StackPane(board);
@@ -367,16 +355,14 @@ public final class RatMazeScene implements FloorScene {
         StackPane cell = new StackPane();
         cell.setPrefSize(CELL, CELL);
 
-        Rectangle mouth = new Rectangle(CELL * 0.52, CELL * 0.6,
-                Color.web("#05040a"));
+        Rectangle mouth = new Rectangle(CELL * 0.52, CELL * 0.6, Color.web("#05040a"));
         mouth.setArcWidth(CELL * 0.5);
         mouth.setArcHeight(CELL * 0.5);
         mouth.setTranslateY(CELL * 0.08);
         mouth.setEffect(new InnerShadow(9, Color.rgb(120, 110, 140, 0.5)));
 
         // Il bordo di pietra sbrecciata attorno al foro.
-        Rectangle rim = new Rectangle(CELL * 0.62, CELL * 0.68,
-                Color.rgb(0, 0, 0, 0.55));
+        Rectangle rim = new Rectangle(CELL * 0.62, CELL * 0.68, Color.rgb(0, 0, 0, 0.55));
         rim.setArcWidth(CELL * 0.6);
         rim.setArcHeight(CELL * 0.6);
         rim.setTranslateY(CELL * 0.07);
@@ -403,8 +389,7 @@ public final class RatMazeScene implements FloorScene {
         arch.setOpacity(0.88);
         arch.setEffect(new DropShadow(20, EXIT_GLOW));
 
-        Rectangle depth = new Rectangle(CELL * 0.3, CELL * 0.42,
-                Color.rgb(20, 12, 4, 0.75));
+        Rectangle depth = new Rectangle(CELL * 0.3, CELL * 0.42, Color.rgb(20, 12, 4, 0.75));
         depth.setArcWidth(CELL * 0.3);
         depth.setArcHeight(CELL * 0.3);
         depth.setTranslateY(CELL * 0.06);
@@ -412,8 +397,7 @@ public final class RatMazeScene implements FloorScene {
         cell.getChildren().addAll(arch, depth);
 
         // Un respiro lento, perché l'occhio le trovi senza doverle cercare.
-        FadeTransition pulse =
-                new FadeTransition(Duration.seconds(1.6), arch);
+        FadeTransition pulse = new FadeTransition(Duration.seconds(1.6), arch);
         pulse.setFromValue(0.9);
         pulse.setToValue(0.45);
         pulse.setAutoReverse(true);
@@ -474,9 +458,7 @@ public final class RatMazeScene implements FloorScene {
         if (sprites.hasRats()) {
             for (RatView view : ratViews.values()) {
                 if (view.sprite != null) {
-                    view.sprite.setViewport(
-                            sprites.ratViewport(frameTick)
-                    );
+                    view.sprite.setViewport(sprites.ratViewport(frameTick));
                 }
             }
         }
@@ -499,8 +481,7 @@ public final class RatMazeScene implements FloorScene {
 
     private RatView buildRatView(Rat rat) {
         if (sprites.hasRats()) {
-            ImageView sprite =
-                    sprites.rat(rng.nextInt(sprites.ratVariants()), CELL);
+            ImageView sprite = sprites.rat(rng.nextInt(sprites.ratVariants()), CELL);
 
             actors.getChildren().add(sprite);
 
@@ -616,12 +597,9 @@ public final class RatMazeScene implements FloorScene {
             return;
         }
 
-        boolean walking =
-                System.currentTimeMillis() - lastStepAt < WALK_HOLD_MS;
+        boolean walking = System.currentTimeMillis() - lastStepAt < WALK_HOLD_MS;
 
-        playerSprite.setViewport(
-                sprites.playerViewport(playerFacing, frameTick, walking)
-        );
+        playerSprite.setViewport(sprites.playerViewport(playerFacing, frameTick, walking));
 
         playerSprite.setScaleX(playerFlipped ? -1 : 1);
     }
@@ -683,8 +661,7 @@ public final class RatMazeScene implements FloorScene {
 
     /** Un lampo brevissimo sul portatore di luce: la cattura si vede subito. */
     private void flashCapture() {
-        ScaleTransition pop =
-                new ScaleTransition(Duration.millis(110), playerNode);
+        ScaleTransition pop = new ScaleTransition(Duration.millis(110), playerNode);
 
         pop.setFromX(1);
         pop.setFromY(1);
@@ -712,10 +689,7 @@ public final class RatMazeScene implements FloorScene {
     }
 
     private void updateHeader() {
-        header.setTentativi(
-                controller.remainingAttempts(),
-                controller.maxAttempts()
-        );
+        header.setTentativi(controller.remainingAttempts(), controller.maxAttempts());
     }
 
     /** Un avviso breve, che non interrompe il gioco. */
@@ -730,8 +704,7 @@ public final class RatMazeScene implements FloorScene {
         root.getChildren().add(message);
         headerView.toFront();
 
-        FadeTransition fade =
-                new FadeTransition(Duration.millis(900), message);
+        FadeTransition fade = new FadeTransition(Duration.millis(900), message);
 
         fade.setFromValue(1);
         fade.setToValue(0);
@@ -861,11 +834,7 @@ public final class RatMazeScene implements FloorScene {
             pauseTimelines();
         }
 
-        onSave.accept(() -> {
-            if (running) {
-                resumeTimelines();
-            }
-        });
+        onSave.accept(() -> { if (running) { resumeTimelines(); } });
     }
 
     private void pauseTimelines() {

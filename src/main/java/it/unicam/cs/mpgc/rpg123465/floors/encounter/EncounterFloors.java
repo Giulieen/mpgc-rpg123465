@@ -20,15 +20,10 @@ public final class EncounterFloors {
      * @param questions catalogo da cui estrarre la domanda del piano
      * @return contenuto del Piano I
      */
-    public static FearEncounter topi(
-            QuestionRepository questions
-    ) {
+    public static FearEncounter topi(QuestionRepository questions) {
         Dilemma dilemma =
                 questions
-                        .randomQuestions(
-                                "topi",
-                                1
-                        )
+                        .randomQuestions("topi", 1)
                         .getFirst();
 
         return new FearEncounter(
@@ -36,14 +31,8 @@ public final class EncounterFloors {
                 "/images/scenes/floor1-topi.jpg",
                 dilemma.question(),
                 List.of(
-                        new FearChoice(
-                                dilemma.first().text(),
-                                dilemma.first().trait()
-                        ),
-                        new FearChoice(
-                                dilemma.second().text(),
-                                dilemma.second().trait()
-                        )
+                        new FearChoice(dilemma.first().text(), dilemma.first().trait()),
+                        new FearChoice(dilemma.second().text(), dilemma.second().trait())
                 )
         );
     }

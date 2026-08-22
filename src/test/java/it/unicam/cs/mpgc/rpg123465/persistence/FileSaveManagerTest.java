@@ -115,8 +115,7 @@ class FileSaveManagerTest {
     void unOggettoDiTipoSbagliatoDiventaUnErroreDiIo() throws Exception {
         Path path = temp.resolve("estraneo.dat");
 
-        try (ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream(path.toFile()))) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toFile()))) {
             out.writeObject("non sono un salvataggio");
         }
 

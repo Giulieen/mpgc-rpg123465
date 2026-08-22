@@ -90,8 +90,7 @@ class FilePlayerRegistryTest {
     void ilNomeVieneConservatoNellaFormaOriginale() throws Exception {
         registry().register("Giulìa D'Amico");
 
-        assertTrue(Files.readString(file(), StandardCharsets.UTF_8)
-                .contains("Giulìa D'Amico"));
+        assertTrue(Files.readString(file(), StandardCharsets.UTF_8) .contains("Giulìa D'Amico"));
     }
 
     @Test

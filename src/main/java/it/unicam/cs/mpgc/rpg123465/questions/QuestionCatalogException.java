@@ -23,9 +23,7 @@ public class QuestionCatalogException extends RuntimeException {
     /**
      * @param message descrizione del problema, rivolta a chi cura il catalogo
      */
-    public QuestionCatalogException(
-            String message
-    ) {
+    public QuestionCatalogException(String message) {
         super(message);
     }
 
@@ -33,10 +31,7 @@ public class QuestionCatalogException extends RuntimeException {
      * @param message descrizione del problema
      * @param cause errore originale, tipicamente di lettura o di sintassi
      */
-    public QuestionCatalogException(
-            String message,
-            Throwable cause
-    ) {
+    public QuestionCatalogException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -21,20 +21,14 @@ public final class DilemmaSequence {
      * @param dilemmas domande da porre, nell'ordine in cui vanno poste; una
      *                 lista vuota produce una sequenza già esaurita
      */
-    public DilemmaSequence(
-            List<Dilemma> dilemmas
-    ) {
+    public DilemmaSequence(List<Dilemma> dilemmas) {
         if (dilemmas == null) {
-            throw new IllegalArgumentException(
-                    "La lista dei dilemmi non può essere null."
-            );
+            throw new IllegalArgumentException("La lista dei dilemmi non può essere null.");
         }
 
         for (Dilemma dilemma : dilemmas) {
             if (dilemma == null) {
-                throw new IllegalArgumentException(
-                        "La sequenza non ammette dilemmi null."
-                );
+                throw new IllegalArgumentException("La sequenza non ammette dilemmi null.");
             }
         }
 
@@ -57,9 +51,7 @@ public final class DilemmaSequence {
      */
     public Dilemma current() {
         if (!hasNext()) {
-            throw new IllegalStateException(
-                    "La sequenza dei dilemmi è esaurita."
-            );
+            throw new IllegalStateException("La sequenza dei dilemmi è esaurita.");
         }
 
         return dilemmas.get(resolved);
@@ -78,11 +70,8 @@ public final class DilemmaSequence {
      * @param dilemma dilemma a cui si sta rispondendo
      * @return true se il dilemma è stato consumato adesso
      */
-    public boolean resolve(
-            Dilemma dilemma
-    ) {
-        if (!hasNext()
-                || !current().equals(dilemma)) {
+    public boolean resolve(Dilemma dilemma) {
+        if (!hasNext() || !current().equals(dilemma)) {
 
             return false;
         }

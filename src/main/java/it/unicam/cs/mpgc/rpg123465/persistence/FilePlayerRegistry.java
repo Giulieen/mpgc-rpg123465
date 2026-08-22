@@ -31,8 +31,7 @@ public final class FilePlayerRegistry implements PlayerRegistry {
      */
     public FilePlayerRegistry(String filePath) {
         if (filePath == null || filePath.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Il percorso del registro non può essere vuoto.");
+            throw new IllegalArgumentException("Il percorso del registro non può essere vuoto.");
         }
 
         this.path = Path.of(filePath);
