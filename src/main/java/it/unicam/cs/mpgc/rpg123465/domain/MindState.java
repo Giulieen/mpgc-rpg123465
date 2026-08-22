@@ -74,7 +74,7 @@ public class MindState implements Serializable {
      * Determina il profilo verso cui il personaggio si sta dirigendo.
      *
      * Regole:
-     * - se tutti e tre i valori differiscono al massimo di 1: Poliedrico;
+     * - se tutti e tre i valori differiscono al massimo di 1: Imprevedibile;
      * - se due tratti sono vicini (differenza massima 1) e il terzo è
      *   almeno 2 punti più basso: profilo combinato;
      * - altrimenti prevale il tratto con il punteggio maggiore.
@@ -83,7 +83,7 @@ public class MindState implements Serializable {
      */
     public PlayerProfile profile() {
         if (getTotalProfileChoices() == 0) {
-            return PlayerProfile.POLIEDRICO;
+            return PlayerProfile.IMPREVEDIBILE;
         }
 
         int max =
@@ -105,7 +105,7 @@ public class MindState implements Serializable {
                 );
 
         if (max - min <= 1) {
-            return PlayerProfile.POLIEDRICO;
+            return PlayerProfile.IMPREVEDIBILE;
         }
 
         if (Math.abs(coraggio - curiosita) <= 1

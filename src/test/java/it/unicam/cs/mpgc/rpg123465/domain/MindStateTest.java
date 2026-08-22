@@ -68,7 +68,7 @@ class MindStateTest {
 
     @Test
     void senzaRisposteIlProfiloNonPuoEssereDeterminato() {
-        assertEquals(PlayerProfile.POLIEDRICO, new MindState().profile());
+        assertEquals(PlayerProfile.IMPREVEDIBILE, new MindState().profile());
     }
 
     @Test
@@ -102,8 +102,8 @@ class MindStateTest {
     }
 
     @Test
-    void trattiRavvicinatiDannoIlPoliedrico() {
-        assertEquals(PlayerProfile.POLIEDRICO, with(3, 3, 2).profile());
+    void trattiRavvicinatiDannoLImprevedibile() {
+        assertEquals(PlayerProfile.IMPREVEDIBILE, with(3, 3, 2).profile());
     }
 
     /**
