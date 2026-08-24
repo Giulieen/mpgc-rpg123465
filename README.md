@@ -46,17 +46,19 @@ Su Windows usare `gradlew.bat` al posto di `./gradlew`.
 
 ## 🤖 Uso di strumenti di AI
 
-Durante lo sviluppo ho usato **ChatGPT** come supporto, in questi ambiti:
+Durante lo sviluppo è stato utilizzato **ChatGPT** come supporto, in questi
+ambiti:
 
 - **analisi della specifica**: chiarimenti e confronto sui requisiti;
-- **architettura**: proposte di suddivisione in package e di interfacce, che ho
-  valutato e adattato;
-- **codice**: generazione di porzioni su mia indicazione, sempre lette e
-  verificate prima di integrarle;
+- **architettura**: proposte di suddivisione in package e di interfacce,
+  valutate e adattate prima dell'adozione;
+- **codice**: generazione di porzioni su indicazione precisa, sempre lette e
+  verificate prima dell'integrazione;
 - **revisione**: segnalazione di duplicazioni e di violazioni dei principi SOLID;
 - **test**: proposte di casi di prova, verificate eseguendole;
 - **documentazione**: supporto alla stesura dei testi.
 
-L'ideazione del gioco è mia: i piani, le meccaniche, i dilemmi, i profili e
-tutti i testi narrativi. Sono mie anche le decisioni di progettazione, e la
-cronologia dei commit ne conserva i passaggi.
+L'ideazione del gioco — piani, meccaniche, dilemmi, profili e testi narrativi —
+e le scelte di progettazione sono state svolte in autonomia; gli strumenti di AI
+hanno avuto un ruolo di supporto alla realizzazione. La cronologia dei commit ne
+documenta i passaggi.
