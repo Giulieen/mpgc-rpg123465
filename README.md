@@ -10,7 +10,7 @@ Documentazione completa nella **[Wiki](../../wiki)** · asset di terze parti in 
 ## 🚀 Come eseguire il progetto
 
 ### Prerequisiti
-- Java 21
+- Java 25 (LTS)
 - Gradle (incluso nel progetto tramite il wrapper, non serve installarlo)
 
 ### Istruzioni
