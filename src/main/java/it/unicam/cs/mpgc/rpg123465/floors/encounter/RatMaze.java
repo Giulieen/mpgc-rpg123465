@@ -29,8 +29,9 @@ public final class RatMaze {
      * <p>
      * Le tane stanno in basso, dietro i tratti di muro della penultima fila —
      * sono buchi nella parete, non porte. Le uscite sono i due angoli in alto:
-     * ogni fuga costa quindi al topo tutta l'altezza della stanza, e nessuna
-     * tana è più vicina di un'altra a un'uscita.
+     * ogni fuga costa quindi al topo tutta l'altezza della stanza. La pianta è
+     * simmetrica rispetto all'asse verticale: le due tane laterali distano
+     * otto passi dall'uscita più vicina, quella centrale dodici da entrambe.
      *
      * <p>
      * Le file 3 e 5 sono libere da parte a parte e le colonne 1, 5, 9 e 13
