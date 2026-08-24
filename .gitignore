@@ -50,3 +50,7 @@ logs/
 audio-originali/
 # Copie originali degli asset prima delle elaborazioni (backup locale)
 asset-originali/
+
+# Impostazioni locali degli assistenti di sviluppo: non fanno parte del progetto
+.claude/
+.github/modernize/
