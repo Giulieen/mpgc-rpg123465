@@ -51,7 +51,22 @@ l'oro `#b99a5e`, per portare la pietra nella palette della Torre.
 
 ## Audio — `audio/`
 
-> **Da completare.** Indicare per ciascuna traccia autore, fonte e licenza.
+- Fonte: **[Pixabay](https://pixabay.com/sound-effects/)**
+- Licenza: **Pixabay Content License** — uso libero, anche commerciale, senza
+  obbligo di attribuzione; non è consentito ridistribuire i file come tali su
+  altre piattaforme di asset
+
+Ventuno tracce, tutte usate dal gioco. Elaborazione: conversione in MP3,
+normalizzazione del volume e taglio della durata sulla lunghezza richiesta
+dalla scena.
+
+| ambito | file |
+| --- | --- |
+| Ambienti | `ambience-dark.mp3`, `ambience-forest.mp3`, `ambience-night.mp3`, `ambience-topi.mp3`, `ambience-wind.mp3` |
+| Piano I — I Topi | `mousetrap-snap.mp3`, `rats-many.mp3`, `scurrying.mp3`, `squeak.mp3` |
+| Piano II — Il Buio | `fire-crackle.mp3`, `padlock-unlock.mp3`, `torch-whoosh.mp3` |
+| Piano III — Le Altezze | `arrow-tap.mp3`, `arrow-wrong.mp3`, `fall.mp3`, `wood-break.mp3`, `wood-step.mp3` |
+| Interfaccia e atmosfera | `gate-open.mp3`, `heartbeat.mp3`, `owl-hoot.mp3`, `scream.mp3` |
 
 ## Codice
 
