@@ -18,9 +18,11 @@ public final class BuioFloor {
 
                 "/images/scenes/floor2-buio.jpg",
 
-                "Controlla le pareti. "
-                        + "Trova i numeri e componi il codice "
-                        + "per aprire la serratura.",
+                "Muovi la luce sulle pareti: su ognuna è scritto "
+                        + "un numero, ma in binario.\n\n"
+                        + "Traducilo in cifra e componi il codice sulla "
+                        + "serratura, in senso orario partendo dall'alto.\n\n"
+                        + "Hai un minuto.",
 
                 "L'ultima cifra scatta al suo posto. "
                         + "La serratura cede e la porta si apre. "
