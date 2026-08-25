@@ -1,8 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
-
-import org.junit.jupiter.api.Test;
+package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
 
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -191,9 +190,9 @@ class RatMazeTest {
     void ogniDirezioneSpostaDiUnaSolaCoordinata() {
         GridPosition origin = new GridPosition(4, 4);
 
-        assertEquals(new GridPosition(3, 4), origin.step(Direction.SU));
-        assertEquals(new GridPosition(5, 4), origin.step(Direction.GIU));
-        assertEquals(new GridPosition(4, 3), origin.step(Direction.SINISTRA));
-        assertEquals(new GridPosition(4, 5), origin.step(Direction.DESTRA));
+        assertEquals(new GridPosition(3, 4), origin.step(Direction.UP));
+        assertEquals(new GridPosition(5, 4), origin.step(Direction.DOWN));
+        assertEquals(new GridPosition(4, 3), origin.step(Direction.LEFT));
+        assertEquals(new GridPosition(4, 5), origin.step(Direction.RIGHT));
     }
 }

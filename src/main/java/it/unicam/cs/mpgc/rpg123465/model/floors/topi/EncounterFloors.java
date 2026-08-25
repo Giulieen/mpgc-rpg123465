@@ -1,7 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
 
-import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import java.util.List;
 

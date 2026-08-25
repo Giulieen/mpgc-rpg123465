@@ -1,9 +1,9 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.view.floors.buio;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;

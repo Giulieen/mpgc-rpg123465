@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.model.floors.altezze;
 
 /**
  * Contenuto del Piano III — Le Altezze.

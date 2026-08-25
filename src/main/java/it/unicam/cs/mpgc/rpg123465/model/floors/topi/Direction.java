@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
 
 /**
  * Le quattro direzioni di spostamento nel labirinto.
@@ -7,10 +7,10 @@ package it.unicam.cs.mpgc.rpg123465.floors.encounter;
  */
 public enum Direction {
 
-    SU(-1, 0),
-    GIU(1, 0),
-    SINISTRA(0, -1),
-    DESTRA(0, 1);
+    UP(-1, 0),
+    DOWN(1, 0),
+    LEFT(0, -1),
+    RIGHT(0, 1);
 
     private final int rowDelta;
     private final int columnDelta;

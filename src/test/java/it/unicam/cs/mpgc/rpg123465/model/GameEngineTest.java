@@ -1,8 +1,9 @@
-package it.unicam.cs.mpgc.rpg123465.engine;
+package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.domain.Player;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.Player;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.testing;
 
-import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
 
 import java.util.HashMap;
 import java.util.Map;

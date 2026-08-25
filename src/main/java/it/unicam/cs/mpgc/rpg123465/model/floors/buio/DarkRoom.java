@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.model.floors.buio;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
 
 /**
  * Una stanza chiusa da una porta con serratura a combinazione, che si apre

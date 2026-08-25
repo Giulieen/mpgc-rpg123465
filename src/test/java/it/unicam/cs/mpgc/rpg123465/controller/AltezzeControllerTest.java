@@ -1,11 +1,14 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeConfig;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltitudeCrossing;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,39 +1,41 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.view.floors.buio;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
+import it.unicam.cs.mpgc.rpg123465.controller.DarkRoomController;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
-import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
-import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
-import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
-import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
-import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
-import it.unicam.cs.mpgc.rpg123465.ui.support.CloseupOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
-import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
-import it.unicam.cs.mpgc.rpg123465.ui.support.RoomLighting;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
-import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaSequence;
+import it.unicam.cs.mpgc.rpg123465.model.floors.buio.CombinationLockState;
+import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.TrialRecord;
+import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
+import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.CloseupOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.CountdownClock;
+import it.unicam.cs.mpgc.rpg123465.view.components.DilemmaPrompt;
+import it.unicam.cs.mpgc.rpg123465.view.components.ResultOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.RoomLighting;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
+
 import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.List;
 import java.util.function.Consumer;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Piano II — Il Buio.
@@ -443,7 +445,7 @@ public class DarkRoomScene implements FloorScene {
                 () -> {
                     cleanup();
 
-                    onFinished.accept(SceneOutcome.AVANTI);
+                    onFinished.accept(SceneOutcome.NEXT);
                 }
         );
     }

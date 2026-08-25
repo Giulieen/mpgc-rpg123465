@@ -1,8 +1,10 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view.screens;
 
-import it.unicam.cs.mpgc.rpg123465.domain.PlayerProfile;
-import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ScrollingBackground;
+import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
+import it.unicam.cs.mpgc.rpg123465.view.ProfilePortraits;
+import it.unicam.cs.mpgc.rpg123465.view.components.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.ScrollingBackground;
+
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -10,9 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
@@ -129,7 +131,8 @@ public final class ProfileGalleryScreen {
 
     private VBox tile(PlayerProfile profile) {
         ImageView portrait =
-                new ImageView(new Image(getClass().getResourceAsStream(profile.getRitratto())));
+                new ImageView(new Image(
+                        getClass().getResourceAsStream(ProfilePortraits.resourceOf(profile))));
 
         portrait.setPreserveRatio(true);
         portrait.setFitWidth(THUMB_WIDTH);
@@ -154,7 +157,7 @@ public final class ProfileGalleryScreen {
          * ha nel pacchetto grafico: quei nomi non appartengono a questa storia
          * e prometterebbero incontri che non ci sono.
          */
-        Label name = new Label(profile.getNome());
+        Label name = new Label(profile.getName());
 
         name.getStyleClass().add("fear-effects");
 

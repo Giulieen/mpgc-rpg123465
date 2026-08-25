@@ -1,10 +1,12 @@
-package it.unicam.cs.mpgc.rpg123465.questions;
+package it.unicam.cs.mpgc.rpg123465.persistence.question;
+
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionCatalogException;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
-import org.junit.jupiter.api.Test;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

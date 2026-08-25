@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.ui.support;
+package it.unicam.cs.mpgc.rpg123465.view.components;
 
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;

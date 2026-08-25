@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.save;
 
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
 
 import java.io.Serializable;
 

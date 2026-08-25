@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.questions;
+package it.unicam.cs.mpgc.rpg123465.model.dilemma;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.player;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

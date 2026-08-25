@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.model.floors.buio;
 
 /**
  * Stato indipendente dalla grafica della serratura a cifre.

@@ -1,10 +1,10 @@
 package it.unicam.cs.mpgc.rpg123465.testing;
 
-import it.unicam.cs.mpgc.rpg123465.domain.Floor;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
-import it.unicam.cs.mpgc.rpg123465.domain.Player;
-import it.unicam.cs.mpgc.rpg123465.domain.Tower;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.model.Floor;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.model.Player;
+import it.unicam.cs.mpgc.rpg123465.model.Tower;
 
 import java.util.ArrayList;
 import java.util.List;

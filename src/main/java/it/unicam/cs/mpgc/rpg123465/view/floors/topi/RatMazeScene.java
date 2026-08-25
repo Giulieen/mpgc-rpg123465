@@ -1,15 +1,22 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.view.floors.encounter;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
-import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
-import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
-import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
-import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
-import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
+import it.unicam.cs.mpgc.rpg123465.controller.RatMazeController;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Direction;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.GridPosition;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Rat;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.RatMaze;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.TrialRecord;
+import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
+import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.ResultOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
+
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -35,12 +42,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * La prova del Piano I: la stanza dei Topi.
@@ -124,7 +131,7 @@ public final class RatMazeScene implements FloorScene {
 
     private Node playerNode;
     private ImageView playerSprite;
-    private MazeSprites.Facing playerFacing = MazeSprites.Facing.FRONTE;
+    private MazeSprites.Facing playerFacing = MazeSprites.Facing.FRONT;
     private boolean playerFlipped;
     private long lastStepAt;
 
@@ -537,10 +544,10 @@ public final class RatMazeScene implements FloorScene {
         }
 
         Direction direction = switch (event.getCode()) {
-            case UP, W -> Direction.SU;
-            case DOWN, S -> Direction.GIU;
-            case LEFT, A -> Direction.SINISTRA;
-            case RIGHT, D -> Direction.DESTRA;
+            case UP, W -> Direction.UP;
+            case DOWN, S -> Direction.DOWN;
+            case LEFT, A -> Direction.LEFT;
+            case RIGHT, D -> Direction.RIGHT;
             default -> null;
         };
 
@@ -568,14 +575,14 @@ public final class RatMazeScene implements FloorScene {
 
     private void faceTowards(Direction direction) {
         switch (direction) {
-            case SU -> playerFacing = MazeSprites.Facing.SPALLE;
-            case GIU -> playerFacing = MazeSprites.Facing.FRONTE;
-            case SINISTRA -> {
-                playerFacing = MazeSprites.Facing.PROFILO;
+            case UP -> playerFacing = MazeSprites.Facing.BACK;
+            case DOWN -> playerFacing = MazeSprites.Facing.FRONT;
+            case LEFT -> {
+                playerFacing = MazeSprites.Facing.SIDE;
                 playerFlipped = true;
             }
-            case DESTRA -> {
-                playerFacing = MazeSprites.Facing.PROFILO;
+            case RIGHT -> {
+                playerFacing = MazeSprites.Facing.SIDE;
                 playerFlipped = false;
             }
         }
@@ -806,7 +813,7 @@ public final class RatMazeScene implements FloorScene {
 
     private void finish() {
         cleanup();
-        onFinished.accept(SceneOutcome.AVANTI);
+        onFinished.accept(SceneOutcome.NEXT);
     }
 
     // ---------------------------------------------------------------------

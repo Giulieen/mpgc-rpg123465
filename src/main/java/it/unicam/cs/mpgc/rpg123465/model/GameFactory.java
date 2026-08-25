@@ -1,12 +1,12 @@
-package it.unicam.cs.mpgc.rpg123465.engine;
+package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.domain.Floor;
-import it.unicam.cs.mpgc.rpg123465.domain.Player;
-import it.unicam.cs.mpgc.rpg123465.domain.Tower;
-import it.unicam.cs.mpgc.rpg123465.floors.altezze.AltezzeFloors;
-import it.unicam.cs.mpgc.rpg123465.floors.buio.BuioFloor;
-import it.unicam.cs.mpgc.rpg123465.floors.encounter.EncounterFloors;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.model.Floor;
+import it.unicam.cs.mpgc.rpg123465.model.Player;
+import it.unicam.cs.mpgc.rpg123465.model.Tower;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeFloors;
+import it.unicam.cs.mpgc.rpg123465.model.floors.buio.BuioFloor;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.EncounterFloors;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import java.util.List;
 

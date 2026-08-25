@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.player;
 
 /**
  * Elenco dei nomi già usati su questa installazione.

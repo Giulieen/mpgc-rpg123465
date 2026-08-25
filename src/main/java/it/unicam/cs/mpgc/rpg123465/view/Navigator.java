@@ -1,26 +1,26 @@
-package it.unicam.cs.mpgc.rpg123465.app;
+package it.unicam.cs.mpgc.rpg123465.view;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.controller.OperationResult;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
-import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
-import it.unicam.cs.mpgc.rpg123465.persistence.FilePlayerRegistry;
-import it.unicam.cs.mpgc.rpg123465.persistence.FileRecordStore;
-import it.unicam.cs.mpgc.rpg123465.persistence.FileSaveManager;
-import it.unicam.cs.mpgc.rpg123465.persistence.PlayerRegistry;
-import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
-import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
-import it.unicam.cs.mpgc.rpg123465.questions.JsonQuestionRepository;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionCatalogException;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
-import it.unicam.cs.mpgc.rpg123465.ui.ProfileResultScreen;
-import it.unicam.cs.mpgc.rpg123465.ui.IntroScreen;
-import it.unicam.cs.mpgc.rpg123465.ui.ProfileGalleryScreen;
-import it.unicam.cs.mpgc.rpg123465.ui.SceneFlow;
-import it.unicam.cs.mpgc.rpg123465.ui.StartMenu;
-import it.unicam.cs.mpgc.rpg123465.ui.WindowFrame;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.model.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.persistence.player.FilePlayerRegistry;
+import it.unicam.cs.mpgc.rpg123465.persistence.player.PlayerRegistry;
+import it.unicam.cs.mpgc.rpg123465.persistence.question.JsonQuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionCatalogException;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.FileRecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.FileSaveManager;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.view.SceneFlow;
+import it.unicam.cs.mpgc.rpg123465.view.WindowFrame;
+import it.unicam.cs.mpgc.rpg123465.view.screens.IntroScreen;
+import it.unicam.cs.mpgc.rpg123465.view.screens.ProfileGalleryScreen;
+import it.unicam.cs.mpgc.rpg123465.view.screens.ProfileResultScreen;
+import it.unicam.cs.mpgc.rpg123465.view.screens.StartMenu;
 
 /**
  * Governa la navigazione fra menu, introduzione, piani e finale della demo.

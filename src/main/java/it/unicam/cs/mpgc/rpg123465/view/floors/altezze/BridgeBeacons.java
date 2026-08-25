@@ -1,6 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.view.floors.altezze;
 
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

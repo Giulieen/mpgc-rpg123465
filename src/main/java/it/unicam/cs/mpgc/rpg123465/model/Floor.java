@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.domain;
+package it.unicam.cs.mpgc.rpg123465.model;
 
 /**
  * Rappresenta un piano della Torre: un luogo, e la prova che vi si affronta.

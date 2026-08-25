@@ -1,21 +1,29 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.view.floors.altezze;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.audio.SoundCue;
+import it.unicam.cs.mpgc.rpg123465.controller.AltezzeController;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.persistence.RecordStore;
-import it.unicam.cs.mpgc.rpg123465.persistence.TrialRecord;
-import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
-import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
-import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
-import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
-import it.unicam.cs.mpgc.rpg123465.ui.support.CountdownClock;
-import it.unicam.cs.mpgc.rpg123465.ui.support.DilemmaPrompt;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ResultOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
-import it.unicam.cs.mpgc.rpg123465.ui.support.TrialStats;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaSequence;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeConfig;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltitudeCrossing;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.ArrowChallenge;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.ArrowDirection;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.BridgeRoute;
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.LevelState;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
+import it.unicam.cs.mpgc.rpg123465.persistence.record.TrialRecord;
+import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
+import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.CountdownClock;
+import it.unicam.cs.mpgc.rpg123465.view.components.DilemmaPrompt;
+import it.unicam.cs.mpgc.rpg123465.view.components.ResultOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
+
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -900,7 +908,7 @@ public class AltezzeScene implements FloorScene {
     private void finish() {
         cleanup();
 
-        onFinished.accept(SceneOutcome.AVANTI);
+        onFinished.accept(SceneOutcome.NEXT);
     }
 
     private void onTimeUp() {

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
 import org.kordamp.ikonli.javafx.FontIcon;
 
 /**

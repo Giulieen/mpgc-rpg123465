@@ -1,10 +1,15 @@
-package it.unicam.cs.mpgc.rpg123465.questions;
+package it.unicam.cs.mpgc.rpg123465.persistence.question;
 
-import org.junit.jupiter.api.Test;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaOption;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionCatalogException;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -149,8 +154,7 @@ class JsonQuestionRepositoryTest {
 
     @Test
     void unDilemmaRichiedeIdTestoEDueRisposte() {
-        DilemmaOption option = new DilemmaOption("testo", it.unicam.cs.mpgc.rpg123465
-                .domain.ProfileTrait.CORAGGIO);
+        DilemmaOption option = new DilemmaOption("testo", ProfileTrait.CORAGGIO);
 
         assertThrows(IllegalArgumentException.class,
                 () -> new Dilemma(0, "domanda", option, option));
@@ -163,8 +167,7 @@ class JsonQuestionRepositoryTest {
     @Test
     void unaRispostaRichiedeTestoETratto() {
         assertThrows(IllegalArgumentException.class,
-                () -> new DilemmaOption("", it.unicam.cs.mpgc.rpg123465
-                        .domain.ProfileTrait.CORAGGIO));
+                () -> new DilemmaOption("", ProfileTrait.CORAGGIO));
 
         assertThrows(IllegalArgumentException.class, () -> new DilemmaOption("testo", null));
     }

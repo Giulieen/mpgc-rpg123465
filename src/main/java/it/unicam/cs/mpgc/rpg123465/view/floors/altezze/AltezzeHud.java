@@ -1,4 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.view.floors.altezze;
+
+import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.ArrowDirection;
 
 import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
@@ -13,9 +15,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.function.Consumer;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * La barra di stato e i comandi del Piano III — Le Altezze: punteggio e record,

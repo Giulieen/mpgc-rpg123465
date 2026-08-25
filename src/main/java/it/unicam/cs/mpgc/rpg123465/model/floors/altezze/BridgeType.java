@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.model.floors.altezze;
 
 /**
  * Identifica le tre tipologie di ponte disponibili nel Piano III.

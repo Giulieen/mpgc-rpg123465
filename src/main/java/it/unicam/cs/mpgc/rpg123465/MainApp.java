@@ -1,8 +1,9 @@
 package it.unicam.cs.mpgc.rpg123465;
 
-import it.unicam.cs.mpgc.rpg123465.app.Navigator;
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
-import it.unicam.cs.mpgc.rpg123465.ui.WindowFrame;
+import it.unicam.cs.mpgc.rpg123465.view.Navigator;
+import it.unicam.cs.mpgc.rpg123465.view.WindowFrame;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;

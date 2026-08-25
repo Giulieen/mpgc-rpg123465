@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.save;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

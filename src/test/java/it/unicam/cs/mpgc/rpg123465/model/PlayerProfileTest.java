@@ -1,10 +1,9 @@
-package it.unicam.cs.mpgc.rpg123465.domain;
-
-import org.junit.jupiter.api.Test;
+package it.unicam.cs.mpgc.rpg123465.model;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,17 +14,17 @@ class PlayerProfileTest {
 
     @Test
     void ogniProfiloHaUnNomeNonVuoto() {
-        for (PlayerProfile profilo : PlayerProfile.values()) {
-            assertNotNull(profilo.getNome(), profilo.name());
-            assertFalse(profilo.getNome().isBlank(), profilo.name());
+        for (PlayerProfile profile : PlayerProfile.values()) {
+            assertNotNull(profile.getName(), profile.name());
+            assertFalse(profile.getName().isBlank(), profile.name());
         }
     }
 
     @Test
     void ogniProfiloHaUnaDescrizioneNonVuota() {
-        for (PlayerProfile profilo : PlayerProfile.values()) {
-            assertNotNull(profilo.getDescrizione(), profilo.name());
-            assertFalse(profilo.getDescrizione().isBlank(), profilo.name());
+        for (PlayerProfile profile : PlayerProfile.values()) {
+            assertNotNull(profile.getDescription(), profile.name());
+            assertFalse(profile.getDescription().isBlank(), profile.name());
         }
     }
 
@@ -35,13 +34,13 @@ class PlayerProfileTest {
      */
     @Test
     void nessunProfiloCondivideNomeODescrizioneConUnAltro() {
-        Set<String> nomi = new HashSet<>();
-        Set<String> descrizioni = new HashSet<>();
+        Set<String> names = new HashSet<>();
+        Set<String> descriptions = new HashSet<>();
 
-        for (PlayerProfile profilo : PlayerProfile.values()) {
-            assertTrue(nomi.add(profilo.getNome()), "nome ripetuto: " + profilo.getNome());
-            assertTrue(descrizioni.add(profilo.getDescrizione()),
-                    "descrizione ripetuta in " + profilo.name());
+        for (PlayerProfile profile : PlayerProfile.values()) {
+            assertTrue(names.add(profile.getName()), "nome ripetuto: " + profile.getName());
+            assertTrue(descriptions.add(profile.getDescription()),
+                    "descrizione ripetuta in " + profile.name());
         }
     }
 

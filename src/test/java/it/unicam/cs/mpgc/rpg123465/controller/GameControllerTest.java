@@ -1,21 +1,21 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
-import it.unicam.cs.mpgc.rpg123465.domain.PlayerProfile;
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
-import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounter;
-import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.GameSave;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

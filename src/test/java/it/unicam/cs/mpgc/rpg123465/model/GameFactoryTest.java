@@ -1,12 +1,12 @@
-package it.unicam.cs.mpgc.rpg123465.engine;
+package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
-import it.unicam.cs.mpgc.rpg123465.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,12 +1,11 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+package it.unicam.cs.mpgc.rpg123465.persistence.record;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.OptionalInt;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

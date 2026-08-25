@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.questions;
+package it.unicam.cs.mpgc.rpg123465.model.dilemma;
 
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
 
 /**
  * Una risposta possibile a un dilemma "Preferiresti".

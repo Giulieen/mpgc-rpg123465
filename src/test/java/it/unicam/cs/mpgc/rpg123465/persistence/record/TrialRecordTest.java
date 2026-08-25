@@ -1,6 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.record;
 
 import it.unicam.cs.mpgc.rpg123465.testing.FakeRecordStore;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

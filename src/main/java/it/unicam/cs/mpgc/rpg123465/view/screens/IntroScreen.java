@@ -1,8 +1,9 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view.screens;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
-import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ScrollingBackground;
+import it.unicam.cs.mpgc.rpg123465.view.components.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.ScrollingBackground;
+
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -30,10 +31,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * Introduzione narrativa mostrata all'avvio di una nuova partita: il bosco che

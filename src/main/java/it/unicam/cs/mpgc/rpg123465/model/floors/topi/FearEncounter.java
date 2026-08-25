@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
 
 import java.util.List;
 

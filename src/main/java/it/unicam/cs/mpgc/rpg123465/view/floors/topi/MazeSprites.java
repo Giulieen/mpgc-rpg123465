@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.view.floors.encounter;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
@@ -78,9 +78,9 @@ final class MazeSprites {
      * personaggio rimbalza e occupa qualche pixel in più in altezza.
      */
     enum Facing {
-        FRONTE(0),
-        SPALLE(1),
-        PROFILO(2);
+        FRONT(0),
+        BACK(1),
+        SIDE(2);
 
         private final int row;
 
@@ -204,7 +204,7 @@ final class MazeSprites {
         view.setSmooth(false);
         view.setFitWidth(side);
         view.setFitHeight(side);
-        view.setViewport(playerViewport(Facing.FRONTE, 0, false));
+        view.setViewport(playerViewport(Facing.FRONT, 0, false));
 
         return view;
     }

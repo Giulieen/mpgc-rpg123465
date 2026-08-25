@@ -1,7 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.testing;
 
-import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
-import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.GameSave;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.SaveManager;
 
 import java.io.IOException;
 

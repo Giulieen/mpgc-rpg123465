@@ -1,10 +1,12 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view.screens;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
-import it.unicam.cs.mpgc.rpg123465.domain.PlayerProfile;
-import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ScrollingBackground;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
+import it.unicam.cs.mpgc.rpg123465.view.ProfilePortraits;
+import it.unicam.cs.mpgc.rpg123465.view.components.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.ScrollingBackground;
+
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -67,11 +69,11 @@ public final class ProfileResultScreen {
 
         direction.getStyleClass().add("fear-memory");
 
-        Label name = new Label(profile.getNome());
+        Label name = new Label(profile.getName());
 
         name.getStyleClass().add("fear-title");
 
-        Label description = paragraph(profile.getDescrizione());
+        Label description = paragraph(profile.getDescription());
 
         VBox words = new VBox(14, direction, name, description);
 
@@ -117,7 +119,8 @@ public final class ProfileResultScreen {
 
     private ImageView portrait() {
         ImageView view =
-                new ImageView(new Image(getClass().getResourceAsStream(profile.getRitratto())));
+                new ImageView(new Image(
+                        getClass().getResourceAsStream(ProfilePortraits.resourceOf(profile))));
 
         /*
          * Riquadro, non altezza fissa: le figure hanno proporzioni molto

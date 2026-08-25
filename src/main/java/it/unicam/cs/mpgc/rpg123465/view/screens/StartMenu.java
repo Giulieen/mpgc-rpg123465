@@ -1,6 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view.screens;
 
-import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.FogOverlay;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;

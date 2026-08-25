@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.ui.support;
+package it.unicam.cs.mpgc.rpg123465.view.components;
 
 import javafx.scene.Cursor;
 import javafx.scene.effect.ColorAdjust;
@@ -9,9 +9,9 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.function.BooleanSupplier;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * La luce di una stanza al buio: il velo d'ombra su cui la torcia apre il suo

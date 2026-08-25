@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.model.floors.altezze;
 
-import it.unicam.cs.mpgc.rpg123465.domain.FloorContent;
+import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
 
 /**
  * La traversata dell'abisso: tre ponti sospesi, l'equilibrio da tenere contro

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
+package it.unicam.cs.mpgc.rpg123465.model.floors.altezze;
 
 /**
  * I parametri di un ponte: il ritmo delle frecce, quanto tempo si ha per

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view;
 
 import javafx.scene.Parent;
 

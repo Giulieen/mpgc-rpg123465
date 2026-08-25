@@ -1,17 +1,21 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Direction;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.GridPosition;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Rat;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.RatMaze;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -102,15 +106,15 @@ class RatMazeControllerTest {
 
     private static Direction directionBetween(GridPosition from, GridPosition to) {
         if (to.row() < from.row()) {
-            return Direction.SU;
+            return Direction.UP;
         }
         if (to.row() > from.row()) {
-            return Direction.GIU;
+            return Direction.DOWN;
         }
         if (to.column() < from.column()) {
-            return Direction.SINISTRA;
+            return Direction.LEFT;
         }
-        return Direction.DESTRA;
+        return Direction.RIGHT;
     }
 
     /** Fa correre i topi finché la stanza non si svuota. */
@@ -144,9 +148,9 @@ class RatMazeControllerTest {
     void unPassoVersoUnaCellaLiberaSpostaIlGiocatore() {
         GridPosition before = controller.playerPosition();
 
-        controller.movePlayer(Direction.SINISTRA);
+        controller.movePlayer(Direction.LEFT);
 
-        assertEquals(before.step(Direction.SINISTRA), controller.playerPosition());
+        assertEquals(before.step(Direction.LEFT), controller.playerPosition());
     }
 
     /**
@@ -158,8 +162,8 @@ class RatMazeControllerTest {
         walkPlayerTo(new GridPosition(1, 1));
         GridPosition corner = controller.playerPosition();
 
-        controller.movePlayer(Direction.SU);
-        controller.movePlayer(Direction.SINISTRA);
+        controller.movePlayer(Direction.UP);
+        controller.movePlayer(Direction.LEFT);
 
         assertEquals(corner, controller.playerPosition());
         assertEquals(FloorAttempts.MAX, controller.remainingAttempts());
@@ -229,8 +233,8 @@ class RatMazeControllerTest {
         Rat rat = controller.spawnRat();
         walkPlayerTo(rat.position());
 
-        controller.movePlayer(Direction.SU);
-        controller.movePlayer(Direction.GIU);
+        controller.movePlayer(Direction.UP);
+        controller.movePlayer(Direction.DOWN);
         controller.advanceRats();
 
         assertEquals(1, controller.capturedRats());
@@ -302,7 +306,7 @@ class RatMazeControllerTest {
         }
 
         GridPosition frozen = controller.playerPosition();
-        controller.movePlayer(Direction.SU);
+        controller.movePlayer(Direction.UP);
 
         assertEquals(frozen, controller.playerPosition());
         assertFalse(controller.canSpawn());
@@ -382,7 +386,7 @@ class RatMazeControllerTest {
      */
     @Test
     void ricominciareNonAlteraIlProfilo() {
-        game.getMind().registerTrait(it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait.CORAGGIO);
+        game.getMind().registerTrait(it.unicam.cs.mpgc.rpg123465.model.ProfileTrait.CORAGGIO);
 
         controller.spawnRat();
         runUntilEmpty();

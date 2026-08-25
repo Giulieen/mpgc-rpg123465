@@ -1,9 +1,8 @@
-package it.unicam.cs.mpgc.rpg123465.floors.altezze;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+package it.unicam.cs.mpgc.rpg123465.model.floors.altezze;
 
 import java.util.Random;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

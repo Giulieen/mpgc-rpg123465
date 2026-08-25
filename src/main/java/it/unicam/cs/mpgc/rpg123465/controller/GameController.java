@@ -1,14 +1,14 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.domain.PlayerProfile;
-import it.unicam.cs.mpgc.rpg123465.domain.Floor;
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
-import it.unicam.cs.mpgc.rpg123465.domain.Player;
-import it.unicam.cs.mpgc.rpg123465.engine.GameEngine;
-import it.unicam.cs.mpgc.rpg123465.engine.GameFactory;
-import it.unicam.cs.mpgc.rpg123465.persistence.GameSave;
-import it.unicam.cs.mpgc.rpg123465.persistence.SaveManager;
-import it.unicam.cs.mpgc.rpg123465.questions.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.model.Floor;
+import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
+import it.unicam.cs.mpgc.rpg123465.model.GameFactory;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.Player;
+import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.GameSave;
+import it.unicam.cs.mpgc.rpg123465.persistence.save.SaveManager;
 
 import java.io.IOException;
 

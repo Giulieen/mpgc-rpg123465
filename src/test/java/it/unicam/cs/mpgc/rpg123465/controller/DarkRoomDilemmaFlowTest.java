@@ -1,17 +1,18 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.domain.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaSequence;
+import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaSequence;
+import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,14 +1,17 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.view.floors.encounter;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
-import it.unicam.cs.mpgc.rpg123465.ui.FloorScene;
-import it.unicam.cs.mpgc.rpg123465.ui.HeaderBar;
-import it.unicam.cs.mpgc.rpg123465.ui.SceneOutcome;
-import it.unicam.cs.mpgc.rpg123465.ui.support.FogOverlay;
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
-import it.unicam.cs.mpgc.rpg123465.ui.support.ScreenShake;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearChoice;
+import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
+import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
+import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.FogOverlay;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.view.components.ScreenShake;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -195,7 +198,7 @@ public class FearEncounterScreen implements FloorScene {
 
         enter.getStyleClass().add("menu-button");
 
-        enter.setOnAction(event -> { cleanup(); onFinished.accept(SceneOutcome.AVANTI); });
+        enter.setOnAction(event -> { cleanup(); onFinished.accept(SceneOutcome.NEXT); });
 
         showCenter(
                 panel(

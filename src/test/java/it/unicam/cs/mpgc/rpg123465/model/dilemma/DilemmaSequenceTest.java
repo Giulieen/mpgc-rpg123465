@@ -1,10 +1,10 @@
-package it.unicam.cs.mpgc.rpg123465.questions;
+package it.unicam.cs.mpgc.rpg123465.model.dilemma;
 
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
-import org.junit.jupiter.api.Test;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

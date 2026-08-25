@@ -1,6 +1,6 @@
-package it.unicam.cs.mpgc.rpg123465.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
 
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
 
 /**
  * Una possibile risposta a un dilemma "Preferiresti".

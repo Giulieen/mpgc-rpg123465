@@ -1,8 +1,9 @@
-package it.unicam.cs.mpgc.rpg123465.ui.support;
+package it.unicam.cs.mpgc.rpg123465.view.components;
 
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
-import it.unicam.cs.mpgc.rpg123465.questions.Dilemma;
-import it.unicam.cs.mpgc.rpg123465.questions.DilemmaOption;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
+import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaOption;
+
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.model.floors.buio;
 
 /**
  * Contenuto predefinito del Piano II — Il Buio.

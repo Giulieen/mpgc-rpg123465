@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.record;
 
 import java.io.IOException;
 import java.io.InputStream;

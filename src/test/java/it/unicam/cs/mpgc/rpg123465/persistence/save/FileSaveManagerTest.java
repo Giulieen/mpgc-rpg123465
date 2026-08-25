@@ -1,9 +1,7 @@
-package it.unicam.cs.mpgc.rpg123465.persistence;
+package it.unicam.cs.mpgc.rpg123465.persistence.save;
 
-import it.unicam.cs.mpgc.rpg123465.domain.MindState;
-import it.unicam.cs.mpgc.rpg123465.domain.ProfileTrait;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

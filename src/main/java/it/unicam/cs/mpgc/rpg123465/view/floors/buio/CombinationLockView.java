@@ -1,20 +1,22 @@
-package it.unicam.cs.mpgc.rpg123465.floors.buio;
+package it.unicam.cs.mpgc.rpg123465.view.floors.buio;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
-import it.unicam.cs.mpgc.rpg123465.ui.support.SceneFx;
+import it.unicam.cs.mpgc.rpg123465.model.floors.buio.CombinationLockState;
+import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
+
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.function.Consumer;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * La vista ravvicinata della serratura: le quattro finestrelle con le cifre e i

@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.ui;
+package it.unicam.cs.mpgc.rpg123465.view;
 
 import javafx.scene.Parent;
 
@@ -53,7 +53,7 @@ public class SceneFlow {
     }
 
     private void onSceneFinished(SceneOutcome outcome) {
-        if (outcome == SceneOutcome.RIPETI) {
+        if (outcome == SceneOutcome.REPEAT) {
             showCurrent();
             return;
         }
