@@ -26,7 +26,7 @@ ritaglio dei margini trasparenti e riduzione su una tela comune di 420×560 px.
 | `esploratore.png` | Sir Lickingtoad |
 | `risoluto.png` | Flail Knight |
 | `visionario.png` | Raven Knight |
-| `poliedrico.png` | Fowl Nobleman |
+| `imprevedibile.png` | Fowl Nobleman |
 
 ### Topi del Piano I — `images/topi/rats/`
 

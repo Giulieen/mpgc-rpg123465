@@ -16,7 +16,7 @@ Asset di terze parti e relative licenze in **[CREDITS.md](CREDITS.md)**.
 
 ### Prerequisiti
 
-- **Java 25** (LTS)
+- **Java 21** (LTS) — se manca, Gradle lo scarica da sé alla prima compilazione
 - **Gradle** — non serve installarlo, il progetto include il wrapper
 
 ### Istruzioni
@@ -57,6 +57,11 @@ ambiti:
 - **revisione**: segnalazione di duplicazioni e di violazioni dei principi SOLID;
 - **test**: proposte di casi di prova, verificate eseguendole;
 - **documentazione**: supporto alla stesura dei testi.
+
+In una sessione finale di revisione è stato utilizzato **Claude Code**, per il
+confronto del progetto con la specifica d'esame e per applicare le correzioni
+concordate. Il dettaglio è nella
+[Wiki](../../wiki/Uso-di-strumenti-di-AI).
 
 L'ideazione del gioco — piani, meccaniche, dilemmi, profili e testi narrativi —
 e le scelte di progettazione sono state svolte in autonomia; gli strumenti di AI
