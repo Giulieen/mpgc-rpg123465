@@ -1,6 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 
 import java.util.List;

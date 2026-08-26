@@ -3,7 +3,8 @@ package it.unicam.cs.mpgc.rpg123465.controller;
 import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaSequence;
-import it.unicam.cs.mpgc.rpg123465.model.floors.darkness.DarkRoom;
+import it.unicam.cs.mpgc.rpg123465.model.floors.heights.HeightsConfig;
+import it.unicam.cs.mpgc.rpg123465.model.floors.heights.AltitudeCrossing;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
@@ -18,26 +19,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Prove sul consumo dei dilemmi del Piano II senza JavaFX: riproducono ciò che
- * fa la callback della scena, cioè risolvere il dilemma corrente e registrare
- * il tratto solo se la sequenza lo ha davvero consumato.
+ * Prove sul consumo dei dilemmi del Piano III senza JavaFX: riproducono ciò
+ * che fa la callback del cambio ponte.
  */
-class DarkRoomDilemmaFlowTest {
+class HeightsDilemmaFlowTest {
 
     private GameController game;
-    private DarkRoomController controller;
+    private HeightsController controller;
     private DilemmaSequence dilemmas;
 
-    private static DarkRoom room() {
-        return new DarkRoom(
-                "Piano II — Il Buio",
-                "/images/scenes/floor2-buio.jpg",
+    private static AltitudeCrossing crossing() {
+        return new AltitudeCrossing(
+                "Piano III — Le Altezze",
+                "/images/scenes/floor3-altezze.png",
                 "intro",
-                "outro",
-                "errore",
-                "tempo scaduto",
-                "3524",
-                60);
+                "vittoria",
+                "caduta",
+                HeightsConfig.standard());
     }
 
     @BeforeEach
@@ -45,20 +43,20 @@ class DarkRoomDilemmaFlowTest {
         game = new GameController(TestTowers.engineWithFloors(3),
                 new FakeSaveManager(), new FakeQuestionRepository());
 
-        controller = new DarkRoomController(room(), game);
+        controller = new HeightsController(crossing(), game);
 
-        dilemmas = new DilemmaSequence(new FakeQuestionRepository().randomQuestions("buio", 3));
+        dilemmas = new DilemmaSequence(new FakeQuestionRepository().randomQuestions("altezze", 4));
     }
 
     /** Come la scena: risolve, e registra solo se il consumo è avvenuto. */
     private void answer(Dilemma dilemma) {
         if (dilemmas.resolve(dilemma)) {
-            controller.registerChoice(dilemma.first().trait());
+            controller.registerChoice(dilemma.second().trait());
         }
     }
 
     @Test
-    void ilPianoPoneTreDilemmiNellOrdineDelCatalogo() {
+    void ilPianoPoneQuattroDilemmiNellOrdineDelCatalogo() {
         List<Integer> posti = new ArrayList<>();
 
         while (dilemmas.hasNext()) {
@@ -67,14 +65,24 @@ class DarkRoomDilemmaFlowTest {
             answer(current);
         }
 
-        assertEquals(List.of(1, 2, 3), posti);
-        assertEquals(3, game.getMind().getTotalProfileChoices());
+        assertEquals(List.of(1, 2, 3, 4), posti);
+        assertEquals(4, game.getMind().getTotalProfileChoices());
     }
 
     /**
-     * Un doppio clic sulla stessa risposta non deve valere due scelte: è il
-     * caso che la sequenza esiste per impedire.
+     * Il piano ha quattro soglie: una volta esaurite le domande, le soglie
+     * successive devono passare oltre senza riproporne una già risposta.
      */
+    @Test
+    void unaSogliaOltreLUltimaDomandaNonRiusaUnDilemma() {
+        while (dilemmas.hasNext()) {
+            answer(dilemmas.current());
+        }
+
+        assertFalse(dilemmas.hasNext());
+        assertEquals(4, game.getMind().getTotalProfileChoices());
+    }
+
     @Test
     void rispondereDueVolteAlloStessoDilemmaRegistraUnaSolaScelta() {
         Dilemma first = dilemmas.current();
@@ -84,19 +92,18 @@ class DarkRoomDilemmaFlowTest {
 
         assertEquals(1, game.getMind().getTotalProfileChoices());
         assertEquals(1, dilemmas.resolvedCount());
-        assertTrue(dilemmas.hasNext());
     }
 
     /**
-     * Un tentativo fallito fa ricominciare il puzzle ma non le domande: la
-     * sequenza sopravvive al retry, come prima dell'estrazione.
+     * Una caduta azzera il percorso ma non le domande: dopo il retry la
+     * sequenza riprende da dove era, senza riconteggiare i tratti.
      */
     @Test
-    void unRetryNonRiproponeUnDilemmaGiaRisolto() {
+    void unaCadutaNonRiproponeUnDilemmaGiaRisolto() {
         Dilemma first = dilemmas.current();
         answer(first);
 
-        controller.registerFailedAttempt();
+        controller.registerFall();
 
         assertEquals(FloorAttempts.MAX - 1, controller.remainingAttempts());
         assertEquals(1, dilemmas.resolvedCount());
@@ -104,41 +111,21 @@ class DarkRoomDilemmaFlowTest {
         assertEquals(1, game.getMind().getTotalProfileChoices());
     }
 
-    /**
-     * Nemmeno ricominciare la prova a tentativi esauriti rimette in gioco le
-     * domande già risposte.
-     */
     @Test
     void ricominciareLaProvaNonRiproponeIDilemmiGiaRisolti() {
         answer(dilemmas.current());
         answer(dilemmas.current());
+        answer(dilemmas.current());
 
         for (int i = 0; i < FloorAttempts.MAX; i++) {
-            controller.registerFailedAttempt();
+            controller.registerFall();
         }
 
         controller.restartTrial();
 
         assertEquals(FloorAttempts.MAX, controller.remainingAttempts());
-        assertEquals(2, dilemmas.resolvedCount());
-        assertEquals(2, game.getMind().getTotalProfileChoices());
-    }
-
-    /**
-     * Le due domande a tempo si riconoscono da quante ne sono già state
-     * risolte: è il criterio con cui la scena decide i 40 e i 20 secondi.
-     */
-    @Test
-    void ilConteggioDeiRisoltiIdentificaLaDomandaDaMostrare() {
-        assertEquals(0, dilemmas.resolvedCount());
-
-        answer(dilemmas.current());
-        assertEquals(1, dilemmas.resolvedCount());
-
-        answer(dilemmas.current());
-        assertEquals(2, dilemmas.resolvedCount());
-
-        answer(dilemmas.current());
-        assertFalse(dilemmas.hasNext());
+        assertEquals(3, dilemmas.resolvedCount());
+        assertTrue(dilemmas.hasNext());
+        assertEquals(3, game.getMind().getTotalProfileChoices());
     }
 }

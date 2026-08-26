@@ -1,10 +1,10 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Direction;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.GridPosition;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Rat;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.RatMaze;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.Direction;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.GridPosition;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.Rat;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.RatMaze;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;

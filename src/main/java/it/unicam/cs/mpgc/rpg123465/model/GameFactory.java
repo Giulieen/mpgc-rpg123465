@@ -1,8 +1,8 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeFloors;
-import it.unicam.cs.mpgc.rpg123465.model.floors.buio.BuioFloor;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.EncounterFloors;
+import it.unicam.cs.mpgc.rpg123465.model.floors.heights.HeightsFloors;
+import it.unicam.cs.mpgc.rpg123465.model.floors.darkness.DarknessFloors;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.RatFloors;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import java.util.List;
@@ -53,11 +53,11 @@ public final class GameFactory {
      * @return la Torre da salire
      */
     private static Tower createTower(QuestionRepository questions) {
-        Floor primoPiano = new Floor(1, "I Topi", EncounterFloors.topi(questions));
+        Floor primoPiano = new Floor(1, "I Topi", RatFloors.topi(questions));
 
-        Floor secondoPiano = new Floor(2, "Il Buio", BuioFloor.buio());
+        Floor secondoPiano = new Floor(2, "Il Buio", DarknessFloors.buio());
 
-        Floor terzoPiano = new Floor(3, "Le Altezze", AltezzeFloors.altezze());
+        Floor terzoPiano = new Floor(3, "Le Altezze", HeightsFloors.altezze());
 
         return new Tower(List.of(primoPiano, secondoPiano, terzoPiano));
     }

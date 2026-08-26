@@ -6,7 +6,7 @@ import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.model.MindState;
 import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
 import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
-import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.rats.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.persistence.save.GameSave;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;

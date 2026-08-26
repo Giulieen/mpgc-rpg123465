@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
-import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
+import it.unicam.cs.mpgc.rpg123465.model.floors.darkness.DarkRoom;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeSaveManager;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;

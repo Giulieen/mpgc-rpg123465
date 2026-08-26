@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.model.MindState;
 import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
-import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
+import it.unicam.cs.mpgc.rpg123465.model.floors.darkness.DarkRoom;
 
 /**
  * Controller del Piano II — Il Buio.

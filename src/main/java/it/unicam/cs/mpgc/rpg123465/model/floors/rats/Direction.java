@@ -1,0 +1,30 @@
+package it.unicam.cs.mpgc.rpg123465.model.floors.rats;
+
+/**
+ * Le quattro direzioni di spostamento nel labirinto.
+ *
+ * Non esistono diagonali: ogni passo cambia una sola coordinata.
+ */
+public enum Direction {
+
+    UP(-1, 0),
+    DOWN(1, 0),
+    LEFT(0, -1),
+    RIGHT(0, 1);
+
+    private final int rowDelta;
+    private final int columnDelta;
+
+    Direction(int rowDelta, int columnDelta) {
+        this.rowDelta = rowDelta;
+        this.columnDelta = columnDelta;
+    }
+
+    public int rowDelta() {
+        return rowDelta;
+    }
+
+    public int columnDelta() {
+        return columnDelta;
+    }
+}
