@@ -62,9 +62,9 @@ class DarkRoomDilemmaFlowTest {
         List<Integer> posti = new ArrayList<>();
 
         while (dilemmas.hasNext()) {
-            Dilemma corrente = dilemmas.current();
-            posti.add(corrente.id());
-            answer(corrente);
+            Dilemma current = dilemmas.current();
+            posti.add(current.id());
+            answer(current);
         }
 
         assertEquals(List.of(1, 2, 3), posti);
@@ -77,10 +77,10 @@ class DarkRoomDilemmaFlowTest {
      */
     @Test
     void rispondereDueVolteAlloStessoDilemmaRegistraUnaSolaScelta() {
-        Dilemma primo = dilemmas.current();
+        Dilemma first = dilemmas.current();
 
-        answer(primo);
-        answer(primo);
+        answer(first);
+        answer(first);
 
         assertEquals(1, game.getMind().getTotalProfileChoices());
         assertEquals(1, dilemmas.resolvedCount());
@@ -93,14 +93,14 @@ class DarkRoomDilemmaFlowTest {
      */
     @Test
     void unRetryNonRiproponeUnDilemmaGiaRisolto() {
-        Dilemma primo = dilemmas.current();
-        answer(primo);
+        Dilemma first = dilemmas.current();
+        answer(first);
 
         controller.registerFailedAttempt();
 
         assertEquals(FloorAttempts.MAX - 1, controller.remainingAttempts());
         assertEquals(1, dilemmas.resolvedCount());
-        assertFalse(dilemmas.current().equals(primo));
+        assertFalse(dilemmas.current().equals(first));
         assertEquals(1, game.getMind().getTotalProfileChoices());
     }
 

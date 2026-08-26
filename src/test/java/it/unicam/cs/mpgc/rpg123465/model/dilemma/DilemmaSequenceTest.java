@@ -61,9 +61,9 @@ class DilemmaSequenceTest {
         List<Integer> visti = new ArrayList<>();
 
         while (sequence.hasNext()) {
-            Dilemma corrente = sequence.current();
-            visti.add(corrente.id());
-            sequence.resolve(corrente);
+            Dilemma current = sequence.current();
+            visti.add(current.id());
+            sequence.resolve(current);
         }
 
         assertEquals(List.of(1, 2, 3, 4), visti);
@@ -143,10 +143,10 @@ class DilemmaSequenceTest {
     void lStessoDilemmaNonPuoEssereRisoltoDueVolte() {
         DilemmaSequence sequence = new DilemmaSequence(dilemmas(3));
 
-        Dilemma primo = sequence.current();
+        Dilemma first = sequence.current();
 
-        assertTrue(sequence.resolve(primo));
-        assertFalse(sequence.resolve(primo));
+        assertTrue(sequence.resolve(first));
+        assertFalse(sequence.resolve(first));
 
         assertEquals(1, sequence.resolvedCount());
         assertEquals(dilemma(2), sequence.current());
@@ -181,12 +181,12 @@ class DilemmaSequenceTest {
      */
     @Test
     void modificareLaListaOriginaleNonAlteraLaSequenza() {
-        List<Dilemma> originale = dilemmas(2);
+        List<Dilemma> original = dilemmas(2);
 
-        DilemmaSequence sequence = new DilemmaSequence(originale);
+        DilemmaSequence sequence = new DilemmaSequence(original);
 
-        originale.clear();
-        originale.add(dilemma(99));
+        original.clear();
+        original.add(dilemma(99));
 
         assertTrue(sequence.hasNext());
         assertEquals(dilemma(1), sequence.current());

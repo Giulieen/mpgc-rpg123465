@@ -74,20 +74,20 @@ public class GameSave implements Serializable {
      * Due salvataggi sono uguali quando descrivono la stessa partita nello
      * stesso punto: nome, piano, completamento e risposte registrate.
      *
-     * @param altro oggetto da confrontare
+     * @param obj oggetto da confrontare
      * @return true se i quattro campi coincidono
      */
     @Override
-    public boolean equals(Object altro) {
-        if (this == altro) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (altro == null || getClass() != altro.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        GameSave other = (GameSave) altro;
+        GameSave other = (GameSave) obj;
 
         return currentFloor == other.currentFloor
                 && gameCompleted == other.gameCompleted

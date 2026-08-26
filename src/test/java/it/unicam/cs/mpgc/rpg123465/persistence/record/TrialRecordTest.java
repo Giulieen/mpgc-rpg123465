@@ -103,13 +103,13 @@ class TrialRecordTest {
     @Test
     void ilVersoDelConfrontoDistingueITuePiani() {
         TrialRecord tempo = TrialRecord.lowerIsBetter(store, "buio.tempo");
-        TrialRecord punteggio = TrialRecord.higherIsBetter(store, "altezze.punteggio");
+        TrialRecord score = TrialRecord.higherIsBetter(store, "altezze.punteggio");
 
         tempo.submit(100);
-        punteggio.submit(100);
+        score.submit(100);
 
         assertEquals(50, tempo.submit(50));
-        assertEquals(100, punteggio.submit(50));
+        assertEquals(100, score.submit(50));
     }
 
     // --- chiavi separate --------------------------------------------------

@@ -148,10 +148,10 @@ class MindStateTest {
 
     @Test
     void laCopiaHaGliStessiConteggiMaEUnOggettoDiverso() {
-        MindState originale = with(2, 1, 3);
-        MindState copia = originale.copy();
+        MindState original = with(2, 1, 3);
+        MindState copia = original.copy();
 
-        assertNotSame(originale, copia);
+        assertNotSame(original, copia);
         assertEquals(2, copia.getCoraggio());
         assertEquals(1, copia.getCuriosita());
         assertEquals(3, copia.getAvventura());
@@ -163,36 +163,36 @@ class MindStateTest {
      */
     @Test
     void modificareLOriginaleNonAlteraLaCopia() {
-        MindState originale = with(1, 1, 1);
-        MindState copia = originale.copy();
+        MindState original = with(1, 1, 1);
+        MindState copia = original.copy();
 
-        originale.registerTrait(ProfileTrait.CORAGGIO);
+        original.registerTrait(ProfileTrait.CORAGGIO);
 
-        assertEquals(2, originale.getCoraggio());
+        assertEquals(2, original.getCoraggio());
         assertEquals(1, copia.getCoraggio());
     }
 
     @Test
     void modificareLaCopiaNonAlteraLOriginale() {
-        MindState originale = with(1, 1, 1);
-        MindState copia = originale.copy();
+        MindState original = with(1, 1, 1);
+        MindState copia = original.copy();
 
         copia.registerTrait(ProfileTrait.AVVENTURA);
 
-        assertEquals(1, originale.getAvventura());
+        assertEquals(1, original.getAvventura());
         assertEquals(2, copia.getAvventura());
     }
 
     @Test
     void ripristinareSostituisceIConteggiCorrenti() {
-        MindState corrente = with(5, 5, 5);
-        MindState salvato = with(1, 2, 3);
+        MindState current = with(5, 5, 5);
+        MindState saved = with(1, 2, 3);
 
-        corrente.restoreFrom(salvato);
+        current.restoreFrom(saved);
 
-        assertEquals(1, corrente.getCoraggio());
-        assertEquals(2, corrente.getCuriosita());
-        assertEquals(3, corrente.getAvventura());
+        assertEquals(1, current.getCoraggio());
+        assertEquals(2, current.getCuriosita());
+        assertEquals(3, current.getAvventura());
     }
 
     @Test
@@ -206,14 +206,14 @@ class MindStateTest {
 
     @Test
     void ilRipristinoNonCollegaIDueStati() {
-        MindState corrente = new MindState();
-        MindState salvato = with(1, 1, 1);
+        MindState current = new MindState();
+        MindState saved = with(1, 1, 1);
 
-        corrente.restoreFrom(salvato);
-        corrente.registerTrait(ProfileTrait.CORAGGIO);
+        current.restoreFrom(saved);
+        current.registerTrait(ProfileTrait.CORAGGIO);
 
-        assertEquals(1, salvato.getCoraggio());
-        assertEquals(2, corrente.getCoraggio());
+        assertEquals(1, saved.getCoraggio());
+        assertEquals(2, current.getCoraggio());
     }
 
     // --- contratto di equals e hashCode ------------------------------------
@@ -221,31 +221,31 @@ class MindStateTest {
     /** Riflessivita': ogni oggetto e' uguale a se stesso. */
     @Test
     void unoStatoEUgualeASeStesso() {
-        MindState stato = with(2, 1, 0);
+        MindState state = with(2, 1, 0);
 
-        assertEquals(stato, stato);
+        assertEquals(state, state);
     }
 
     /** Simmetria: se vale in un verso deve valere anche nell'altro. */
     @Test
     void lUguaglianzaValeNeiDueVersi() {
-        MindState primo = with(2, 1, 0);
-        MindState secondo = with(2, 1, 0);
+        MindState first = with(2, 1, 0);
+        MindState second = with(2, 1, 0);
 
-        assertEquals(primo, secondo);
-        assertEquals(secondo, primo);
+        assertEquals(first, second);
+        assertEquals(second, first);
     }
 
     /** Transitivita': se il primo e' uguale al secondo e il secondo al terzo. */
     @Test
     void lUguaglianzaSiPropagaAlTerzo() {
-        MindState primo = with(1, 1, 2);
-        MindState secondo = with(1, 1, 2);
-        MindState terzo = with(1, 1, 2);
+        MindState first = with(1, 1, 2);
+        MindState second = with(1, 1, 2);
+        MindState third = with(1, 1, 2);
 
-        assertEquals(primo, secondo);
-        assertEquals(secondo, terzo);
-        assertEquals(primo, terzo);
+        assertEquals(first, second);
+        assertEquals(second, third);
+        assertEquals(first, third);
     }
 
     /**
@@ -272,17 +272,17 @@ class MindStateTest {
     /** Una copia conserva i punteggi, quindi resta uguale all'originale. */
     @Test
     void laCopiaEUgualeAllOriginale() {
-        MindState originale = with(2, 2, 1);
+        MindState original = with(2, 2, 1);
 
-        assertEquals(originale, originale.copy());
+        assertEquals(original, original.copy());
     }
 
     @Test
     void laDescrizioneMostraITrePunteggi() {
-        String descrizione = with(3, 2, 1).toString();
+        String description = with(3, 2, 1).toString();
 
-        assertTrue(descrizione.contains("3"));
-        assertTrue(descrizione.contains("2"));
-        assertTrue(descrizione.contains("1"));
+        assertTrue(description.contains("3"));
+        assertTrue(description.contains("2"));
+        assertTrue(description.contains("1"));
     }
 }

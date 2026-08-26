@@ -190,12 +190,12 @@ class GameControllerTest {
 
     @Test
     void caricareRipristinaPianoETratti() {
-        MindState salvato = new MindState();
-        salvato.registerTrait(ProfileTrait.CURIOSITA);
-        salvato.registerTrait(ProfileTrait.CURIOSITA);
-        salvato.registerTrait(ProfileTrait.AVVENTURA);
+        MindState saved = new MindState();
+        saved.registerTrait(ProfileTrait.CURIOSITA);
+        saved.registerTrait(ProfileTrait.CURIOSITA);
+        saved.registerTrait(ProfileTrait.AVVENTURA);
 
-        saves.preload(new GameSave("Ripreso", 1, false, salvato));
+        saves.preload(new GameSave("Ripreso", 1, false, saved));
 
         assertTrue(controller.loadGame().success());
 
@@ -231,12 +231,12 @@ class GameControllerTest {
 
     @Test
     void dopoIlCaricamentoIlProfiloRiflettePureLeScelteSalvate() {
-        MindState salvato = new MindState();
+        MindState saved = new MindState();
         for (int i = 0; i < 5; i++) {
-            salvato.registerTrait(ProfileTrait.AVVENTURA);
+            saved.registerTrait(ProfileTrait.AVVENTURA);
         }
 
-        saves.preload(new GameSave("Ripreso", 0, false, salvato));
+        saves.preload(new GameSave("Ripreso", 0, false, saved));
         controller.loadGame();
 
         assertEquals(PlayerProfile.AVVENTURIERO, controller.getPlayerProfile());

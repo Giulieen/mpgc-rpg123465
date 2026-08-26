@@ -141,38 +141,38 @@ public class MindState implements Serializable {
     /**
      * Ripristina questi conteggi da quelli salvati.
      *
-     * @param salvato conteggi salvati
+     * @param saved conteggi salvati
      */
-    public void restoreFrom(MindState salvato) {
-        if (salvato == null) {
+    public void restoreFrom(MindState saved) {
+        if (saved == null) {
             return;
         }
 
-        this.coraggio = Math.max(0, salvato.coraggio);
+        this.coraggio = Math.max(0, saved.coraggio);
 
-        this.curiosita = Math.max(0, salvato.curiosita);
+        this.curiosita = Math.max(0, saved.curiosita);
 
-        this.avventura = Math.max(0, salvato.avventura);
+        this.avventura = Math.max(0, saved.avventura);
     }
 
     /**
      * Due stati mentali sono uguali quando registrano gli stessi tre
      * punteggi: quello che conta è il contenuto, non l'istanza.
      *
-     * @param altro oggetto da confrontare
+     * @param obj oggetto da confrontare
      * @return true se i tre tratti coincidono
      */
     @Override
-    public boolean equals(Object altro) {
-        if (this == altro) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (altro == null || getClass() != altro.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        MindState other = (MindState) altro;
+        MindState other = (MindState) obj;
 
         return coraggio == other.coraggio
                 && curiosita == other.curiosita

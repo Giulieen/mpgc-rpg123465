@@ -18,10 +18,10 @@ class BackgroundQuestionCatalogTest {
 
     @Test
     void leDomandeArrivanoDalCatalogoLetto() {
-        QuestionRepository catalogo =
+        QuestionRepository catalog =
                 new BackgroundQuestionCatalog(FakeQuestionRepository::new);
 
-        assertEquals(2, catalogo.randomQuestions("topi", 2).size());
+        assertEquals(2, catalog.randomQuestions("topi", 2).size());
     }
 
     /**
@@ -30,28 +30,28 @@ class BackgroundQuestionCatalogTest {
      */
     @Test
     void unaLetturaLentaVieneAttesaSenzaPerdereIlRisultato() {
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
             Thread.sleep(150);
             return new FakeQuestionRepository();
         });
 
-        assertEquals(3, catalogo.randomQuestions("buio", 3).size());
+        assertEquals(3, catalog.randomQuestions("buio", 3).size());
     }
 
     /** La lettura non deve avvenire sul thread che costruisce l'oggetto. */
     @Test
     void laLetturaAvvieneSuUnAltroThread() {
-        AtomicReference<String> lettore = new AtomicReference<>();
+        AtomicReference<String> reader = new AtomicReference<>();
 
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
-            lettore.set(Thread.currentThread().getName());
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
+            reader.set(Thread.currentThread().getName());
             return new FakeQuestionRepository();
         });
 
-        catalogo.randomQuestions("topi", 1);
+        catalog.randomQuestions("topi", 1);
 
-        assertNotEquals(Thread.currentThread().getName(), lettore.get());
-        assertFalse(lettore.get() == null);
+        assertNotEquals(Thread.currentThread().getName(), reader.get());
+        assertFalse(reader.get() == null);
     }
 
     /**
@@ -61,32 +61,32 @@ class BackgroundQuestionCatalogTest {
      */
     @Test
     void ilCatalogoRottoRiportaLEccezioneOriginale() {
-        QuestionCatalogException atteso =
+        QuestionCatalogException expected =
                 new QuestionCatalogException("catalogo illeggibile");
 
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
-            throw atteso;
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
+            throw expected;
         });
 
-        QuestionCatalogException uscita = assertThrows(
+        QuestionCatalogException thrown = assertThrows(
                 QuestionCatalogException.class,
-                () -> catalogo.randomQuestions("topi", 1));
+                () -> catalog.randomQuestions("topi", 1));
 
-        assertEquals(atteso, uscita);
+        assertEquals(expected, thrown);
     }
 
     /** Un guasto qualsiasi diventa comunque un errore di catalogo. */
     @Test
     void unGuastoImprevistoDiventaUnErroreDiCatalogo() {
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
             throw new IllegalStateException("disco staccato");
         });
 
-        QuestionCatalogException uscita = assertThrows(
+        QuestionCatalogException thrown = assertThrows(
                 QuestionCatalogException.class,
-                () -> catalogo.randomQuestions("topi", 1));
+                () -> catalog.randomQuestions("topi", 1));
 
-        assertTrue(uscita.getCause() instanceof IllegalStateException);
+        assertTrue(thrown.getCause() instanceof IllegalStateException);
     }
 
     /**
@@ -95,10 +95,10 @@ class BackgroundQuestionCatalogTest {
      */
     @Test
     void dopoUnFallimentoIlTentativoSuccessivoRilegge() {
-        AtomicInteger letture = new AtomicInteger();
+        AtomicInteger reads = new AtomicInteger();
 
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
-            if (letture.incrementAndGet() == 1) {
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
+            if (reads.incrementAndGet() == 1) {
                 throw new QuestionCatalogException("primo tentativo fallito");
             }
 
@@ -106,27 +106,27 @@ class BackgroundQuestionCatalogTest {
         });
 
         assertThrows(QuestionCatalogException.class,
-                () -> catalogo.randomQuestions("topi", 1));
+                () -> catalog.randomQuestions("topi", 1));
 
-        assertEquals(1, catalogo.randomQuestions("topi", 1).size());
-        assertEquals(2, letture.get());
+        assertEquals(1, catalog.randomQuestions("topi", 1).size());
+        assertEquals(2, reads.get());
     }
 
     /** Una lettura riuscita avviene una volta sola, non a ogni richiesta. */
     @Test
     void ilCatalogoLettoVieneRiusato() {
-        AtomicInteger letture = new AtomicInteger();
+        AtomicInteger reads = new AtomicInteger();
 
-        QuestionRepository catalogo = new BackgroundQuestionCatalog(() -> {
-            letture.incrementAndGet();
+        QuestionRepository catalog = new BackgroundQuestionCatalog(() -> {
+            reads.incrementAndGet();
             return new FakeQuestionRepository();
         });
 
-        catalogo.randomQuestions("topi", 1);
-        catalogo.randomQuestions("buio", 1);
-        catalogo.randomQuestions("altezze", 1);
+        catalog.randomQuestions("topi", 1);
+        catalog.randomQuestions("buio", 1);
+        catalog.randomQuestions("altezze", 1);
 
-        assertEquals(1, letture.get());
+        assertEquals(1, reads.get());
     }
 
     @Test
