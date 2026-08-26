@@ -47,8 +47,6 @@ logs/
 *.log
 
 # Copie originali degli asset prima delle elaborazioni (solo backup locale)
-audio-originali/
-# Copie originali degli asset prima delle elaborazioni (backup locale)
 asset-originali/
 
 # Impostazioni locali degli assistenti di sviluppo: non fanno parte del progetto
