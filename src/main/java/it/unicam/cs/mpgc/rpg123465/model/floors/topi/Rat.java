@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.model.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.model.floors.topi;
 
 import java.util.List;
 

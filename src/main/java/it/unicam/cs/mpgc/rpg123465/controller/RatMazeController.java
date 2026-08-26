@@ -1,10 +1,10 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Direction;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.GridPosition;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.Rat;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.RatMaze;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Direction;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.GridPosition;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Rat;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.RatMaze;
 
 import java.util.ArrayList;
 import java.util.Iterator;

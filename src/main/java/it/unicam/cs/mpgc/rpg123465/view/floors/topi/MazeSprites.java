@@ -1,4 +1,4 @@
-package it.unicam.cs.mpgc.rpg123465.view.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.view.floors.topi;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;

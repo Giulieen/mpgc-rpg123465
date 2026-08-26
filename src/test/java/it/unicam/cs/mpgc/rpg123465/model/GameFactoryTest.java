@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.model;
 
 import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.testing.FakeQuestionRepository;
 
 import java.util.List;

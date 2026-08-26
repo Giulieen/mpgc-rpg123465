@@ -4,14 +4,14 @@ import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.model.FloorContent;
 import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltitudeCrossing;
 import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.view.floors.altezze.AltezzeScene;
 import it.unicam.cs.mpgc.rpg123465.view.floors.buio.DarkRoomScene;
-import it.unicam.cs.mpgc.rpg123465.view.floors.encounter.FearEncounterScreen;
-import it.unicam.cs.mpgc.rpg123465.view.floors.encounter.RatMazeScene;
+import it.unicam.cs.mpgc.rpg123465.view.floors.topi.FearEncounterScreen;
+import it.unicam.cs.mpgc.rpg123465.view.floors.topi.RatMazeScene;
 
 import java.util.LinkedHashMap;
 import java.util.List;

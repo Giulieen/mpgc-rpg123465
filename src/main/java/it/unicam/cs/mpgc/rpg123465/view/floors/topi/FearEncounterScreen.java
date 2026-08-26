@@ -1,10 +1,10 @@
-package it.unicam.cs.mpgc.rpg123465.view.floors.encounter;
+package it.unicam.cs.mpgc.rpg123465.view.floors.topi;
 
 import it.unicam.cs.mpgc.rpg123465.audio.Sound;
 import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.model.MindState;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearChoice;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.FearEncounter;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearChoice;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.FearEncounter;
 import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;

@@ -5,7 +5,7 @@ import it.unicam.cs.mpgc.rpg123465.model.Player;
 import it.unicam.cs.mpgc.rpg123465.model.Tower;
 import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeFloors;
 import it.unicam.cs.mpgc.rpg123465.model.floors.buio.BuioFloor;
-import it.unicam.cs.mpgc.rpg123465.model.floors.encounter.EncounterFloors;
+import it.unicam.cs.mpgc.rpg123465.model.floors.topi.EncounterFloors;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
 
 import java.util.List;
