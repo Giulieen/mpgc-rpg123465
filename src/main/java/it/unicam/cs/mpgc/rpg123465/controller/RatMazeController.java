@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Direction;
 import it.unicam.cs.mpgc.rpg123465.model.floors.topi.GridPosition;
 import it.unicam.cs.mpgc.rpg123465.model.floors.topi.Rat;

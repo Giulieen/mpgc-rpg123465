@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.DilemmaSequence;

@@ -1,7 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.model.Player;
 import it.unicam.cs.mpgc.rpg123465.testing.TestTowers;
 
 import org.junit.jupiter.api.Test;

@@ -15,8 +15,6 @@ import it.unicam.cs.mpgc.rpg123465.persistence.record.FileRecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.record.RecordStore;
 import it.unicam.cs.mpgc.rpg123465.persistence.save.FileSaveManager;
 import it.unicam.cs.mpgc.rpg123465.persistence.save.SaveManager;
-import it.unicam.cs.mpgc.rpg123465.view.SceneFlow;
-import it.unicam.cs.mpgc.rpg123465.view.WindowFrame;
 import it.unicam.cs.mpgc.rpg123465.view.screens.IntroScreen;
 import it.unicam.cs.mpgc.rpg123465.view.screens.ProfileGalleryScreen;
 import it.unicam.cs.mpgc.rpg123465.view.screens.ProfileResultScreen;

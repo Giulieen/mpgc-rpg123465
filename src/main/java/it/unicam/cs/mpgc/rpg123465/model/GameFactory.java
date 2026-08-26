@@ -1,8 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.model.Floor;
-import it.unicam.cs.mpgc.rpg123465.model.Player;
-import it.unicam.cs.mpgc.rpg123465.model.Tower;
 import it.unicam.cs.mpgc.rpg123465.model.floors.altezze.AltezzeFloors;
 import it.unicam.cs.mpgc.rpg123465.model.floors.buio.BuioFloor;
 import it.unicam.cs.mpgc.rpg123465.model.floors.topi.EncounterFloors;

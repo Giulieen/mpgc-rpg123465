@@ -1,10 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
-import it.unicam.cs.mpgc.rpg123465.model.Floor;
-import it.unicam.cs.mpgc.rpg123465.model.FloorAttempts;
-import it.unicam.cs.mpgc.rpg123465.model.Player;
-import it.unicam.cs.mpgc.rpg123465.model.Tower;
-
 /**
  * Coordina la salita della Torre: a che piano si trova il giocatore e quando il
  * cammino è concluso.

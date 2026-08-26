@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.persistence.question;
 
+import java.lang.reflect.Type;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.Dilemma;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionCatalogException;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
@@ -9,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,5 @@
 package it.unicam.cs.mpgc.rpg123465.controller;
 
-import it.unicam.cs.mpgc.rpg123465.controller.GameController;
 import it.unicam.cs.mpgc.rpg123465.model.MindState;
 import it.unicam.cs.mpgc.rpg123465.model.ProfileTrait;
 import it.unicam.cs.mpgc.rpg123465.model.floors.buio.DarkRoom;
