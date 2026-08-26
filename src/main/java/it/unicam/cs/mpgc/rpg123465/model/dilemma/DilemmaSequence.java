@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.model.dilemma;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Mantiene l'avanzamento ordinato di una sequenza di dilemmi e impedisce che
@@ -26,10 +27,8 @@ public final class DilemmaSequence {
             throw new IllegalArgumentException("La lista dei dilemmi non può essere null.");
         }
 
-        for (Dilemma dilemma : dilemmas) {
-            if (dilemma == null) {
-                throw new IllegalArgumentException("La sequenza non ammette dilemmi null.");
-            }
+        if (dilemmas.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("La sequenza non ammette dilemmi null.");
         }
 
         this.dilemmas = List.copyOf(dilemmas);

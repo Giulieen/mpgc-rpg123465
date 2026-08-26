@@ -6,9 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Nomi già usati, conservati in un file di testo con un nome per riga.
@@ -84,17 +84,12 @@ public final class FilePlayerRegistry implements PlayerRegistry {
         }
 
         try {
-            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-
-            Set<String> names = new LinkedHashSet<>();
-
-            for (String line : lines) {
-                if (!line.isBlank()) {
-                    names.add(line.trim());
-                }
-            }
-
-            return names;
+            // LinkedHashSet: niente doppioni, ma l'ordine del file resta.
+            return Files.readAllLines(path, StandardCharsets.UTF_8)
+                    .stream()
+                    .filter(line -> !line.isBlank())
+                    .map(String::trim)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
         } catch (IOException exception) {
             return Set.of();
