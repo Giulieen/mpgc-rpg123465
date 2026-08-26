@@ -8,6 +8,7 @@ import it.unicam.cs.mpgc.rpg123465.model.GameEngine;
 import it.unicam.cs.mpgc.rpg123465.model.GameFactory;
 import it.unicam.cs.mpgc.rpg123465.persistence.player.FilePlayerRegistry;
 import it.unicam.cs.mpgc.rpg123465.persistence.player.PlayerRegistry;
+import it.unicam.cs.mpgc.rpg123465.persistence.question.BackgroundQuestionCatalog;
 import it.unicam.cs.mpgc.rpg123465.persistence.question.JsonQuestionRepository;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionCatalogException;
 import it.unicam.cs.mpgc.rpg123465.model.dilemma.QuestionRepository;
@@ -43,12 +44,13 @@ public final class Navigator {
     /**
      * Catalogo condiviso da tutta l'esecuzione.
      *
-     * Viene letto alla prima partita e non alla costruzione del navigatore:
-     * un file rotto deve diventare un messaggio a schermo, e lo può fare solo
-     * se l'errore nasce dentro un percorso che qualcuno intercetta. Restando
-     * null dopo un fallimento, il tentativo successivo rilegge il file.
+     * La lettura del file parte subito, su un thread separato, mentre il menu
+     * si disegna: alla prima partita il catalogo è quasi sempre pronto. Un
+     * file rotto continua a diventare un messaggio a schermo, perché l'errore
+     * riemerge qui, dentro un percorso che qualcuno intercetta.
      */
-    private QuestionRepository questions;
+    private final QuestionRepository questions =
+            new BackgroundQuestionCatalog(JsonQuestionRepository::new);
 
     private final WindowFrame frame;
 
@@ -156,7 +158,7 @@ public final class Navigator {
         FloorSceneFactory scenes =
                 new FloorSceneFactory(
                         controller,
-                        questions(),
+                        questions,
                         records,
                         onDismissed -> showSaveResult(controller, onDismissed),
                         () -> exitCurrentFloor(controller)
@@ -229,23 +231,11 @@ public final class Navigator {
     }
 
     private GameController createController(String playerName) {
-        GameEngine engine = GameFactory.createNewGame(playerName, questions());
+        GameEngine engine = GameFactory.createNewGame(playerName, questions);
 
         SaveManager saveManager = new FileSaveManager(SAVE_PATH);
 
-        return new GameController(engine, saveManager, questions());
-    }
-
-    /**
-     * @return il catalogo condiviso, letto alla prima richiesta
-     * @throws QuestionCatalogException se il catalogo non è utilizzabile
-     */
-    private QuestionRepository questions() {
-        if (questions == null) {
-            questions = new JsonQuestionRepository();
-        }
-
-        return questions;
+        return new GameController(engine, saveManager, questions);
     }
 
     /**
