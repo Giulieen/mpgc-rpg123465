@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Memoria delle risposte ai dilemmi "Preferiresti".
@@ -152,5 +153,50 @@ public class MindState implements Serializable {
         this.curiosita = Math.max(0, salvato.curiosita);
 
         this.avventura = Math.max(0, salvato.avventura);
+    }
+
+    /**
+     * Due stati mentali sono uguali quando registrano gli stessi tre
+     * punteggi: quello che conta è il contenuto, non l'istanza.
+     *
+     * @param altro oggetto da confrontare
+     * @return true se i tre tratti coincidono
+     */
+    @Override
+    public boolean equals(Object altro) {
+        if (this == altro) {
+            return true;
+        }
+
+        if (altro == null || getClass() != altro.getClass()) {
+            return false;
+        }
+
+        MindState other = (MindState) altro;
+
+        return coraggio == other.coraggio
+                && curiosita == other.curiosita
+                && avventura == other.avventura;
+    }
+
+    /**
+     * Calcolato sugli stessi campi di {@link #equals(Object)}, come richiede
+     * il contratto: due stati uguali producono lo stesso valore.
+     *
+     * @return codice hash dei tre tratti
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(coraggio, curiosita, avventura);
+    }
+
+    /**
+     * @return i tre punteggi, per diagnostica e messaggi di errore
+     */
+    @Override
+    public String toString() {
+        return "MindState[coraggio=" + coraggio
+                + ", curiosita=" + curiosita
+                + ", avventura=" + avventura + "]";
     }
 }

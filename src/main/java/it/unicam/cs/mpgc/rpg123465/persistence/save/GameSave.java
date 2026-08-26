@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.persistence.save;
 
 import it.unicam.cs.mpgc.rpg123465.model.MindState;
+import java.util.Objects;
 
 import java.io.Serializable;
 
@@ -67,5 +68,51 @@ public class GameSave implements Serializable {
      */
     public MindState getMindState() {
         return mindState;
+    }
+
+    /**
+     * Due salvataggi sono uguali quando descrivono la stessa partita nello
+     * stesso punto: nome, piano, completamento e risposte registrate.
+     *
+     * @param altro oggetto da confrontare
+     * @return true se i quattro campi coincidono
+     */
+    @Override
+    public boolean equals(Object altro) {
+        if (this == altro) {
+            return true;
+        }
+
+        if (altro == null || getClass() != altro.getClass()) {
+            return false;
+        }
+
+        GameSave other = (GameSave) altro;
+
+        return currentFloor == other.currentFloor
+                && gameCompleted == other.gameCompleted
+                && Objects.equals(playerName, other.playerName)
+                && Objects.equals(mindState, other.mindState);
+    }
+
+    /**
+     * Calcolato sugli stessi campi di {@link #equals(Object)}, come richiede
+     * il contratto: due salvataggi uguali producono lo stesso valore.
+     *
+     * @return codice hash dei quattro campi
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerName, currentFloor, gameCompleted, mindState);
+    }
+
+    /**
+     * @return una descrizione sintetica del salvataggio, per la diagnostica
+     */
+    @Override
+    public String toString() {
+        return "GameSave[" + playerName
+                + ", piano=" + currentFloor
+                + ", completata=" + gameCompleted + "]";
     }
 }

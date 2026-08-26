@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MindStateTest {
@@ -212,5 +214,75 @@ class MindStateTest {
 
         assertEquals(1, salvato.getCoraggio());
         assertEquals(2, corrente.getCoraggio());
+    }
+
+    // --- contratto di equals e hashCode ------------------------------------
+
+    /** Riflessivita': ogni oggetto e' uguale a se stesso. */
+    @Test
+    void unoStatoEUgualeASeStesso() {
+        MindState stato = with(2, 1, 0);
+
+        assertEquals(stato, stato);
+    }
+
+    /** Simmetria: se vale in un verso deve valere anche nell'altro. */
+    @Test
+    void lUguaglianzaValeNeiDueVersi() {
+        MindState primo = with(2, 1, 0);
+        MindState secondo = with(2, 1, 0);
+
+        assertEquals(primo, secondo);
+        assertEquals(secondo, primo);
+    }
+
+    /** Transitivita': se il primo e' uguale al secondo e il secondo al terzo. */
+    @Test
+    void lUguaglianzaSiPropagaAlTerzo() {
+        MindState primo = with(1, 1, 2);
+        MindState secondo = with(1, 1, 2);
+        MindState terzo = with(1, 1, 2);
+
+        assertEquals(primo, secondo);
+        assertEquals(secondo, terzo);
+        assertEquals(primo, terzo);
+    }
+
+    /**
+     * Il vincolo piu' importante del contratto: due oggetti uguali devono
+     * produrre lo stesso codice hash, altrimenti si perdono dentro una
+     * HashMap.
+     */
+    @Test
+    void dueStatiUgualiHannoLoStessoCodiceHash() {
+        assertEquals(with(3, 2, 1).hashCode(), with(3, 2, 1).hashCode());
+    }
+
+    /** Nullita': il confronto con null deve dare falso, non un'eccezione. */
+    @Test
+    void ilConfrontoConNullEFalso() {
+        assertNotEquals(null, with(1, 0, 0));
+    }
+
+    @Test
+    void statiConPunteggiDiversiNonSonoUguali() {
+        assertNotEquals(with(2, 1, 0), with(0, 1, 2));
+    }
+
+    /** Una copia conserva i punteggi, quindi resta uguale all'originale. */
+    @Test
+    void laCopiaEUgualeAllOriginale() {
+        MindState originale = with(2, 2, 1);
+
+        assertEquals(originale, originale.copy());
+    }
+
+    @Test
+    void laDescrizioneMostraITrePunteggi() {
+        String descrizione = with(3, 2, 1).toString();
+
+        assertTrue(descrizione.contains("3"));
+        assertTrue(descrizione.contains("2"));
+        assertTrue(descrizione.contains("1"));
     }
 }
