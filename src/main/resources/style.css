@@ -21,15 +21,6 @@
     -fx-fill: rgba(0,0,0,0.58);
 }
 
-.fog-layer {
-
-    -fx-background-color:
-        radial-gradient(center 42% 55%, radius 20%, rgba(255,255,255,0.32), transparent),
-        radial-gradient(center 58% 66%, radius 18%, rgba(255,255,255,0.26), transparent),
-        radial-gradient(center 50% 44%, radius 16%, rgba(255,255,255,0.20), transparent);
-
-    -fx-opacity: 0.55;
-}
 
 .menu-card {
 
@@ -203,27 +194,7 @@
     -fx-background-color: transparent;
 }
 
-.panel {
 
-    -fx-background-color:rgba(35,35,35,0.90);
-
-    -fx-background-radius:12;
-
-    -fx-padding:15;
-
-    -fx-border-color:#666666;
-
-    -fx-border-radius:12;
-}
-
-.section-header {
-
-    -fx-font-size:17px;
-
-    -fx-font-weight:bold;
-
-    -fx-text-fill:white;
-}
 
 .label {
 
@@ -396,11 +367,6 @@
     -fx-effect: dropshadow(gaussian, rgba(229,86,63,0.7), 14, 0.6, 0, 0);
 }
 
-.wall-cardinal {
-    -fx-font-family: "Georgia";
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-}
 
 .wall-binary {
     -fx-font-family: "Consolas", "Courier New", monospace;
