@@ -45,3 +45,19 @@ application {
 test {
     useJUnitPlatform()
 }
+
+/*
+ * Il Javadoc viene controllato per intero tranne la categoria "missing".
+ *
+ * I tag presenti devono essere corretti e completi — un @param che non
+ * corrisponde al parametro, o un @return mancante dove il metodo restituisce
+ * qualcosa, è un difetto e fa rumore in questo controllo.
+ *
+ * Non viene invece preteso un commento su ogni membro pubblico: documentare
+ * costanti come UP e DOWN aggiungerebbe righe che ripetono il nome senza
+ * spiegare nulla, ed è esattamente il commento inutile che il Clean Code
+ * invita a evitare.
+ */
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:all,-missing', '-quiet')
+}

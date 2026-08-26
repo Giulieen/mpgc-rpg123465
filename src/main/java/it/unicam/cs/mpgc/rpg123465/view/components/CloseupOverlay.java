@@ -46,7 +46,11 @@ public final class CloseupOverlay {
         return view != null;
     }
 
-    /** Avvicina la vista all'oggetto indicato. */
+    /**
+     * Avvicina la vista all'oggetto indicato.
+     *
+     * @param content il nodo da mostrare ingrandito
+     */
     public void open(Node content) {
         if (view != null) {
             return;

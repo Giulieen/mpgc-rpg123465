@@ -35,8 +35,16 @@ public final class CountdownClock {
     private boolean paused;
     private boolean timedOut;
 
+    /** Nasce fermo: il conto parte solo con {@link #start(int, Label, Runnable)}. */
+    public CountdownClock() {
+    }
+
     /**
      * Avvia un countdown senza callback sui singoli secondi.
+     *
+     * @param seconds durata del conto alla rovescia
+     * @param countdown l'etichetta su cui scrivere il tempo residuo
+     * @param onTimeout cosa fare quando il tempo si esaurisce
      */
     public void start(int seconds, Label countdown, Runnable onTimeout) {
         start(seconds, countdown, onTimeout, null);

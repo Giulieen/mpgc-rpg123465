@@ -10,7 +10,11 @@ public enum ArrowDirection {
     LEFT,
     RIGHT;
 
-    /** La freccia da premere per contrastare questo sbilanciamento. */
+    /**
+     * Ogni sbilanciamento si corregge premendo dalla parte opposta.
+     *
+     * @return la freccia da premere per contrastare questo sbilanciamento
+     */
     public ArrowDirection opposite() {
         return switch (this) {
             case UP -> DOWN;

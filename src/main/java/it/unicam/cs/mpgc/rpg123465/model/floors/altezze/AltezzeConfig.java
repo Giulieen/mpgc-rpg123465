@@ -37,12 +37,20 @@ public record AltezzeConfig(
         bridges = List.copyOf(bridges);
     }
 
-    /** @return il ponte all'indice dato (0 sinistra, 1 centro, 2 destra) */
+    /**
+     * @param index posizione del ponte: 0 sinistra, 1 centro, 2 destra
+     * @return il ponte in quella posizione
+     */
     public BridgeSpec bridge(int index) {
         return bridges.get(index);
     }
 
-    /** La configurazione predefinita, con i valori suggeriti per il bilanciamento. */
+    /**
+     * La configurazione predefinita, con i valori suggeriti per il
+     * bilanciamento della prova.
+     *
+     * @return i parametri con cui il Piano III viene giocato
+     */
     public static AltezzeConfig standard() {
         return new AltezzeConfig(
                 150,

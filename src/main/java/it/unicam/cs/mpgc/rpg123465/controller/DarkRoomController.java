@@ -34,6 +34,9 @@ public final class DarkRoomController {
 
     /**
      * Verifica la combinazione.
+     *
+     * @param enteredCode le cifre composte dal giocatore
+     * @return true se aprono la serratura
      */
     public boolean opens(String enteredCode) {
         return room.combination()
@@ -45,6 +48,8 @@ public final class DarkRoomController {
      *
      * Il tratto è nascosto al giocatore e non ha alcun effetto sulla prova:
      * contribuisce soltanto al profilo finale.
+     *
+     * @param trait il tratto associato alla risposta scelta
      */
     public void registerChoice(ProfileTrait trait) {
         mind.registerTrait(trait);

@@ -143,6 +143,8 @@ public class GameController {
      * Salva il checkpoint del piano corrente.
      *
      * Se non è ancora stato creato un checkpoint, salva lo stato corrente.
+     *
+     * @return l'esito della scrittura, con il dettaglio in caso di errore
      */
     public OperationResult saveGame() {
         try {
@@ -160,6 +162,8 @@ public class GameController {
 
     /**
      * Carica l'ultima partita salvata.
+     *
+     * @return l'esito della lettura, con il dettaglio in caso di errore
      */
     public OperationResult loadGame() {
         try {

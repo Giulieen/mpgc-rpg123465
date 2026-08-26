@@ -24,6 +24,10 @@ public class FloorAttempts {
 
     private int remaining = MAX;
 
+    /** Nasce con i tentativi al massimo: si entra sempre in un piano interi. */
+    public FloorAttempts() {
+    }
+
     /**
      * @return tentativi ancora disponibili
      */

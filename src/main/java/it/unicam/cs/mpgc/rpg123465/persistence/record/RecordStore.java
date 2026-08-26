@@ -6,7 +6,7 @@ import java.util.OptionalInt;
  * Archivio dei record personali delle prove.
  *
  * <p>
- * È separato da {@link SaveManager} perché risponde a una domanda diversa. Un
+ * È separato da {@link it.unicam.cs.mpgc.rpg123465.persistence.save.SaveManager SaveManager} perché risponde a una domanda diversa. Un
  * salvataggio è <em>una partita</em> e viene sostituito iniziandone un'altra;
  * un record è il migliore risultato mai ottenuto su questa installazione e deve
  * sopravvivere a "Nuova partita".

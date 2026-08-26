@@ -62,7 +62,11 @@ public final class BridgeRoute {
         return progress >= GOAL;
     }
 
-    /** Sceglie il ponte da cui partire. */
+    /**
+     * Sceglie il ponte da cui partire.
+     *
+     * @param index posizione del ponte: 0 sinistra, 1 centro, 2 destra
+     */
     public void select(int index) {
         current = index;
     }
@@ -131,7 +135,12 @@ public final class BridgeRoute {
         return destination;
     }
 
-    /** @return true se l'indice è il ponte verso cui si sta passando */
+    /**
+     * Serve alla vista per accendere il faro del ponte di arrivo.
+     *
+     * @param index posizione del ponte da verificare
+     * @return true se è il ponte verso cui si sta passando
+     */
     public boolean isDestination(int index) {
         return destination != NONE
                 && index == destination;
