@@ -45,9 +45,21 @@ Tre delle sei varianti di colore incluse nel pacchetto.
 Elaborazione del tileset: conversione in scala di grigi e moltiplicazione per
 l'oro `#b99a5e`, per portare la pietra nella palette della Torre.
 
-### Fondali, cancello e icona — `images/bg/`, `images/scenes/`, `images/icon/`
+### Cancello — `images/scenes/gate.jpg`
 
-> **Da completare.** Indicare per ciascun fondale autore, fonte e licenza.
+- Fonte: **[Pixabay](https://pixabay.com/)**
+- Licenza: **Pixabay Content License** — uso libero, anche commerciale, senza
+  obbligo di attribuzione
+
+Elaborazione: rielaborazione dell'immagine con l'assistenza di ChatGPT, per
+adattarla alla palette in bianco e nero della Torre.
+
+### Fondali e icona — `images/bg/`, `images/scenes/`, `images/icon/`
+
+> **Da completare.** Restano da attribuire sette immagini, tutte usate dal
+> gioco: `bg/fog.jpg`, `bg/forest.jpg`, `scenes/floor1-topi.jpg`,
+> `scenes/floor2-buio.jpg`, `scenes/floor2-lock.jpg`,
+> `scenes/floor3-altezze.png` e le sette misure dell'icona `icon/tower-*.png`.
 
 ## Audio — `audio/`
 
