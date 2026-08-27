@@ -45,21 +45,27 @@ Tre delle sei varianti di colore incluse nel pacchetto.
 Elaborazione del tileset: conversione in scala di grigi e moltiplicazione per
 l'oro `#b99a5e`, per portare la pietra nella palette della Torre.
 
-### Cancello — `images/scenes/gate.jpg`
+### Fondali, cancello e icona — `images/bg/`, `images/scenes/`, `images/icon/`
 
 - Fonte: **[Pixabay](https://pixabay.com/)**
 - Licenza: **Pixabay Content License** — uso libero, anche commerciale, senza
-  obbligo di attribuzione
+  obbligo di attribuzione; non è consentito ridistribuire i file come tali su
+  altre piattaforme di asset
 
-Elaborazione: rielaborazione dell'immagine con l'assistenza di ChatGPT, per
-adattarla alla palette in bianco e nero della Torre.
+| File | Dove compare nel gioco |
+| --- | --- |
+| `bg/forest.jpg` | lo sfondo che scorre |
+| `bg/fog.jpg` | la nebbia |
+| `scenes/gate.jpg` | il cancello della schermata iniziale |
+| `scenes/floor1-topi.jpg` | Piano I — I Topi |
+| `scenes/floor2-buio.jpg` | Piano II — Il Buio |
+| `scenes/floor2-lock.jpg` | il primo piano sulla serratura |
+| `scenes/floor3-altezze.png` | Piano III — Le Altezze |
+| `icon/tower-16…256.png` | l'icona della finestra, nelle sette misure che Windows richiede |
 
-### Fondali e icona — `images/bg/`, `images/scenes/`, `images/icon/`
-
-> **Da completare.** Restano da attribuire sette immagini, tutte usate dal
-> gioco: `bg/fog.jpg`, `bg/forest.jpg`, `scenes/floor1-topi.jpg`,
-> `scenes/floor2-buio.jpg`, `scenes/floor2-lock.jpg`,
-> `scenes/floor3-altezze.png` e le sette misure dell'icona `icon/tower-*.png`.
+Elaborazione: adattamento alla palette in bianco e nero della Torre e
+ridimensionamento. Il cancello è stato inoltre rielaborato con l'assistenza di
+ChatGPT.
 
 ## Audio — `audio/`
 
