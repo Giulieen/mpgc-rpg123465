@@ -7,6 +7,10 @@ equilibrio — e fra una prova e l'altra deve rispondere a dei dilemmi che non
 hanno una risposta giusta. Le prove misurano le sue abilità, le domande misurano
 lui: dalle risposte emerge alla fine uno di sette profili.
 
+Questa è la **prima release**: tre piani giocabili e sette profili
+raggiungibili, una demo della Torre immaginata. La schermata finale mostra per
+questo la *direzione* verso cui il profilo si sta orientando, non un verdetto.
+
 Documentazione completa nella **[Wiki](../../wiki)**.
 Asset di terze parti e relative licenze in **[CREDITS.md](CREDITS.md)**.
 
