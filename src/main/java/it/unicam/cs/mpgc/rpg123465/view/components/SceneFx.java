@@ -78,7 +78,17 @@ public final class SceneFx {
         return view;
     }
 
-    /** Posiziona un nodo centrandolo su (fracX, fracY), in frazione del contenitore. */
+    /**
+     * Posiziona un nodo centrandolo su (fracX, fracY), in frazione del contenitore.
+     *
+     * <p>
+     * I quattro numeri restano sciolti invece di essere raccolti in una
+     * dimensione e in un punto: sono coordinate grafiche, e JavaFX le tratta
+     * allo stesso modo in {@code setPrefSize} e nei costruttori delle forme.
+     * Il raggruppamento è stato fatto dove i dati sono un'entità del dominio —
+     * {@code GridPosition} al posto di riga e colonna nel labirinto — non dove
+     * sono misure in pixel.
+     */
     public static void place(Region root, Node node, double w, double h, double fracX, double fracY) {
         node.layoutXProperty().bind(root.widthProperty().multiply(fracX).subtract(w / 2.0));
         node.layoutYProperty().bind(root.heightProperty().multiply(fracY).subtract(h / 2.0));
