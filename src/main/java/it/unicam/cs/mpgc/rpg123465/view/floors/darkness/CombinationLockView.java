@@ -46,31 +46,51 @@ public final class CombinationLockView {
 
     public StackPane createView() {
         Image image = SceneFx.image("/images/scenes/floor2-lock.jpg");
+
         ImageView lock = new ImageView(image);
         lock.setFitWidth(WIDTH);
         lock.setPreserveRatio(true);
         lock.setEffect(new ColorAdjust(0, -0.75, 0.18, 0.10));
-        height = image != null && image.getWidth() > 0 ? WIDTH * image.getHeight() / image.getWidth() : WIDTH * .66;
+
+        height = image != null && image.getWidth() > 0
+                ? WIDTH * image.getHeight() / image.getWidth()
+                : WIDTH * .66;
 
         Pane overlay = new Pane();
         overlay.setPrefSize(WIDTH, height);
         overlay.setMinSize(WIDTH, height);
         overlay.setMaxSize(WIDTH, height);
         overlay.setPickOnBounds(false);
+
         labels = new Label[state.size()];
         for (int i = 0; i < state.size(); i++) {
             Label label = new Label("0");
-            label.setTextFill(AMBER_DIM); label.setOpacity(.85); label.getStyleClass().add("lock-digit");
+            label.setTextFill(AMBER_DIM);
+            label.setOpacity(.85);
+            label.getStyleClass().add("lock-digit");
             center(label, 48, 60, COLUMNS[i] * WIDTH, .470 * height);
-            labels[i] = label; overlay.getChildren().add(label);
+
+            labels[i] = label;
+            overlay.getChildren().add(label);
         }
+
         highlight = new Rectangle(52, 74, Color.TRANSPARENT);
-        highlight.setArcWidth(8); highlight.setArcHeight(8); highlight.setStroke(AMBER); highlight.setStrokeWidth(2);
+        highlight.setArcWidth(8);
+        highlight.setArcHeight(8);
+        highlight.setStroke(AMBER);
+        highlight.setStrokeWidth(2);
         overlay.getChildren().add(highlight);
-        overlay.getChildren().addAll(button("mdi2a-arrow-left", 0, this::back), button("mdi2c-chevron-up", 1, this::up),
-                button("mdi2c-chevron-down", 2, this::down), button("mdi2c-check", 3, this::confirm));
+
+        overlay.getChildren().addAll(
+                button("mdi2a-arrow-left", 0, this::back),
+                button("mdi2c-chevron-up", 1, this::up),
+                button("mdi2c-chevron-down", 2, this::down),
+                button("mdi2c-check", 3, this::confirm)
+        );
+
         StackPane panel = new StackPane(lock, overlay);
         panel.setMaxSize(WIDTH, height);
+
         refresh();
         return panel;
     }
@@ -104,20 +124,42 @@ public final class CombinationLockView {
     }
 
     private void refresh() {
-        for (int i = 0; i < labels.length; i++) labels[i].setText(Integer.toString(state.digitAt(i)));
+        for (int i = 0; i < labels.length; i++) {
+            labels[i].setText(Integer.toString(state.digitAt(i)));
+        }
+
         highlight.setLayoutX(COLUMNS[state.getActiveSlot()] * WIDTH - highlight.getWidth() / 2);
         highlight.setLayoutY(.470 * height - highlight.getHeight() / 2);
     }
 
     private Node button(String icon, int column, Runnable action) {
-        FontIcon glyph = new FontIcon(icon); glyph.setIconSize(32); glyph.setIconColor(AMBER_DIM);
-        StackPane button = new StackPane(glyph); center(button, 60, 54, COLUMNS[column] * WIDTH, .725 * height);
+        FontIcon glyph = new FontIcon(icon);
+        glyph.setIconSize(32);
+        glyph.setIconColor(AMBER_DIM);
+
+        StackPane button = new StackPane(glyph);
+        center(button, 60, 54, COLUMNS[column] * WIDTH, .725 * height);
+
         button.setOnMouseClicked(e -> action.run());
-        button.setOnMouseEntered(e -> glyph.setIconColor(AMBER)); button.setOnMouseExited(e -> glyph.setIconColor(AMBER_DIM));
+        button.setOnMouseEntered(e -> glyph.setIconColor(AMBER));
+        button.setOnMouseExited(e -> glyph.setIconColor(AMBER_DIM));
+
         return button;
     }
+
+    /*
+     * Le coordinate grafiche restano quattro numeri sciolti: sono la posizione
+     * del centro e la dimensione del nodo, cioè lo stesso modo in cui JavaFX
+     * stessa le tratta in setPrefSize e nei costruttori delle forme.
+     */
     private void center(Node node, double w, double h, double x, double y) {
-        node.setLayoutX(x - w / 2); node.setLayoutY(y - h / 2);
-        if (node instanceof Region r) { r.setPrefSize(w, h); r.setMinSize(w, h); r.setMaxSize(w, h); }
+        node.setLayoutX(x - w / 2);
+        node.setLayoutY(y - h / 2);
+
+        if (node instanceof Region region) {
+            region.setPrefSize(w, h);
+            region.setMinSize(w, h);
+            region.setMaxSize(w, h);
+        }
     }
 }
