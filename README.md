@@ -58,9 +58,7 @@ ambiti:
 - **test**: proposte di casi di prova, verificate eseguendole;
 - **documentazione**: supporto alla stesura dei testi.
 
-In una sessione finale di revisione è stato utilizzato **Claude Code**, per il
-confronto del progetto con la specifica d'esame e per applicare le correzioni
-concordate. Il dettaglio è nella
+La dichiarazione dettagliata, richiesta dalla specifica, è nella
 [Wiki](../../wiki/Uso-di-strumenti-di-AI).
 
 L'ideazione del gioco — piani, meccaniche, dilemmi, profili e testi narrativi —
