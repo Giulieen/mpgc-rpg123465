@@ -81,10 +81,10 @@ class GameFactoryTest {
     void ilPrimoPianoUsaIlCatalogoRicevuto() {
         GameEngine engine = GameFactory.createNewGame("Collaudo", new FakeQuestionRepository());
 
-        FloorContent primoPiano = engine.getTower().getFloor(0).getContent();
+        FloorContent firstFloor = engine.getTower().getFloor(0).getContent();
 
-        assertInstanceOf(FearEncounter.class, primoPiano);
-        assertTrue(((FearEncounter) primoPiano).situation()
+        assertInstanceOf(FearEncounter.class, firstFloor);
+        assertTrue(((FearEncounter) firstFloor).situation()
                 .startsWith(FakeQuestionRepository.MARKER));
     }
 

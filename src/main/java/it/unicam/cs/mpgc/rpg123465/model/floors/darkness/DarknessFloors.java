@@ -12,7 +12,7 @@ public final class DarknessFloors {
     /**
      * @return contenuto del Piano II
      */
-    public static DarkRoom buio() {
+    public static DarkRoom darkRoom() {
         return new DarkRoom(
                 "Piano II — Il Buio",
 

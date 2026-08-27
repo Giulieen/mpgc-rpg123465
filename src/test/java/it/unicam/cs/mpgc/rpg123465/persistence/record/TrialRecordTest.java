@@ -102,13 +102,13 @@ class TrialRecordTest {
      */
     @Test
     void ilVersoDelConfrontoDistingueITuePiani() {
-        TrialRecord tempo = TrialRecord.lowerIsBetter(store, "buio.tempo");
+        TrialRecord time = TrialRecord.lowerIsBetter(store, "buio.tempo");
         TrialRecord score = TrialRecord.higherIsBetter(store, "altezze.punteggio");
 
-        tempo.submit(100);
+        time.submit(100);
         score.submit(100);
 
-        assertEquals(50, tempo.submit(50));
+        assertEquals(50, time.submit(50));
         assertEquals(100, score.submit(50));
     }
 
@@ -116,14 +116,14 @@ class TrialRecordTest {
 
     @Test
     void iPianiNonSiSovrascrivonoIlRecord() {
-        TrialRecord buio = TrialRecord.lowerIsBetter(store, "buio.tempo");
-        TrialRecord topi = TrialRecord.lowerIsBetter(store, "topi.tempo");
+        TrialRecord darkness = TrialRecord.lowerIsBetter(store, "buio.tempo");
+        TrialRecord rats = TrialRecord.lowerIsBetter(store, "topi.tempo");
 
-        buio.submit(60);
-        topi.submit(31);
+        darkness.submit(60);
+        rats.submit(31);
 
-        assertEquals(60, buio.best().getAsInt());
-        assertEquals(31, topi.best().getAsInt());
+        assertEquals(60, darkness.best().getAsInt());
+        assertEquals(31, rats.best().getAsInt());
     }
 
     // --- costruzione ------------------------------------------------------

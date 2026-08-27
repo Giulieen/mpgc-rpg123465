@@ -255,10 +255,10 @@ class GameControllerTest {
 
         assertEquals(List.of("topi"), questions.requestedCategories());
 
-        FloorContent primoPiano = controller.getCurrentFloor().getContent();
+        FloorContent firstFloor = controller.getCurrentFloor().getContent();
 
-        assertInstanceOf(FearEncounter.class, primoPiano);
-        assertTrue(((FearEncounter) primoPiano).situation()
+        assertInstanceOf(FearEncounter.class, firstFloor);
+        assertTrue(((FearEncounter) firstFloor).situation()
                 .startsWith(FakeQuestionRepository.MARKER));
     }
 

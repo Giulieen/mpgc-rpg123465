@@ -12,7 +12,7 @@ public final class HeightsFloors {
     /**
      * @return contenuto del Piano III
      */
-    public static AltitudeCrossing altezze() {
+    public static AltitudeCrossing altitudeCrossing() {
         return new AltitudeCrossing(
                 "Piano III — Le Altezze",
 

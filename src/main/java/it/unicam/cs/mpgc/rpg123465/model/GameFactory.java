@@ -53,12 +53,12 @@ public final class GameFactory {
      * @return la Torre da salire
      */
     private static Tower createTower(QuestionRepository questions) {
-        Floor primoPiano = new Floor(1, "I Topi", RatFloors.topi(questions));
+        Floor firstFloor = new Floor(1, "I Topi", RatFloors.fearEncounter(questions));
 
-        Floor secondoPiano = new Floor(2, "Il Buio", DarknessFloors.buio());
+        Floor secondFloor = new Floor(2, "Il Buio", DarknessFloors.darkRoom());
 
-        Floor terzoPiano = new Floor(3, "Le Altezze", HeightsFloors.altezze());
+        Floor thirdFloor = new Floor(3, "Le Altezze", HeightsFloors.altitudeCrossing());
 
-        return new Tower(List.of(primoPiano, secondoPiano, terzoPiano));
+        return new Tower(List.of(firstFloor, secondFloor, thirdFloor));
     }
 }

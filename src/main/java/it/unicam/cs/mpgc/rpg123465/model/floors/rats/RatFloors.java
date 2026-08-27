@@ -20,7 +20,7 @@ public final class RatFloors {
      * @param questions catalogo da cui estrarre la domanda del piano
      * @return contenuto del Piano I
      */
-    public static FearEncounter topi(QuestionRepository questions) {
+    public static FearEncounter fearEncounter(QuestionRepository questions) {
         Dilemma dilemma =
                 questions
                         .randomQuestions("topi", 1)
