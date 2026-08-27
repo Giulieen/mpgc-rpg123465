@@ -24,8 +24,8 @@ Asset di terze parti e relative licenze in **[CREDITS.md](CREDITS.md)**.
 Clonare il repository:
 
 ```bash
-git clone <url-del-repository>
-cd tower-of-self
+git clone https://github.com/Giulieen/mpgc-rpg123465.git
+cd mpgc-rpg123465
 ```
 
 ### Build del progetto
