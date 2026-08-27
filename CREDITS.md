@@ -94,7 +94,3 @@ dalla scena.
 | Piano III — Le Altezze | `arrow-tap.mp3`, `arrow-wrong.mp3`, `fall.mp3`, `wood-break.mp3`, `wood-step.mp3` |
 | Interfaccia e atmosfera | `gate-open.mp3`, `heartbeat.mp3`, `owl-hoot.mp3`, `scream.mp3` |
 
-## Codice
-
-Il codice del gioco è opera dell'autrice del progetto. La stesura si è avvalsa
-dell'assistenza di ChatGPT.
