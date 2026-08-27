@@ -1,5 +1,5 @@
 /*
- * Il progetto richiede Java 21. Senza questo plugin Gradle cerca il JDK 21
+ * Il progetto richiede Java 25. Senza questo plugin Gradle cerca il JDK 25
  * soltanto fra quelli gia' installati e, se non lo trova, si ferma: il
  * progetto non sarebbe compilabile "da qualsiasi computer" come richiesto.
  * Con il resolver, Gradle lo scarica da solo alla prima compilazione.
