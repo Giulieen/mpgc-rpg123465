@@ -31,7 +31,7 @@ class HeightsDilemmaFlowTest {
     private static AltitudeCrossing crossing() {
         return new AltitudeCrossing(
                 "Piano III — Le Altezze",
-                "/images/scenes/floor3-altezze.png",
+                "/images/scenes/floor3-heights.png",
                 "intro",
                 "vittoria",
                 "caduta",

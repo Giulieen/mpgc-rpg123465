@@ -18,7 +18,7 @@ import it.unicam.cs.mpgc.rpg123465.model.PlayerProfile;
  */
 public final class ProfilePortraits {
 
-    private static final String FOLDER = "/images/profili/";
+    private static final String FOLDER = "/images/profiles/";
 
     private ProfilePortraits() {
         // Impedisce l'istanziazione.

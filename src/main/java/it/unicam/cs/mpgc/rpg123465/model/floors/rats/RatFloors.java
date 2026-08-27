@@ -28,7 +28,7 @@ public final class RatFloors {
 
         return new FearEncounter(
                 "Piano I — I Topi",
-                "/images/scenes/floor1-topi.jpg",
+                "/images/scenes/floor1-rats.jpg",
                 dilemma.question(),
                 List.of(
                         new FearChoice(dilemma.first().text(), dilemma.first().trait()),

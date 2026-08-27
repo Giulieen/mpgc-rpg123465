@@ -8,7 +8,7 @@ conservate in `asset-originali/` ed escluse dal repository.
 
 ## Grafica
 
-### Ritratti dei profili — `images/profili/`
+### Ritratti dei profili — `images/profiles/`
 
 - **Stock Art — Grimdark Fantasy Characters**, di **nacnudllah**
 - <https://nacnudllah.itch.io/stock-art-grimdark-fantasy-characters>
@@ -28,15 +28,23 @@ ritaglio dei margini trasparenti e riduzione su una tela comune di 420×560 px.
 | `visionario.png` | Raven Knight |
 | `imprevedibile.png` | Fowl Nobleman |
 
-### Topi del Piano I — `images/topi/rats/`
+### Topi del Piano I — `images/rats/`
 
-- **PixelRats (Free)**, di **Carysaurus**
-- Licenza: gratuita, uso consentito nei progetti — *da verificare sulla pagina
-  itch.io del pacchetto prima della consegna*
+- **2D Pixel Rat Sprites with Animations**, di **carysaurus**
+- <https://carysaurus.itch.io/rat-sprites>
+- Licenza, dalla pagina dell'autore: *"This asset pack can be used in both free
+  and commercial projects; you cannot redistribute or resell these assets.
+  Credit must be given."*
 
-Tre delle sei varianti di colore incluse nel pacchetto.
+**L'attribuzione qui è obbligatoria**, non facoltativa come per gli altri
+pacchetti: è la ragione per cui questa voce non può mancare.
 
-### Pietra e portatore di luce del Piano I — `images/topi/tiles/`, `images/topi/player/`
+Dalla versione gratuita del pacchetto, che contiene la sola animazione *Walk*,
+sono state usate tre delle sei varianti di colore: grigio scuro, grigio chiaro
+e cioccolato. I file non sono ridistribuiti come pacchetto: entrano nel gioco
+come parte di esso, come la licenza consente.
+
+### Pietra e portatore di luce del Piano I — `images/tiles/`, `images/player/`
 
 - **Waxlight Dungeon — Free Asset Pack v1.0**
 - Licenza (dal `read_me.txt` del pacchetto): uso e modifica liberi per progetti
@@ -57,10 +65,10 @@ l'oro `#b99a5e`, per portare la pietra nella palette della Torre.
 | `bg/forest.jpg` | lo sfondo che scorre |
 | `bg/fog.jpg` | la nebbia |
 | `scenes/gate.jpg` | il cancello della schermata iniziale |
-| `scenes/floor1-topi.jpg` | Piano I — I Topi |
-| `scenes/floor2-buio.jpg` | Piano II — Il Buio |
+| `scenes/floor1-rats.jpg` | Piano I — I Topi |
+| `scenes/floor2-darkness.jpg` | Piano II — Il Buio |
 | `scenes/floor2-lock.jpg` | il primo piano sulla serratura |
-| `scenes/floor3-altezze.png` | Piano III — Le Altezze |
+| `scenes/floor3-heights.png` | Piano III — Le Altezze |
 | `icon/tower-16…256.png` | l'icona della finestra, nelle sette misure che Windows richiede |
 
 Elaborazione: adattamento alla palette in bianco e nero della Torre e

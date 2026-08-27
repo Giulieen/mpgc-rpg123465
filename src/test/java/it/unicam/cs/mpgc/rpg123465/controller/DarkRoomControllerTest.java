@@ -25,7 +25,7 @@ class DarkRoomControllerTest {
     private static DarkRoom room() {
         return new DarkRoom(
                 "Piano II — Il Buio",
-                "/images/scenes/floor2-buio.jpg",
+                "/images/scenes/floor2-darkness.jpg",
                 "intro",
                 "outro",
                 "errore",

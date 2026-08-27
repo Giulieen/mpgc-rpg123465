@@ -27,14 +27,14 @@ final class MazeSprites {
 
     // --- Fogli -----------------------------------------------------------
 
-    private static final String TILESET = "/images/topi/tiles/tileset_world_1.png";
+    private static final String TILESET = "/images/tiles/tileset_world_1.png";
 
-    private static final String PLAYER = "/images/topi/player/character_sheet.png";
+    private static final String PLAYER = "/images/player/character_sheet.png";
 
     private static final String[] RAT_SHEETS = {
-            "/images/topi/rats/Rat-DarkGrey-Walk.png",
-            "/images/topi/rats/Rat-LightGrey-Walk.png",
-            "/images/topi/rats/Rat-Chocolate-Walk.png"
+            "/images/rats/Rat-DarkGrey-Walk.png",
+            "/images/rats/Rat-LightGrey-Walk.png",
+            "/images/rats/Rat-Chocolate-Walk.png"
     };
 
     // --- Misure lette dai fogli ------------------------------------------

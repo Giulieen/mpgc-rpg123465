@@ -16,7 +16,7 @@ public final class DarknessFloors {
         return new DarkRoom(
                 "Piano II — Il Buio",
 
-                "/images/scenes/floor2-buio.jpg",
+                "/images/scenes/floor2-darkness.jpg",
 
                 "Muovi la luce sulle pareti: su ognuna è scritto "
                         + "un numero, ma in binario.\n\n"
