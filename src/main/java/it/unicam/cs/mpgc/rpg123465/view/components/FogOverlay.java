@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -122,6 +123,17 @@ public class FogOverlay {
                 track.getChildren().add(tile);
             }
         }
+
+        /*
+         * La griglia e' nove immagini a schermo intero, e su di essa agiscono
+         * un clip e un'animazione di opacita': ricomporle a ogni fotogramma
+         * costa in proporzione ai pixel, ed e' il conto piu' salato delle
+         * schermate iniziali. In cache la griglia viene disegnata una volta e
+         * poi soltanto traslata, che e' l'unica cosa che cambia davvero.
+         */
+        track.setCache(true);
+
+        track.setCacheHint(CacheHint.SPEED);
 
         Rectangle clip = new Rectangle();
 

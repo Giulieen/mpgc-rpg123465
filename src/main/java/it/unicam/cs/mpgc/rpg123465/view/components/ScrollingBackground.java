@@ -1,6 +1,7 @@
 package it.unicam.cs.mpgc.rpg123465.view.components;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -91,6 +92,15 @@ public class ScrollingBackground {
 
             track.getChildren().add(tile);
         }
+
+        /*
+         * Le copie affiancate coprono piu' di uno schermo e vengono ricomposte
+         * a ogni fotogramma sotto un clip: in cache la striscia viene disegnata
+         * una volta e poi soltanto fatta scorrere.
+         */
+        track.setCache(true);
+
+        track.setCacheHint(CacheHint.SPEED);
 
         Rectangle clip = new Rectangle();
 

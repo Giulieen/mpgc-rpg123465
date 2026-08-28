@@ -52,8 +52,14 @@ public record HeightsConfig(
      * @return i parametri con cui il Piano III viene giocato
      */
     public static HeightsConfig standard() {
+        /*
+         * Novanta secondi di traversata. L'avanzamento dei tre ponti e' scalato
+         * dello stesso fattore rispetto alla versione da 150 secondi: ciascuno
+         * copre la stessa frazione del percorso nello stesso frazione di tempo,
+         * quindi la difficolta' resta quella di prima e cambia solo la durata.
+         */
         return new HeightsConfig(
-                150,
+                90,
                 3,
                 new double[] {15, 35, 55, 78},
                 7.0,
@@ -62,13 +68,13 @@ public record HeightsConfig(
                 List.of(
                         new BridgeSpec(BridgeType.FAST, "veloce",
                                 "Stretto e rapido — reazione svelta richiesta, ma avanzi in fretta.",
-                                650, 1000, 1.15),
+                                650, 1000, 1.92),
                         new BridgeSpec(BridgeType.BALANCED, "intermedio",
                                 "Equilibrato — ritmo e avanzamento medi.",
-                                900, 1200, 0.75),
+                                900, 1200, 1.25),
                         new BridgeSpec(BridgeType.SAFE, "sicuro",
                                 "Largo e lento — reagisci con calma, ma il tempo scorre.",
-                                1400, 1700, 0.5)),
+                                1400, 1700, 0.83)),
                 null);
     }
 }
