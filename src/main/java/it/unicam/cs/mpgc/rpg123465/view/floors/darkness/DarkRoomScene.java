@@ -235,7 +235,7 @@ public class DarkRoomScene implements FloorScene {
 
     private void showBriefing(Runnable onStart) {
         overlay.show(
-                null,
+                room.title(),
                 room.intro(),
                 null,
                 "Entra nel buio",
