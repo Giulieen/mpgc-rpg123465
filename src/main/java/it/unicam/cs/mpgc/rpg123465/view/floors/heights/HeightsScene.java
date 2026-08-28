@@ -255,7 +255,7 @@ public class HeightsScene implements FloorScene {
 
     private void prepareDilemmas() {
         dilemmas =
-                new DilemmaSequence(questions .randomQuestions("altezze", 4));
+                new DilemmaSequence(questions.randomQuestions("altezze", 4));
     }
 
     /**
@@ -381,7 +381,7 @@ public class HeightsScene implements FloorScene {
                         + (momentum() - 1)
                         * ADV_FACTOR;
 
-        route.advance(config .bridge(route.current()) .advancePerSecond() * advanceBoost * dt);
+        route.advance(config.bridge(route.current()).advancePerSecond() * advanceBoost * dt);
 
         if (route.isComplete()) {
             win();

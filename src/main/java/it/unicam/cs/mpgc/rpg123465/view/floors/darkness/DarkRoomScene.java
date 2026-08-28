@@ -178,7 +178,7 @@ public class DarkRoomScene implements FloorScene {
      */
     private void prepareDilemmas() {
         dilemmas =
-                new DilemmaSequence(questions .randomQuestions("buio", 3));
+                new DilemmaSequence(questions.randomQuestions("buio", 3));
     }
 
     private void showEntryDilemma() {
