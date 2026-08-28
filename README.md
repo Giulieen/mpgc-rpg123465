@@ -20,7 +20,8 @@ Asset di terze parti e relative licenze in **[CREDITS.md](CREDITS.md)**.
 
 ### Prerequisiti
 
-- **Un JDK installato**, dalla versione 21 in poi: serve ad avviare Gradle
+- **Un JDK installato**, dalla 21 alla 25: serve ad avviare Gradle 9, che non
+  supporta ancora versioni successive
 - Il codice viene compilato con **Java 25 (LTS)**, che Gradle scarica da sé alla
   prima compilazione se non è già presente
 - **Gradle** — non serve installarlo, il progetto include il wrapper
