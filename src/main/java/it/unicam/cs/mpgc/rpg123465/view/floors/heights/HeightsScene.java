@@ -27,19 +27,18 @@ import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
 
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
-import javafx.scene.CacheHint;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -114,15 +113,13 @@ public class HeightsScene implements FloorScene {
 
     private AnimationTimer advance;
 
-    private double lastZoom = 1;
     private long lastFrame;
 
     private PauseTransition arrowDelay;
     private PauseTransition responseTimer;
     private PauseTransition rerouteDeadline;
 
-    private Group stage;
-    private ImageView bg;
+    private Pane stage;
     private Rectangle dimOverlay;
     private BridgeBeacons beacons;
     private final ResultOverlay overlay = new ResultOverlay(root, () -> headerView);
@@ -300,7 +297,7 @@ public class HeightsScene implements FloorScene {
     // ---------------------------------------------------------------------
 
     private void buildStage() {
-        bg =
+        ImageView bg =
                 new ImageView(SceneFx.image(crossing.backgroundResource()));
 
         bg.setFitWidth(STAGE_W);
@@ -308,14 +305,11 @@ public class HeightsScene implements FloorScene {
         bg.setFitHeight(STAGE_H);
 
         /*
-         * Lo zoom cambia a ogni fotogramma: senza cache JavaFX ricampiona
-         * l'immagine intera sessanta volte al secondo. Con la cache scala una
-         * copia gia' disegnata, e la traversata resta reattiva anche sugli
-         * schermi ad alta densita', dove i pixel da riempire sono il quadruplo.
+         * Nessuna cache sul fondale. E' una sola texture disegnata sempre alla
+         * stessa scala: metterla in cache aggiungerebbe una superficie di
+         * disegno grande quanto lo schermo — il quadruplo sugli schermi ad alta
+         * densita' — e un passaggio in piu', senza alcun lavoro da risparmiare.
          */
-        bg.setCache(true);
-
-        bg.setCacheHint(CacheHint.SPEED);
 
         dimOverlay =
                 new Rectangle(STAGE_W, STAGE_H, Color.rgb(0, 0, 0, 0.6));
@@ -324,7 +318,7 @@ public class HeightsScene implements FloorScene {
 
         dimOverlay.setMouseTransparent(true);
 
-        stage = new Group(bg, dimOverlay);
+        stage = buildStagePane(bg);
 
         stage.scaleXProperty().bind(
                 Bindings.createDoubleBinding(
@@ -337,6 +331,40 @@ public class HeightsScene implements FloorScene {
         stage.scaleYProperty().bind(stage.scaleXProperty());
 
         root.getChildren().add(stage);
+    }
+
+    /**
+     * Il riquadro di gioco: misura fissa, contenuto fuori dal layout.
+     *
+     * <p>
+     * Il piano è disegnato su un palco di {@value #STAGE_W} per
+     * {@value #STAGE_H}: il velo lo copre esatto e la scala della finestra si
+     * calcola dividendo per quelle due misure. Un {@code Pane} di dimensione
+     * fissa lo dichiara; un {@code Group} — che era la scelta di prima — la
+     * deduce invece da ciò che si trova dentro, e cambia misura ogni volta che
+     * un figlio si trasforma, facendo rifare il layout all'intera scena per
+     * ricentrarlo. Qui il palco è largo quanto dice di essere, qualunque cosa
+     * facciano i figli.
+     *
+     * <p>
+     * I figli stanno fuori dal layout perché nemmeno qui dentro resti qualcosa
+     * da ricalcolare.
+     *
+     * @param bg il fondale, primo figlio del palco
+     * @return il palco, pronto per essere scalato sulla finestra
+     */
+    private Pane buildStagePane(ImageView bg) {
+        bg.setManaged(false);
+
+        dimOverlay.setManaged(false);
+
+        Pane pane = new Pane(bg, dimOverlay);
+
+        pane.setMinSize(STAGE_W, STAGE_H);
+        pane.setPrefSize(STAGE_W, STAGE_H);
+        pane.setMaxSize(STAGE_W, STAGE_H);
+
+        return pane;
     }
 
     private void startAmbience() {
@@ -386,26 +414,6 @@ public class HeightsScene implements FloorScene {
         if (route.isComplete()) {
             win();
             return;
-        }
-
-        double zoom =
-                1
-                        + 0.13
-                        * route.progress()
-                        / 100.0;
-
-        /*
-         * Lo zoom cresce di 0,13 lungo l'intera traversata: fra un fotogramma e
-         * il successivo la variazione e' invisibile, ma basta a far ridisegnare
-         * il fondale. Aggiorniamo solo quando lo scarto si vede davvero, cosi'
-         * il thread resta libero per le frecce.
-         */
-        if (Math.abs(zoom - lastZoom) >= 0.004) {
-            lastZoom = zoom;
-
-            bg.setScaleX(zoom);
-
-            bg.setScaleY(zoom);
         }
 
         maybeReroute();
@@ -901,10 +909,6 @@ public class HeightsScene implements FloorScene {
         hud.setBalance(balance);
 
         hud.setChannel(null);
-
-        bg.setScaleX(1);
-
-        bg.setScaleY(1);
 
         startAmbience();
 

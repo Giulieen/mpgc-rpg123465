@@ -247,16 +247,22 @@ public final class CountdownClock {
 
         int total = (int) Math.ceil(remaining);
 
-        countdown.pseudoClassStateChanged(URGENT, remaining <= 10);
-
         /*
          * Il metodo viene chiamato a ogni fotogramma, ma il testo cambia una
          * volta al secondo: riscriverlo sempre costringerebbe JavaFX a
          * rimisurare e ridisegnare l'etichetta sessanta volte al secondo,
          * rubando tempo al thread che deve anche rispondere ai clic.
+         *
+         * Anche lo stato d'urgenza sta qui dentro: scatta quando il tempo
+         * scende sotto i dieci secondi, cioe' esattamente quando cambia il
+         * secondo mostrato, e fuori di qui sarebbe una domanda al motore degli
+         * stili sessanta volte al secondo per sentirsi rispondere sempre lo
+         * stesso.
          */
         if (total != lastDisplayedSecond) {
             lastDisplayedSecond = total;
+
+            countdown.pseudoClassStateChanged(URGENT, remaining <= 10);
 
             countdown.setText(String.format("%02d:%02d", total / 60, total % 60));
 
