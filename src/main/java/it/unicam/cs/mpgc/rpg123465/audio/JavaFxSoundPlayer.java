@@ -37,6 +37,14 @@ public final class JavaFxSoundPlayer implements SoundPlayer {
     private final List<MediaPlayer> loops = new ArrayList<>();
     private final Map<String, AudioClip> clips = new ConcurrentHashMap<>();
 
+    /*
+     * Gli effetti con ritardo sono programmati e non ancora partiti: vanno
+     * tenuti, perche' un cambio di scena deve poterli annullare. Senza questo
+     * elenco l'urlo della caduta suonerebbe sopra il menu se il giocatore
+     * uscisse entro i tre quarti di secondo che lo separano dal tonfo.
+     */
+    private final List<PauseTransition> pending = new ArrayList<>();
+
     private PauseTransition occasional;
 
     /**
@@ -129,7 +137,13 @@ public final class JavaFxSoundPlayer implements SoundPlayer {
         }
 
         PauseTransition wait = new PauseTransition(Duration.seconds(cue.delaySeconds()));
-        wait.setOnFinished(event -> play(cue.resource(), cue.volume()));
+        wait.setOnFinished(event -> {
+            pending.remove(wait);
+
+            play(cue.resource(), cue.volume());
+        });
+
+        pending.add(wait);
         wait.play();
     }
 
@@ -160,6 +174,11 @@ public final class JavaFxSoundPlayer implements SoundPlayer {
         for (AudioClip clip : clips.values()) {
             clip.stop();
         }
+
+        for (PauseTransition wait : pending) {
+            wait.stop();
+        }
+        pending.clear();
 
         stopOccasional();
     }
