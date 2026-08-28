@@ -36,7 +36,6 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
