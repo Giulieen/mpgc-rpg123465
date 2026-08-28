@@ -114,6 +114,8 @@ public class HeightsScene implements FloorScene {
     private boolean entered;
 
     private AnimationTimer advance;
+
+    private double lastZoom = 1;
     private long lastFrame;
 
     private PauseTransition arrowDelay;
@@ -405,9 +407,19 @@ public class HeightsScene implements FloorScene {
                         * route.progress()
                         / 100.0;
 
-        bg.setScaleX(zoom);
+        /*
+         * Lo zoom cresce di 0,13 lungo l'intera traversata: fra un fotogramma e
+         * il successivo la variazione e' invisibile, ma basta a far ridisegnare
+         * il fondale. Aggiorniamo solo quando lo scarto si vede davvero, cosi'
+         * il thread resta libero per le frecce.
+         */
+        if (Math.abs(zoom - lastZoom) >= 0.004) {
+            lastZoom = zoom;
 
-        bg.setScaleY(zoom);
+            bg.setScaleX(zoom);
+
+            bg.setScaleY(zoom);
+        }
 
         maybeReroute();
     }

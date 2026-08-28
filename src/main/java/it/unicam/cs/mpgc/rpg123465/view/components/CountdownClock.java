@@ -32,6 +32,8 @@ public final class CountdownClock {
     private long lastFrame;
     private int lastDisplayedSecond = -1;
 
+    private double lastHeartbeatRate;
+
     private boolean paused;
     private boolean timedOut;
 
@@ -208,7 +210,19 @@ public final class CountdownClock {
 
             double fraction = Math.max(0, Math.min(1, elapsed / totalSeconds));
 
-            heartbeat.setRate(1.0 + 1.1 * fraction * fraction);
+            double rate = 1.0 + 1.1 * fraction * fraction;
+
+            /*
+             * Cambiare il ritmo attraversa il motore audio del sistema: farlo a
+             * ogni fotogramma costa molto piu' di quanto si senta, perche' una
+             * variazione minima e' impercettibile. Lo aggiorniamo solo quando
+             * supera un gradino udibile.
+             */
+            if (Math.abs(rate - lastHeartbeatRate) >= 0.02) {
+                lastHeartbeatRate = rate;
+
+                heartbeat.setRate(rate);
+            }
         }
 
         if (remainingSeconds <= 0) {
@@ -265,7 +279,17 @@ public final class CountdownClock {
 
         player.setVolume(0.9);
 
-        player.setOnReady(player::play);
+        /*
+         * Il file diventa pronto in un momento qualsiasi, anche mentre
+         * l'orologio e' gia' in pausa perche' e' comparso un dilemma: senza
+         * questo controllo il battito partirebbe comunque, con un colpo
+         * isolato fuori contesto.
+         */
+        player.setOnReady(() -> {
+            if (!paused && !timedOut) {
+                player.play();
+            }
+        });
 
         return player;
     }
