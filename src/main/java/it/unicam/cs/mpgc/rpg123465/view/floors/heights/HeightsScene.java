@@ -27,6 +27,7 @@ import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
 
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.scene.CacheHint;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -305,11 +306,25 @@ public class HeightsScene implements FloorScene {
         bg.setFitHeight(STAGE_H);
 
         /*
-         * Nessuna cache sul fondale. E' una sola texture disegnata sempre alla
-         * stessa scala: metterla in cache aggiungerebbe una superficie di
-         * disegno grande quanto lo schermo — il quadruplo sugli schermi ad alta
-         * densita' — e un passaggio in piu', senza alcun lavoro da risparmiare.
+         * Il fondale non si muove piu', ma viene comunque ridisegnato di
+         * continuo: l'anello della freccia si stringe sopra di lui a ogni
+         * fotogramma, e ogni sua zona sporca costringe a ridipingere anche
+         * l'immagine sottostante. Il palco e' scalato sulla finestra con un
+         * fattore che non e' quasi mai intero, quindi ogni ridisegno ricampiona
+         * la texture invece di copiarla e basta.
+         *
+         * In cache il ridimensionamento si paga una volta e poi si copia il
+         * risultato gia' pronto. Sulle schede integrate, dove la banda verso la
+         * memoria e' condivisa con il resto, e' la differenza che si sente.
+         *
+         * La superficie e' quella di una sola immagine da 1672x941 dentro un
+         * palco 1600x900: nulla a che vedere con la striscia larga tre schermate
+         * che si teneva in cache nello sfondo del bosco, e che su schermo ad
+         * alta densita' superava il limite di texture delle schede Intel.
          */
+        bg.setCache(true);
+
+        bg.setCacheHint(CacheHint.SPEED);
 
         dimOverlay =
                 new Rectangle(STAGE_W, STAGE_H, Color.rgb(0, 0, 0, 0.6));
