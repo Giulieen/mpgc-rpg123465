@@ -69,6 +69,29 @@ public final class ResultOverlay {
             String buttonText,
             Runnable action
     ) {
+        show(title, message, stats, buttonText, action, VEIL);
+    }
+
+    /**
+     * Come {@link #show(String, String, Label, String, Runnable)}, ma con il
+     * velo regolabile: una presentazione puo' volerlo piu' leggero, per
+     * lasciar intravedere la scena a cui il giocatore sta per entrare.
+     *
+     * @param title titolo dell'esito, oppure null se l'esito parla da se'
+     * @param message testo dell'esito
+     * @param stats riga di riepilogo, oppure null se l'esito non ne ha una
+     * @param buttonText testo del pulsante
+     * @param action operazione eseguita alla pressione
+     * @param veilOpacity quanto il velo copre la scena, da 0 a 1
+     */
+    public void show(
+            String title,
+            String message,
+            Label stats,
+            String buttonText,
+            Runnable action,
+            double veilOpacity
+    ) {
         if (message == null || buttonText == null || action == null) {
 
             throw new IllegalArgumentException("Messaggio, pulsante e azione sono obbligatori.");
@@ -100,7 +123,7 @@ public final class ResultOverlay {
         card.setMaxWidth(CARD_WIDTH);
         card.getStyleClass().add("fear-panel");
 
-        current = new StackPane(SceneFx.veil(root, VEIL), card);
+        current = new StackPane(SceneFx.veil(root, veilOpacity), card);
         StackPane.setAlignment(card, Pos.CENTER);
 
         root.getChildren().add(current);

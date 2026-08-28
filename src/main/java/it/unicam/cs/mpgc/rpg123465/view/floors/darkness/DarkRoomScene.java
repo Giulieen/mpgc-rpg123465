@@ -233,6 +233,13 @@ public class DarkRoomScene implements FloorScene {
         );
     }
 
+    /*
+     * Il velo qui e' piu' leggero che sui cartelli di fine prova: la stanza
+     * si intravede dietro il titolo, come accade negli altri due piani, dove
+     * il fondale riempie tutta la finestra.
+     */
+    private static final double BRIEFING_VEIL = 0.6;
+
     private void showBriefing(Runnable onStart) {
         overlay.show(
                 room.title(),
@@ -242,7 +249,8 @@ public class DarkRoomScene implements FloorScene {
                 () -> {
                     overlay.hide();
                     onStart.run();
-                }
+                },
+                BRIEFING_VEIL
         );
     }
 
