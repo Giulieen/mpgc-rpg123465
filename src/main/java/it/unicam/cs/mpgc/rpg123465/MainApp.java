@@ -74,6 +74,17 @@ public class MainApp extends Application {
 
         stage.show();
         frame.centreOnScreen(INITIAL_WIDTH, INITIAL_HEIGHT);
+
+        /*
+         * La finestra si prende anche il fuoco della tastiera, non solo lo
+         * schermo. Avviando il gioco da terminale Windows tende a lasciare il
+         * fuoco a chi ha lanciato il comando: la finestra compare, il mouse
+         * funziona (il primo clic gliela da'), ma i tasti no. Nel Piano III si
+         * gioca a frecce, e una prova a tempo che non risponde alla tastiera
+         * finche' non ci si clicca sopra sembra guasta.
+         */
+        stage.toFront();
+        stage.requestFocus();
     }
 
     private void loadIcons(Stage stage) {
