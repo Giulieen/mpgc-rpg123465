@@ -28,6 +28,13 @@ public class FogOverlay {
     private static final Image FOG = loadFog();
 
     /**
+     * Copie affiancate della texture. Ne bastano tre: la fascia scorre di due
+     * schermate e poi ricomincia, e con le copie dispari specchiate la
+     * giuntura non si vede.
+     */
+    private static final int TILES = 3;
+
+    /**
      * Moltiplicatore di velocità:
      * 1 = normale, valori più bassi = più lenta.
      */
@@ -57,8 +64,8 @@ public class FogOverlay {
         fog.setMouseTransparent(true);
 
         fog.getChildren().addAll(
-                fogLayer(-9, -5, 0.26, 0.46, 7.5),
-                fogLayer(-16, -9, 0.32, 0.55, 9.5)
+                fogLayer(-9, 0.26, 0.46, 7.5),
+                fogLayer(-16, 0.32, 0.55, 9.5)
         );
 
         return fog;
@@ -67,8 +74,15 @@ public class FogOverlay {
     /**
      * Crea una banda di nebbia.
      *
+     * <p>
+     * La deriva è soltanto orizzontale, e non per scelta estetica: ogni copia
+     * della texture è grande quanto la finestra, e farla scorrere anche in
+     * verticale richiederebbe una griglia di nove copie invece di tre. Su uno
+     * schermo ad alta densità quelle copie in più sono il costo maggiore delle
+     * schermate iniziali, e il movimento verticale — lentissimo — non si
+     * distingue da quello orizzontale.
+     *
      * @param vx velocità orizzontale
-     * @param vy velocità verticale
      * @param minOpacity opacità minima
      * @param maxOpacity opacità massima
      * @param breathSeconds durata del ciclo di respirazione
@@ -76,7 +90,6 @@ public class FogOverlay {
      */
     private Region fogLayer(
             double vx,
-            double vy,
             double minOpacity,
             double maxOpacity,
             double breathSeconds
@@ -87,49 +100,35 @@ public class FogOverlay {
         view.setBlendMode(BlendMode.SCREEN);
 
         /*
-         * La griglia 3x3 di copie sporge di due schermate oltre il bordo, e un
-         * Pane calcola la propria dimensione preferita dai figli: senza questo
-         * la nebbia direbbe di volere il triplo dello spazio disponibile, e chi
-         * la contiene si dimensionerebbe su quel numero. È decorazione stirata
-         * dal genitore: la sua preferenza non deve pesare su nessuno.
+         * La fascia sporge di due schermate oltre il bordo, e un Pane calcola
+         * la propria dimensione preferita dai figli: senza questo la nebbia
+         * direbbe di volere il triplo dello spazio disponibile, e chi la
+         * contiene si dimensionerebbe su quel numero. È decorazione stirata dal
+         * genitore: la sua preferenza non deve pesare su nessuno.
          */
         neutralSize(track);
         neutralSize(view);
 
-        /*
-         * Griglia 3x3 di copie specchiate:
-         * nessuna giuntura visibile durante lo spostamento.
-         */
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                ImageView tile = new ImageView(FOG);
+        for (int col = 0; col < TILES; col++) {
+            ImageView tile = new ImageView(FOG);
 
-                tile.fitWidthProperty().bind(view.widthProperty());
+            tile.fitWidthProperty().bind(view.widthProperty());
 
-                tile.fitHeightProperty().bind(view.heightProperty());
+            tile.fitHeightProperty().bind(view.heightProperty());
 
-                tile.layoutXProperty().bind(view.widthProperty().multiply(col));
+            tile.layoutXProperty().bind(view.widthProperty().multiply(col));
 
-                tile.layoutYProperty().bind(view.heightProperty().multiply(row));
-
-                if (col % 2 == 1) {
-                    tile.setScaleX(-1);
-                }
-
-                if (row % 2 == 1) {
-                    tile.setScaleY(-1);
-                }
-
-                track.getChildren().add(tile);
+            if (col % 2 == 1) {
+                tile.setScaleX(-1);
             }
+
+            track.getChildren().add(tile);
         }
 
         /*
-         * La griglia e' nove immagini a schermo intero, e su di essa agiscono
-         * un clip e un'animazione di opacita': ricomporle a ogni fotogramma
-         * costa in proporzione ai pixel, ed e' il conto piu' salato delle
-         * schermate iniziali. In cache la griglia viene disegnata una volta e
-         * poi soltanto traslata, che e' l'unica cosa che cambia davvero.
+         * La fascia viene ricomposta a ogni fotogramma sotto un clip e una
+         * fusione: in cache viene disegnata una volta e poi soltanto traslata,
+         * che è l'unica cosa che cambia davvero.
          */
         track.setCache(true);
 
@@ -143,7 +142,7 @@ public class FogOverlay {
 
         view.setClip(clip);
 
-        DriftTimer drift = new DriftTimer(view, track, vx * speedFactor, vy * speedFactor);
+        DriftTimer drift = new DriftTimer(view, track, vx * speedFactor);
 
         FadeTransition breath = createBreath(view, minOpacity, maxOpacity, breathSeconds);
 
@@ -200,7 +199,9 @@ public class FogOverlay {
     }
 
     /**
-     * Timer che sposta continuamente una banda di nebbia.
+     * Fa scorrere la fascia di nebbia, riportandola indietro di due schermate
+     * quando è uscita di tanto: il ciclo è invisibile perché le copie dispari
+     * sono specchiate.
      */
     private static final class DriftTimer
             extends AnimationTimer {
@@ -208,15 +209,13 @@ public class FogOverlay {
         private final Region view;
         private final Pane track;
         private final double vx;
-        private final double vy;
 
         private long last;
 
-        private DriftTimer(Region view, Pane track, double vx, double vy) {
+        private DriftTimer(Region view, Pane track, double vx) {
             this.view = view;
             this.track = track;
             this.vx = vx;
-            this.vy = vy;
         }
 
         private void startFresh() {
@@ -227,9 +226,8 @@ public class FogOverlay {
         @Override
         public void handle(long now) {
             double width = view.getWidth();
-            double height = view.getHeight();
 
-            if (width <= 0 || height <= 0) {
+            if (width <= 0) {
                 return;
             }
 
@@ -251,31 +249,19 @@ public class FogOverlay {
                 return;
             }
 
-            double periodX = 2 * width;
-            double periodY = 2 * height;
+            double period = 2 * width;
 
             double x =
                     track.getTranslateX()
                             + vx * elapsed;
 
-            double y =
-                    track.getTranslateY()
-                            + vy * elapsed;
-
-            if (x <= -periodX) {
-                x += periodX;
+            if (x <= -period) {
+                x += period;
             } else if (x >= 0) {
-                x -= periodX;
-            }
-
-            if (y <= -periodY) {
-                y += periodY;
-            } else if (y >= 0) {
-                y -= periodY;
+                x -= period;
             }
 
             track.setTranslateX(x);
-            track.setTranslateY(y);
         }
     }
 
