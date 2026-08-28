@@ -573,7 +573,7 @@ public class HeightsScene implements FloorScene {
 
             hud.setStats(arrows.score(), best, arrows.streak());
 
-            Sound.play("/audio/arrow-tap.mp3", 0.6);
+            Sound.play("/audio/arrow-tap.wav", 0.6);
 
             scheduleArrow();
 
@@ -595,7 +595,7 @@ public class HeightsScene implements FloorScene {
 
         hud.setStats(arrows.score(), best, arrows.streak());
 
-        Sound.play("/audio/arrow-wrong.mp3", 0.6);
+        Sound.play("/audio/arrow-wrong.wav", 0.6);
 
         shake();
 
@@ -641,7 +641,7 @@ public class HeightsScene implements FloorScene {
 
         hud.showReroute("Il percorso cede — clicca il ponte illuminato.");
 
-        Sound.play("/audio/torch-whoosh.mp3", 0.5);
+        Sound.play("/audio/torch-whoosh.wav", 0.5);
 
         cancel(rerouteDeadline);
 
@@ -662,7 +662,7 @@ public class HeightsScene implements FloorScene {
 
         hud.hideReroute();
 
-        Sound.play("/audio/wood-step.mp3", 0.6);
+        Sound.play("/audio/wood-step.wav", 0.6);
 
         beginPlaying();
     }
@@ -812,11 +812,11 @@ public class HeightsScene implements FloorScene {
 
     /** Legno che cede, urlo e caduta, sfalsati per farli sentire in sequenza. */
     private void playFallAudio() {
-        Sound.play("/audio/wood-break.mp3", 0.85);
+        Sound.play("/audio/wood-break.wav", 0.85);
 
-        Sound.play(new SoundCue("/audio/scream.mp3", 0.85, 0.25));
+        Sound.play(new SoundCue("/audio/scream.wav", 0.85, 0.25));
 
-        Sound.play(new SoundCue("/audio/fall.mp3", 0.9, 0.75));
+        Sound.play(new SoundCue("/audio/fall.wav", 0.9, 0.75));
     }
 
     /**

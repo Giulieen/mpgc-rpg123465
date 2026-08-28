@@ -38,19 +38,19 @@ public class MainApp extends Application {
         // Decodifica gli effetti in anticipo: al primo clic devono partire subito.
         Sound.preload(
                 "/audio/gate-open.mp3",
-                "/audio/padlock-unlock.mp3",
+                "/audio/padlock-unlock.wav",
                 "/audio/owl-hoot.mp3",
                 "/audio/scurrying.mp3",
-                "/audio/squeak.mp3",
-                "/audio/mousetrap-snap.mp3",
-                "/audio/torch-whoosh.mp3",
+                "/audio/squeak.wav",
+                "/audio/mousetrap-snap.wav",
+                "/audio/torch-whoosh.wav",
                 "/audio/rats-many.mp3",
-                "/audio/scream.mp3",
-                "/audio/fall.mp3",
-                "/audio/arrow-tap.mp3",
-                "/audio/arrow-wrong.mp3",
-                "/audio/wood-step.mp3",
-                "/audio/wood-break.mp3");
+                "/audio/scream.wav",
+                "/audio/fall.wav",
+                "/audio/arrow-tap.wav",
+                "/audio/arrow-wrong.wav",
+                "/audio/wood-step.wav",
+                "/audio/wood-break.wav");
 
         loadIcons(stage);
 

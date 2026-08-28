@@ -8,7 +8,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,18 +38,40 @@ public final class Sound {
     }
 
     /**
-     * Decodifica in anticipo gli effetti indicati, così che la prima
-     * riproduzione parta senza ritardo.
+     * Carica in anticipo gli effetti indicati, così che la prima riproduzione
+     * parta senza ritardo.
      * <p>
      * Gli {@link AudioClip} devono essere costruiti sul thread grafico,
-     * altrimenti restano muti: li carichiamo uno per volta con
-     * {@link Platform#runLater}, distribuendoli su più frame in modo che
-     * l'avvio resti fluido.
+     * altrimenti restano muti. Accodarli però tutti insieme li farebbe
+     * eseguire nello stesso impulso, con una pausa visibile proprio mentre il
+     * menu si sta disegnando: qui la coda avanza di un elemento per volta,
+     * perché ogni caricamento chiede il successivo. Il thread resta così
+     * libero fra un file e l'altro.
+     *
+     * @param resources percorsi nel classpath degli effetti da preparare
      */
     public static void preload(String... resources) {
-        for (String resource : resources) {
-            Platform.runLater(() -> clip(resource));
+        if (resources == null) {
+            return;
         }
+
+        Deque<String> queue = new ArrayDeque<>(Arrays.asList(resources));
+
+        loadNext(queue);
+    }
+
+    private static void loadNext(Deque<String> queue) {
+        String resource = queue.poll();
+
+        if (resource == null) {
+            return;
+        }
+
+        Platform.runLater(() -> {
+            clip(resource);
+
+            loadNext(queue);
+        });
     }
 
     /**

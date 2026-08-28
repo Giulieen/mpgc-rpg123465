@@ -132,7 +132,7 @@ public class IntroScreen {
          */
         Node key = keyGleam();
         key.setOnMouseClicked(event -> {
-            Sound.play("/audio/padlock-unlock.mp3", 0.8);
+            Sound.play("/audio/padlock-unlock.wav", 0.8);
 
             // La chiave lascia la scena: le sue animazioni non hanno più un
             // bersaglio visibile e vanno chiuse qui, non alla fine della scena.

@@ -492,7 +492,7 @@ public class DarkRoomScene implements FloorScene {
 
         Sound.stopAll();
 
-        Sound.play("/audio/padlock-unlock.mp3", 0.35);
+        Sound.play("/audio/padlock-unlock.wav", 0.35);
 
         failAttempt(room.wrongText());
     }

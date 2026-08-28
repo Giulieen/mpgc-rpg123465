@@ -123,7 +123,7 @@ public class FearEncounterScreen implements FloorScene {
 
         Sound.play("/audio/scurrying.mp3", 0.5);
 
-        Sound.occasional("/audio/squeak.mp3", 0.4, 5, 14);
+        Sound.occasional("/audio/squeak.wav", 0.4, 5, 14);
     }
 
     private void showCenter(Node center) {

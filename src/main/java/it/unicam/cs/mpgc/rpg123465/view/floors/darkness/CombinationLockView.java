@@ -99,13 +99,13 @@ public final class CombinationLockView {
 
     private void up() {
         state.increment();
-        Sound.play("/audio/padlock-unlock.mp3", 0.25);
+        Sound.play("/audio/padlock-unlock.wav", 0.25);
         refresh();
     }
 
     private void down() {
         state.decrement();
-        Sound.play("/audio/padlock-unlock.mp3", 0.25);
+        Sound.play("/audio/padlock-unlock.wav", 0.25);
         refresh();
     }
 

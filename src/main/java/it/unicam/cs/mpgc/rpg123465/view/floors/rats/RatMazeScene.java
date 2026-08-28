@@ -511,7 +511,7 @@ public final class RatMazeScene implements FloorScene {
 
         if (outcome.escaped() > 0) {
             updateHeader();
-            Sound.play("/audio/squeak.mp3", 0.55);
+            Sound.play("/audio/squeak.wav", 0.55);
             flashEscape();
         }
 
@@ -662,7 +662,7 @@ public final class RatMazeScene implements FloorScene {
         flashCapture();
 
         for (int i = 0; i < howMany; i++) {
-            Sound.play("/audio/mousetrap-snap.mp3", 0.5);
+            Sound.play("/audio/mousetrap-snap.wav", 0.5);
         }
     }
 

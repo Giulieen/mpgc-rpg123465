@@ -7,7 +7,7 @@ package it.unicam.cs.mpgc.rpg123465.audio;
  * registrati molto diversi fra loro, e sfalsarli nel tempo li rende una scena
  * invece che un rumore unico.
  *
- * @param resource     percorso nel classpath, es. {@code "/audio/squeak.mp3"}
+ * @param resource     percorso nel classpath, es. {@code "/audio/squeak.wav"}
  * @param volume       volume da 0 a 1
  * @param delaySeconds attesa prima di riprodurlo, 0 per farlo partire subito
  */
