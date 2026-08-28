@@ -18,6 +18,10 @@ dependencies {
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // Da Gradle 9 il launcher della piattaforma JUnit non viene piu' aggiunto
+    // implicitamente al classpath di prova: senza questa riga i test non partono.
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 java {
