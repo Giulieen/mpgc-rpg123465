@@ -20,11 +20,15 @@ Asset di terze parti e relative licenze in **[CREDITS.md](CREDITS.md)**.
 
 ### Prerequisiti
 
-- **Un JDK installato**, dalla 21 alla 25: serve ad avviare Gradle 9, che non
-  supporta ancora versioni successive
-- Il codice viene compilato con **Java 25 (LTS)**, che Gradle scarica da sé alla
-  prima compilazione se non è già presente
-- **Gradle** — non serve installarlo, il progetto include il wrapper
+- **Un JDK installato**, dalla 21 alla 25: serve soltanto ad avviare il wrapper
+  di Gradle
+- **Nient'altro.** Gradle, il JDK 25 con cui il progetto viene compilato e
+  JavaFX 25 li scarica il wrapper alla prima esecuzione
+
+Non serve installare Gradle, non serve scaricare l'SDK di JavaFX e non serve
+impostare `JAVA_HOME` sul JDK 25: il file `gradle/gradle-daemon-jvm.properties`
+dice a Gradle di procurarselo da sé, e lo fa per la piattaforma su cui gira —
+Windows, macOS Intel e macOS Apple Silicon compresi.
 
 ### Istruzioni
 
@@ -48,6 +52,12 @@ cd mpgc-rpg123465
 ```
 
 Su Windows usare `gradlew.bat` al posto di `./gradlew`.
+
+> **Usare sempre il wrapper, non un Gradle installato sul computer.**
+> `./gradlew` garantisce la versione di Gradle prevista dal progetto e il JDK
+> con cui va compilato; `gradle run` userebbe invece la versione installata
+> sulla macchina, che può essere incompatibile. Se accade, il progetto se ne
+> accorge e lo dice, invece di fallire in modo oscuro.
 
 ---
 

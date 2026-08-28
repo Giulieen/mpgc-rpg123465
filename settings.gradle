@@ -5,7 +5,24 @@
  * Con il resolver, Gradle lo scarica da solo alla prima compilazione.
  */
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+/*
+ * Il progetto va avviato con il wrapper incluso (./gradlew), non con un Gradle
+ * installato sul computer: il wrapper garantisce la versione giusta e, insieme
+ * a gradle/gradle-daemon-jvm.properties, il JDK giusto. Un Gradle piu' vecchio
+ * fallirebbe con un errore incomprensibile — meglio dirlo subito.
+ */
+def gradleMinimo = GradleVersion.version('9.0')
+
+if (GradleVersion.current() < gradleMinimo) {
+    throw new GradleException(
+            "Questo progetto richiede Gradle ${gradleMinimo.version} o superiore, "
+                    + "ma e' in uso ${GradleVersion.current().version}. "
+                    + 'Avvialo con il wrapper incluso nel repository: '
+                    + './gradlew run   (su Windows: gradlew.bat run)'
+    )
 }
 
 rootProject.name = 'tower-of-self-rpg'
