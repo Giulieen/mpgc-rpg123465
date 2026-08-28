@@ -44,16 +44,6 @@ javafx {
 
 application {
     mainClass = 'it.unicam.cs.mpgc.rpg123465.MainApp'
-
-    /*
-     * JavaFX 21 carica le proprie librerie native con chiamate che Java 24 e
-     * successivi segnalano come "ristrette". L'accesso e' legittimo e voluto:
-     * dichiararlo qui toglie due avvisi che altrimenti compaiono a ogni avvio
-     * e che non riguardano il codice del gioco.
-     */
-    applicationDefaultJvmArgs = [
-            '--enable-native-access=javafx.graphics,javafx.media'
-    ]
 }
 
 test {

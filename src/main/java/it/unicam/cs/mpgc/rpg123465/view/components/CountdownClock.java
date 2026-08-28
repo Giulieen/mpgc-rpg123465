@@ -233,12 +233,18 @@ public final class CountdownClock {
 
         int total = (int) Math.ceil(remaining);
 
-        countdown.setText(String.format("%02d:%02d", total / 60, total % 60));
-
         countdown.pseudoClassStateChanged(URGENT, remaining <= 10);
 
+        /*
+         * Il metodo viene chiamato a ogni fotogramma, ma il testo cambia una
+         * volta al secondo: riscriverlo sempre costringerebbe JavaFX a
+         * rimisurare e ridisegnare l'etichetta sessanta volte al secondo,
+         * rubando tempo al thread che deve anche rispondere ai clic.
+         */
         if (total != lastDisplayedSecond) {
             lastDisplayedSecond = total;
+
+            countdown.setText(String.format("%02d:%02d", total / 60, total % 60));
 
             if (onSecondChanged != null) {
                 onSecondChanged.accept(total);

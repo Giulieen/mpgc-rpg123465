@@ -325,11 +325,31 @@ public class DarkRoomScene implements FloorScene {
         return hotspots;
     }
 
+    /*
+     * Ogni aggiornamento della torcia ridisegna un gradiente grande quanto la
+     * finestra. Il mouse pero' produce molti piu' eventi di quanti fotogrammi
+     * lo schermo mostri: senza questo freno il thread grafico resterebbe
+     * occupato a ridisegnare, e i clic sui tasti — che vivono sullo stesso
+     * thread — arriverebbero in ritardo.
+     */
+    private static final long TORCH_INTERVAL_NS = 16_000_000L;
+
+    private long lastTorchUpdate;
+
     private void onMouseMoved(double x, double y) {
         if (walls == null || lighting.isLit() || resolved || closeupOpen || dilemmaOpen) {
 
             return;
         }
+
+        long now = System.nanoTime();
+
+        if (now - lastTorchUpdate < TORCH_INTERVAL_NS) {
+
+            return;
+        }
+
+        lastTorchUpdate = now;
 
         walls.updateTorch(lighting.darkness(), x, y, lockState.getActiveSlot());
     }
