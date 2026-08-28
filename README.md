@@ -41,23 +41,40 @@ cd mpgc-rpg123465
 
 ### Build del progetto
 
+Su macOS e Linux:
+
 ```bash
 ./gradlew build
 ```
 
+Su Windows:
+
+```bash
+gradlew.bat build
+```
+
 ### Esecuzione
+
+Su macOS e Linux:
 
 ```bash
 ./gradlew run
 ```
 
-Su Windows usare `gradlew.bat` al posto di `./gradlew`.
+Su Windows:
 
-> **Usare sempre il wrapper, non un Gradle installato sul computer.**
-> `./gradlew` garantisce la versione di Gradle prevista dal progetto e il JDK
-> con cui va compilato; `gradle run` userebbe invece la versione installata
-> sulla macchina, che può essere incompatibile. Se accade, il progetto se ne
-> accorge e lo dice, invece di fallire in modo oscuro.
+```bash
+gradlew.bat run
+```
+
+> **Usare sempre il Gradle Wrapper incluso nel repository**: `./gradlew` su
+> macOS e Linux, `gradlew.bat` su Windows. È il wrapper a procurare la
+> versione di Gradle prevista dal progetto e il JDK con cui va compilato.
+>
+> **L'uso di un Gradle installato sul computer non è supportato**, quindi
+> niente `gradle build` né `gradle run`. Le versioni precedenti a Gradle 9
+> possono fallire prima ancora che i controlli del progetto vengano eseguiti,
+> con un errore che non indica la causa reale.
 
 ---
 
