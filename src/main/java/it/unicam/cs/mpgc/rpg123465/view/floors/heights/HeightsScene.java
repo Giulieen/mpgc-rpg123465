@@ -18,6 +18,7 @@ import it.unicam.cs.mpgc.rpg123465.persistence.record.TrialRecord;
 import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.KeyboardBinding;
 import it.unicam.cs.mpgc.rpg123465.view.components.CountdownClock;
 import it.unicam.cs.mpgc.rpg123465.view.components.DilemmaPrompt;
 import it.unicam.cs.mpgc.rpg123465.view.components.ResultOverlay;
@@ -93,9 +94,8 @@ public class HeightsScene implements FloorScene {
     private Region headerView;
     private HeightsHud hud;
 
-    private Scene boundScene;
 
-    private final javafx.event.EventHandler<KeyEvent> keyHandler = this::onKeyPressed;
+    private final KeyboardBinding keyboard = new KeyboardBinding(this::onKeyPressed);
 
     private LevelState state = LevelState.INTRO;
 
@@ -236,7 +236,7 @@ public class HeightsScene implements FloorScene {
 
         root.setOnMouseMoved(this::onSceneMove);
 
-        root.sceneProperty().addListener((obs, oldScene, newScene) -> bindKeys(newScene));
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> keyboard.bindTo(newScene));
     }
 
     /** Avvia il battito che fa avanzare la traversata a ogni fotogramma. */
@@ -299,18 +299,6 @@ public class HeightsScene implements FloorScene {
     // ---------------------------------------------------------------------
     // Lifecycle
     // ---------------------------------------------------------------------
-
-    private void bindKeys(Scene scene) {
-        if (boundScene != null) {
-            boundScene.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-        }
-
-        boundScene = scene;
-
-        if (scene != null) {
-            scene.addEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-        }
-    }
 
     private void buildStage() {
         bg =
@@ -1111,11 +1099,7 @@ public class HeightsScene implements FloorScene {
             advance = null;
         }
 
-        if (boundScene != null) {
-            boundScene.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-
-            boundScene = null;
-        }
+        keyboard.release();
 
         Sound.stopAll();
     }

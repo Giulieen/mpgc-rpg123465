@@ -13,6 +13,7 @@ import it.unicam.cs.mpgc.rpg123465.persistence.record.TrialRecord;
 import it.unicam.cs.mpgc.rpg123465.view.FloorScene;
 import it.unicam.cs.mpgc.rpg123465.view.HeaderBar;
 import it.unicam.cs.mpgc.rpg123465.view.SceneOutcome;
+import it.unicam.cs.mpgc.rpg123465.view.components.KeyboardBinding;
 import it.unicam.cs.mpgc.rpg123465.view.components.ResultOverlay;
 import it.unicam.cs.mpgc.rpg123465.view.components.SceneFx;
 import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
@@ -26,7 +27,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorAdjust;
@@ -123,11 +123,10 @@ public final class RatMazeScene implements FloorScene {
 
     private final Map<Rat, RatView> ratViews = new HashMap<>();
 
-    private final javafx.event.EventHandler<KeyEvent> keyHandler = this::onKeyPressed;
+    private final KeyboardBinding keyboard = new KeyboardBinding(this::onKeyPressed);
 
     private Consumer<SceneOutcome> onFinished;
     private Region headerView;
-    private Scene boundScene;
 
     private Node playerNode;
     private ImageView playerSprite;
@@ -228,7 +227,7 @@ public final class RatMazeScene implements FloorScene {
 
         StackPane.setAlignment(headerView, Pos.TOP_CENTER);
 
-        root.sceneProperty().addListener((obs, oldScene, newScene) -> bindKeys(newScene));
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> keyboard.bindTo(newScene));
 
         startAmbience();
         startTimelines();
@@ -525,18 +524,6 @@ public final class RatMazeScene implements FloorScene {
     // ---------------------------------------------------------------------
     // Input
     // ---------------------------------------------------------------------
-
-    private void bindKeys(Scene scene) {
-        if (boundScene != null) {
-            boundScene.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-        }
-
-        boundScene = scene;
-
-        if (scene != null) {
-            scene.addEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-        }
-    }
 
     private void onKeyPressed(KeyEvent event) {
         if (controller.state() != RatMazeController.MazeState.PLAYING) {
@@ -887,10 +874,7 @@ public final class RatMazeScene implements FloorScene {
     private void cleanup() {
         stopTrial();
 
-        if (boundScene != null) {
-            boundScene.removeEventFilter(KeyEvent.KEY_PRESSED, keyHandler);
-            boundScene = null;
-        }
+        keyboard.release();
 
         Sound.stopAll();
     }
