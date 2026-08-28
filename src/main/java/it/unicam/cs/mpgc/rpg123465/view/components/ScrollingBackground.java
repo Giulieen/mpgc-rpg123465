@@ -20,7 +20,12 @@ import javafx.scene.shape.Rectangle;
  */
 public class ScrollingBackground {
 
-    private static final int TILES = 4;
+    /*
+     * Il motivo si ripete ogni due schermate e lo scorrimento non va mai oltre,
+     * quindi la finestra visibile cade sempre entro le prime tre copie: una
+     * quarta verrebbe composta a ogni fotogramma senza comparire mai.
+     */
+    private static final int TILES = 3;
 
     private final Image image;
     private final double pixelsPerSecond;

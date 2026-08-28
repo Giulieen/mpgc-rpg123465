@@ -1,58 +1,57 @@
 package it.unicam.cs.mpgc.rpg123465.view.components;
 
-import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
-import javafx.animation.FadeTransition;
 import javafx.scene.effect.BlendMode;
-import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 /**
- * Nebbia animata riutilizzabile, basata sulla texture {@code fog.jpg}.
+ * Velo di nebbia, basato sulla texture {@code fog.jpg}.
  *
+ * <p>
  * La texture è fumo grigio su fondo nero: fondendola in
  * {@link BlendMode#SCREEN} il nero sparisce e resta il fumo.
  *
- * Le animazioni seguono automaticamente il ciclo di vita della Scene:
- * vengono avviate quando la nebbia viene mostrata e fermate quando viene
- * rimossa, evitando timer e transizioni rimasti attivi in background.
+ * <p>
+ * La nebbia era animata — derivava lentamente e l'opacità respirava — e per
+ * farlo servivano nove copie a schermo intero per strato, due strati, un
+ * ritaglio e due animazioni continue. Su uno schermo ad alta densità quel
+ * conto si pagava a ogni fotogramma proprio nelle prime schermate, dove la
+ * nebbia è più presente, e si vedeva. Ora il velo è fermo: due immagini
+ * disegnate una volta sola, nessun lavoro ricorrente. L'atmosfera resta,
+ * il movimento no — è uno scambio deliberato, perché la fluidità del gioco
+ * vale più della deriva del fumo.
  */
 public class FogOverlay {
 
     private static final Image FOG = loadFog();
 
     /**
-     * Copie affiancate della texture. Ne bastano tre: la fascia scorre di due
-     * schermate e poi ricomincia, e con le copie dispari specchiate la
-     * giuntura non si vede.
+     * Densità dei due veli sovrapposti. Sono le medie dei valori fra cui
+     * l'opacità oscillava quando la nebbia respirava, così il velo fermo ha
+     * la stessa consistenza che aveva in media prima.
      */
-    private static final int TILES = 3;
+    private static final double FAR_DENSITY = 0.36;
+    private static final double NEAR_DENSITY = 0.435;
 
-    /**
-     * Moltiplicatore di velocità:
-     * 1 = normale, valori più bassi = più lenta.
-     */
-    private final double speedFactor;
+    private final double intensity;
 
     public FogOverlay() {
         this(1.0);
     }
 
     /**
-     * @param speedFactor moltiplicatore della velocità
+     * @param intensity quanto il velo è denso: 1 è la densità piena, valori
+     *                  più bassi lo rendono più tenue
+     * @throws IllegalArgumentException se il valore è negativo
      */
-    public FogOverlay(double speedFactor) {
-        if (speedFactor < 0) {
-            throw new IllegalArgumentException("Il fattore di velocità non può essere negativo.");
+    public FogOverlay(double intensity) {
+        if (intensity < 0) {
+            throw new IllegalArgumentException("L'intensità della nebbia non può essere negativa.");
         }
 
-        this.speedFactor = speedFactor;
+        this.intensity = intensity;
     }
 
     /**
@@ -63,206 +62,53 @@ public class FogOverlay {
 
         fog.setMouseTransparent(true);
 
+        /*
+         * Il secondo velo è specchiato: sovrapposto al primo senza girarlo
+         * darebbe la stessa immagine raddoppiata, cioè fumo più scuro invece
+         * che fumo più fitto.
+         */
         fog.getChildren().addAll(
-                fogLayer(-9, 0.26, 0.46, 7.5),
-                fogLayer(-16, 0.32, 0.55, 9.5)
+                fogLayer(FAR_DENSITY, false),
+                fogLayer(NEAR_DENSITY, true)
         );
 
         return fog;
     }
 
     /**
-     * Crea una banda di nebbia.
+     * Crea un velo di nebbia.
      *
-     * <p>
-     * La deriva è soltanto orizzontale, e non per scelta estetica: ogni copia
-     * della texture è grande quanto la finestra, e farla scorrere anche in
-     * verticale richiederebbe una griglia di nove copie invece di tre. Su uno
-     * schermo ad alta densità quelle copie in più sono il costo maggiore delle
-     * schermate iniziali, e il movimento verticale — lentissimo — non si
-     * distingue da quello orizzontale.
-     *
-     * @param vx velocità orizzontale
-     * @param minOpacity opacità minima
-     * @param maxOpacity opacità massima
-     * @param breathSeconds durata del ciclo di respirazione
-     * @return layer animato
+     * @param density opacità del velo prima di applicare l'intensità
+     * @param mirrored se ribaltare la texture, per non ripetere lo stesso
+     *                 disegno sopra sé stesso
+     * @return il velo, dimensionato da chi lo contiene
      */
-    private Region fogLayer(
-            double vx,
-            double minOpacity,
-            double maxOpacity,
-            double breathSeconds
-    ) {
-        Pane track = new Pane();
-        Pane view = new Pane(track);
+    private Region fogLayer(double density, boolean mirrored) {
+        ImageView tile = new ImageView(FOG);
+
+        Region view = new StackPane(tile);
+
+        tile.fitWidthProperty().bind(view.widthProperty());
+
+        tile.fitHeightProperty().bind(view.heightProperty());
+
+        if (mirrored) {
+            tile.setScaleX(-1);
+        }
 
         view.setBlendMode(BlendMode.SCREEN);
 
-        /*
-         * La fascia sporge di due schermate oltre il bordo, e un Pane calcola
-         * la propria dimensione preferita dai figli: senza questo la nebbia
-         * direbbe di volere il triplo dello spazio disponibile, e chi la
-         * contiene si dimensionerebbe su quel numero. È decorazione stirata dal
-         * genitore: la sua preferenza non deve pesare su nessuno.
-         */
-        neutralSize(track);
-        neutralSize(view);
-
-        for (int col = 0; col < TILES; col++) {
-            ImageView tile = new ImageView(FOG);
-
-            tile.fitWidthProperty().bind(view.widthProperty());
-
-            tile.fitHeightProperty().bind(view.heightProperty());
-
-            tile.layoutXProperty().bind(view.widthProperty().multiply(col));
-
-            if (col % 2 == 1) {
-                tile.setScaleX(-1);
-            }
-
-            track.getChildren().add(tile);
-        }
+        view.setOpacity(density * intensity);
 
         /*
-         * La fascia viene ricomposta a ogni fotogramma sotto un clip e una
-         * fusione: in cache viene disegnata una volta e poi soltanto traslata,
-         * che è l'unica cosa che cambia davvero.
+         * Preferenza a zero perché non chieda spazio, massimo illimitato
+         * perché possa comunque riempire tutto quello che gli viene dato.
          */
-        track.setCache(true);
-
-        track.setCacheHint(CacheHint.SPEED);
-
-        Rectangle clip = new Rectangle();
-
-        clip.widthProperty().bind(view.widthProperty());
-
-        clip.heightProperty().bind(view.heightProperty());
-
-        view.setClip(clip);
-
-        DriftTimer drift = new DriftTimer(view, track, vx * speedFactor);
-
-        FadeTransition breath = createBreath(view, minOpacity, maxOpacity, breathSeconds);
-
-        /*
-         * Le animazioni sono attive soltanto quando questo layer appartiene
-         * effettivamente a una Scene JavaFX.
-         */
-        view.sceneProperty().addListener(
-                (observable, oldScene, newScene) -> {
-                    if (newScene == null) {
-                        drift.stop();
-                        breath.stop();
-                    } else {
-                        drift.startFresh();
-                        breath.playFromStart();
-                    }
-                }
-        );
+        view.setMinSize(0, 0);
+        view.setPrefSize(0, 0);
+        view.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         return view;
-    }
-
-    /**
-     * Toglie un nodo dal calcolo delle dimensioni del genitore.
-     *
-     * Preferenza a zero perché non chieda spazio, massimo illimitato perché
-     * possa comunque riempire tutto quello che gli viene dato.
-     */
-    private static void neutralSize(Region region) {
-        region.setMinSize(0, 0);
-        region.setPrefSize(0, 0);
-        region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-    }
-
-    /**
-     * Crea l'animazione che fa oscillare lentamente l'opacità.
-     */
-    private FadeTransition createBreath(
-            Region layer,
-            double minOpacity,
-            double maxOpacity,
-            double seconds
-    ) {
-        layer.setOpacity(maxOpacity);
-
-        FadeTransition breath = new FadeTransition(Duration.seconds(seconds), layer);
-
-        breath.setFromValue(maxOpacity);
-        breath.setToValue(minOpacity);
-        breath.setAutoReverse(true);
-        breath.setCycleCount(Animation.INDEFINITE);
-
-        return breath;
-    }
-
-    /**
-     * Fa scorrere la fascia di nebbia, riportandola indietro di due schermate
-     * quando è uscita di tanto: il ciclo è invisibile perché le copie dispari
-     * sono specchiate.
-     */
-    private static final class DriftTimer
-            extends AnimationTimer {
-
-        private final Region view;
-        private final Pane track;
-        private final double vx;
-
-        private long last;
-
-        private DriftTimer(Region view, Pane track, double vx) {
-            this.view = view;
-            this.track = track;
-            this.vx = vx;
-        }
-
-        private void startFresh() {
-            last = 0;
-            start();
-        }
-
-        @Override
-        public void handle(long now) {
-            double width = view.getWidth();
-
-            if (width <= 0) {
-                return;
-            }
-
-            if (last == 0) {
-                last = now;
-                return;
-            }
-
-            double elapsed = (now - last) / 1_000_000_000.0;
-
-            last = now;
-
-            /*
-             * Pausa del thread grafico: riallineiamo il riferimento e saltiamo
-             * il frame, così la nebbia riprende da dov'era invece di scattare
-             * in avanti di tutta l'interruzione.
-             */
-            if (elapsed > SceneFx.MAX_FRAME_SECONDS) {
-                return;
-            }
-
-            double period = 2 * width;
-
-            double x =
-                    track.getTranslateX()
-                            + vx * elapsed;
-
-            if (x <= -period) {
-                x += period;
-            } else if (x >= 0) {
-                x -= period;
-            }
-
-            track.setTranslateX(x);
-        }
     }
 
     /**
