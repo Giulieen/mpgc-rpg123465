@@ -26,6 +26,7 @@ import it.unicam.cs.mpgc.rpg123465.view.components.TrialStats;
 
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.scene.CacheHint;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -316,6 +317,16 @@ public class HeightsScene implements FloorScene {
         bg.setFitWidth(STAGE_W);
 
         bg.setFitHeight(STAGE_H);
+
+        /*
+         * Lo zoom cambia a ogni fotogramma: senza cache JavaFX ricampiona
+         * l'immagine intera sessanta volte al secondo. Con la cache scala una
+         * copia gia' disegnata, e la traversata resta reattiva anche sugli
+         * schermi ad alta densita', dove i pixel da riempire sono il quadruplo.
+         */
+        bg.setCache(true);
+
+        bg.setCacheHint(CacheHint.SPEED);
 
         dimOverlay =
                 new Rectangle(STAGE_W, STAGE_H, Color.rgb(0, 0, 0, 0.6));

@@ -1,5 +1,6 @@
 package it.unicam.cs.mpgc.rpg123465.view.components;
 
+import javafx.scene.CacheHint;
 import javafx.scene.Cursor;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
@@ -67,6 +68,15 @@ public final class RoomLighting {
     /** Applica la luce all'immagine di sfondo indicata. */
     public void attach(ImageView background) {
         background.setEffect(brightness);
+
+        /*
+         * La torcia segue il mouse: ogni movimento farebbe ricalcolare
+         * l'effetto sull'intera immagine. In cache l'effetto viene disegnato
+         * una volta e ridisegnato solo quando la luce cambia davvero.
+         */
+        background.setCache(true);
+
+        background.setCacheHint(CacheHint.SPEED);
     }
 
     /** Il velo d'ombra, su cui la torcia disegna il suo alone. */
