@@ -257,7 +257,7 @@ public class HeightsScene implements FloorScene {
 
     private void prepareDilemmas() {
         dilemmas =
-                new DilemmaSequence(questions.randomQuestions("altezze", 4));
+                new DilemmaSequence(questions.randomQuestions("altezze", 3));
     }
 
     /**

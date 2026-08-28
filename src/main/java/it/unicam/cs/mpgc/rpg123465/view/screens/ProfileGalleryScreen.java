@@ -61,7 +61,7 @@ public final class ProfileGalleryScreen {
         root.getStyleClass().add("fear-root");
 
         Region background =
-                new ScrollingBackground("/images/bg/forest.jpg", 30).createView();
+                new ScrollingBackground("/images/bg/forest.jpg").createView();
 
         Region fog = new FogOverlay(0.35).createView();
 

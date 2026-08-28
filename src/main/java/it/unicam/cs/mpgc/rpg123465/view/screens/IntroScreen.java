@@ -90,7 +90,7 @@ public class IntroScreen {
         Sound.loop("/audio/ambience-night.mp3", 0.28);
         Sound.occasional("/audio/owl-hoot.mp3", 0.45, 10, 26);
 
-        Region forest = new ScrollingBackground("/images/bg/forest.jpg", 35).createView();
+        Region forest = new ScrollingBackground("/images/bg/forest.jpg").createView();
 
         Label text = introText(
                 "Non ricordi come sei arrivato in questo bosco.\n"

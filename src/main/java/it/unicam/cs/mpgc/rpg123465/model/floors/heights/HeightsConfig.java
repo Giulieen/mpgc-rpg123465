@@ -61,7 +61,7 @@ public record HeightsConfig(
         return new HeightsConfig(
                 90,
                 3,
-                new double[] {15, 35, 55, 78},
+                new double[] {20, 45, 72},
                 7.0,
                 1.0,
                 1.0,

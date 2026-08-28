@@ -55,7 +55,7 @@ public final class ProfileResultScreen {
         Sound.loop("/audio/ambience-night.mp3", 0.25);
 
         Region background =
-                new ScrollingBackground("/images/bg/forest.jpg", 12).createView();
+                new ScrollingBackground("/images/bg/forest.jpg").createView();
 
         Region fog = new FogOverlay(0.4).createView();
 

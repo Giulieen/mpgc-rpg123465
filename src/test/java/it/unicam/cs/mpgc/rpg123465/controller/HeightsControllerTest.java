@@ -147,11 +147,11 @@ class HeightsControllerTest {
     // --- configurazione --------------------------------------------------
 
     @Test
-    void laConfigurazioneStandardHaTrePontiEQuattroSoglie() {
+    void laConfigurazioneStandardHaTrePontiETreSoglie() {
         HeightsConfig config = HeightsConfig.standard();
 
         assertEquals(3, config.bridges().size());
-        assertEquals(4, config.routeThresholds().length);
+        assertEquals(3, config.routeThresholds().length);
         assertEquals(3, config.balancePoints());
         assertTrue(config.totalSeconds() > 0);
     }

@@ -98,7 +98,7 @@ class BridgeRouteTest {
     @Test
     void sottoLaPrimaSogliaNonSiCambiaPonte() {
         route.select(0);
-        route.advance(14);
+        route.advance(19);
 
         assertFalse(route.consumeThreshold());
     }
@@ -106,7 +106,7 @@ class BridgeRouteTest {
     @Test
     void unaSogliaSuperataFaScattareIlCambioUnaVoltaSola() {
         route.select(0);
-        route.advance(15);
+        route.advance(20);
 
         assertTrue(route.consumeThreshold());
         assertFalse(route.consumeThreshold());
@@ -114,7 +114,7 @@ class BridgeRouteTest {
     }
 
     @Test
-    void leQuattroSoglieScattanoNellOrdine() {
+    void leTreSoglieScattanoNellOrdine() {
         route.select(0);
 
         int cambi = 0;
@@ -127,7 +127,7 @@ class BridgeRouteTest {
             }
         }
 
-        assertEquals(4, cambi);
+        assertEquals(3, cambi);
     }
 
     /**
@@ -137,7 +137,7 @@ class BridgeRouteTest {
     @Test
     void unSaltoCheScavalcaDueSoglieLeConsumaEntrambe() {
         route.select(0);
-        route.advance(40);
+        route.advance(50);
 
         assertTrue(route.consumeThreshold());
         assertTrue(route.consumeThreshold());
@@ -149,7 +149,7 @@ class BridgeRouteTest {
         route.select(0);
         route.advance(100);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             assertTrue(route.consumeThreshold());
         }
 
@@ -254,7 +254,7 @@ class BridgeRouteTest {
         assertEquals(-1, route.destination());
 
         route.select(0);
-        route.advance(15);
+        route.advance(20);
 
         assertTrue(route.consumeThreshold());
     }
