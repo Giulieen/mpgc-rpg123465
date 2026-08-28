@@ -16,7 +16,7 @@ public final class HeightsFloors {
         return new AltitudeCrossing(
                 "Piano III — Le Altezze",
 
-                "/images/scenes/floor3-heights.png",
+                "/images/scenes/floor3-heights.jpg",
 
                 "Scegli uno dei tre ponti.\n\n"
                         + "Durante l'attraversata compariranno delle frecce: "
