@@ -90,11 +90,6 @@ public class IntroScreen {
         Sound.loop("/audio/ambience-night.mp3", 0.28);
         Sound.occasional("/audio/owl-hoot.mp3", 0.45, 10, 26);
 
-        /*
-         * Il bosco torna a scorrere, alla stessa andatura di prima. Ora la
-         * striscia viene composta una volta e poi soltanto spostata: per
-         * fotogramma cambia un numero, non piu' l'intero fondale.
-         */
         Region forest = new ScrollingBackground("/images/bg/forest.jpg", 35).createView();
 
         Label text = introText(

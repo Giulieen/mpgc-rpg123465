@@ -12,36 +12,19 @@ import javafx.scene.shape.Rectangle;
  * orizzontale.
  *
  * <p>
- * Lo scorrimento è costruito perché costi quanto un solo numero per
- * fotogramma. Le copie dell'immagine stanno su una striscia che si sposta
- * tutta insieme: nel giro di un frame cambia soltanto il {@code translateX}
- * della striscia, mentre dimensioni e posizioni delle copie restano quelle
- * calcolate all'ultimo ridimensionamento della finestra.
+ * Le copie dell'immagine stanno su una striscia che si sposta tutta insieme:
+ * per fotogramma cambia soltanto il {@code translateX} della striscia.
  *
  * <p>
- * Le copie sono due, il minimo possibile. La seconda è specchiata, così il
- * bordo destro della prima combacia con il bordo destro ribaltato della
- * seconda e la giuntura non si vede. Quando la striscia ha percorso una
- * schermata intera torna al punto di partenza e le due copie si scambiano il
- * ribaltamento: a schermo resta esattamente il disegno che c'era un istante
- * prima, e il ciclo riparte senza salti. Il conto delle copie discende da
- * qui — la finestra visibile ne tocca al massimo due, e un motivo che si
- * ripete ogni schermata non ne richiede una terza.
+ * Le copie sono due e la seconda è specchiata, così i bordi combaciano e la
+ * giuntura non si vede. Percorsa una schermata la striscia torna al punto di
+ * partenza e le due copie si scambiano il ribaltamento: a schermo resta lo
+ * stesso disegno, quindi il ciclo riparte senza salti.
  *
  * <p>
- * Niente cache, né sulle copie né sulla striscia. Una {@code ImageView} è già
- * una sola texture che la scheda grafica sa ridimensionare da sé: metterla in
- * cache aggiunge una superficie di disegno intermedia senza togliere lavoro.
- * Sulla striscia sarebbe anche peggio, perché la superficie dovrebbe essere
- * larga quanto tutte le copie insieme — su uno schermo ad alta densità si
- * arriva a misure che le schede integrate non reggono, e quando l'allocazione
- * non riesce si torna comunque a disegnare senza cache, avendo però pagato il
- * tentativo.
- *
- * <p>
- * Nemmeno una {@code Canvas} conviene: ridipingere due immagini a mano ogni
- * fotogramma costa più che spostare una striscia già composta, e il codice
- * dovrebbe gestire da sé ritaglio e ridimensionamento.
+ * La striscia non va messa in cache: sarebbe larga quanto tutte le copie
+ * insieme, e su schermo ad alta densità supera il limite di texture delle
+ * schede integrate.
  *
  * <p>
  * L'animazione parte solo quando la vista appartiene a una {@code Scene} e si
@@ -137,11 +120,7 @@ public class ScrollingBackground {
 
         view.getChildren().add(track);
 
-        /*
-         * La copia di destra sporge oltre il bordo: il ritaglio la tiene
-         * dentro. È un rettangolo allineato agli assi, quindi per la scheda
-         * grafica è solo una forbice, non un disegno in più.
-         */
+        // La copia di destra sporge oltre il bordo: il ritaglio la tiene dentro.
         Rectangle clip = new Rectangle();
 
         clip.widthProperty().bind(view.widthProperty());

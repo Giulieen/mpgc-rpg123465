@@ -14,14 +14,9 @@ import javafx.scene.layout.StackPane;
  * {@link BlendMode#SCREEN} il nero sparisce e resta il fumo.
  *
  * <p>
- * La nebbia era animata — derivava lentamente e l'opacità respirava — e per
- * farlo servivano nove copie a schermo intero per strato, due strati, un
- * ritaglio e due animazioni continue. Su uno schermo ad alta densità quel
- * conto si pagava a ogni fotogramma proprio nelle prime schermate, dove la
- * nebbia è più presente, e si vedeva. Ora il velo è fermo: due immagini
- * disegnate una volta sola, nessun lavoro ricorrente. L'atmosfera resta,
- * il movimento no — è uno scambio deliberato, perché la fluidità del gioco
- * vale più della deriva del fumo.
+ * Il velo è fermo per scelta: animarlo richiedeva decine di copie a schermo
+ * intero ridisegnate a ogni fotogramma, e nelle schermate iniziali — dove la
+ * nebbia è più presente — si vedeva. L'atmosfera resta, il movimento no.
  */
 public class FogOverlay {
 

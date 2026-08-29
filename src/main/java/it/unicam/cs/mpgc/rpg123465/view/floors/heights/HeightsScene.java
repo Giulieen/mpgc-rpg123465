@@ -306,21 +306,9 @@ public class HeightsScene implements FloorScene {
         bg.setFitHeight(STAGE_H);
 
         /*
-         * Il fondale non si muove piu', ma viene comunque ridisegnato di
-         * continuo: l'anello della freccia si stringe sopra di lui a ogni
-         * fotogramma, e ogni sua zona sporca costringe a ridipingere anche
-         * l'immagine sottostante. Il palco e' scalato sulla finestra con un
-         * fattore che non e' quasi mai intero, quindi ogni ridisegno ricampiona
-         * la texture invece di copiarla e basta.
-         *
-         * In cache il ridimensionamento si paga una volta e poi si copia il
-         * risultato gia' pronto. Sulle schede integrate, dove la banda verso la
-         * memoria e' condivisa con il resto, e' la differenza che si sente.
-         *
-         * La superficie e' quella di una sola immagine da 1672x941 dentro un
-         * palco 1600x900: nulla a che vedere con la striscia larga tre schermate
-         * che si teneva in cache nello sfondo del bosco, e che su schermo ad
-         * alta densita' superava il limite di texture delle schede Intel.
+         * Il fondale e' fermo ma viene ridisegnato di continuo sotto la freccia:
+         * in cache il ridisegno costa meno, sugli schermi ad alta densita' e
+         * sulle schede grafiche integrate.
          */
         bg.setCache(true);
 
@@ -352,18 +340,10 @@ public class HeightsScene implements FloorScene {
      * Il riquadro di gioco: misura fissa, contenuto fuori dal layout.
      *
      * <p>
-     * Il piano è disegnato su un palco di {@value #STAGE_W} per
-     * {@value #STAGE_H}: il velo lo copre esatto e la scala della finestra si
-     * calcola dividendo per quelle due misure. Un {@code Pane} di dimensione
-     * fissa lo dichiara; un {@code Group} — che era la scelta di prima — la
-     * deduce invece da ciò che si trova dentro, e cambia misura ogni volta che
-     * un figlio si trasforma, facendo rifare il layout all'intera scena per
-     * ricentrarlo. Qui il palco è largo quanto dice di essere, qualunque cosa
-     * facciano i figli.
-     *
-     * <p>
-     * I figli stanno fuori dal layout perché nemmeno qui dentro resti qualcosa
-     * da ricalcolare.
+     * La misura fissa e i figli fuori dal layout servono a isolare la scena:
+     * un {@code Pane} dichiara la propria dimensione, mentre un {@code Group}
+     * la deduce dai figli e cambierebbe misura a ogni loro trasformazione,
+     * facendo rifare il layout all'intera scena per ricentrarlo.
      *
      * @param bg il fondale, primo figlio del palco
      * @return il palco, pronto per essere scalato sulla finestra
