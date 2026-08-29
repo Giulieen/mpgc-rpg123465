@@ -126,7 +126,7 @@ public class HeightsScene implements FloorScene {
     private final ResultOverlay overlay = new ResultOverlay(root, () -> headerView);
 
     /*
-     * Le quattro domande vengono mescolate una volta entrando nel piano.
+     * Le domande vengono mescolate per variare l'ordine a ogni partita.
      * L'indice non viene azzerato dopo una caduta, così le risposte
      * non vengono conteggiate due volte nello stesso piano.
      */
