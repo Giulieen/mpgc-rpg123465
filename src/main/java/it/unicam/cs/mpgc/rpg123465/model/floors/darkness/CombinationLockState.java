@@ -2,7 +2,7 @@ package it.unicam.cs.mpgc.rpg123465.model.floors.darkness;
 
 /**
  * Stato indipendente dalla grafica della serratura a cifre.
- * Mantiene l'ordine di inserimento e non conosce ne' suoni ne' JavaFX.
+ * Mantiene l'ordine di inserimento e non conosce né suoni né JavaFX.
  */
 public final class CombinationLockState {
 
@@ -51,7 +51,7 @@ public final class CombinationLockState {
         return true;
     }
 
-    /** @return {@code true} se e' passata alla cifra successiva */
+    /** @return {@code true} se è passata alla cifra successiva */
     public boolean confirm() {
         if (activeSlot == digits.length - 1) {
             return false;

@@ -234,7 +234,7 @@ public class DarkRoomScene implements FloorScene {
     }
 
     /*
-     * Il velo qui e' piu' leggero che sui cartelli di fine prova: la stanza
+     * Il velo qui è più leggero che sui cartelli di fine prova: la stanza
      * si intravede dietro il titolo, come accade negli altri due piani, dove
      * il fondale riempie tutta la finestra.
      */
@@ -335,7 +335,7 @@ public class DarkRoomScene implements FloorScene {
 
     /*
      * Ogni aggiornamento della torcia ridisegna un gradiente grande quanto la
-     * finestra. Il mouse pero' produce molti piu' eventi di quanti fotogrammi
+     * finestra. Il mouse però produce molti più eventi di quanti fotogrammi
      * lo schermo mostri: senza questo freno il thread grafico resterebbe
      * occupato a ridisegnare, e i clic sui tasti — che vivono sullo stesso
      * thread — arriverebbero in ritardo.
@@ -548,7 +548,7 @@ public class DarkRoomScene implements FloorScene {
     /**
      * Tentativi esauriti: la prova ricomincia con i tentativi al massimo.
      *
-     * Le risposte gia' date restano registrate e le domande non vengono
+     * Le risposte già date restano registrate e le domande non vengono
      * riproposte, quindi ricominciare non altera il profilo.
      */
     private void showTrialFailed(String message) {
@@ -609,7 +609,7 @@ public class DarkRoomScene implements FloorScene {
      * La conferma del salvataggio è una finestra modale, e una modale JavaFX
      * gira in un event loop annidato: i pulse continuano, quindi senza questa
      * sospensione il tempo scorrerebbe mentre il giocatore legge il messaggio.
-     * Il countdown riparte solo se stava davvero correndo: se era gia' fermo
+     * Il countdown riparte solo se stava davvero correndo: se era già fermo
      * per un dilemma, a riprenderlo ci pensa la risposta.
      */
     private void saveWithClockSuspended() {

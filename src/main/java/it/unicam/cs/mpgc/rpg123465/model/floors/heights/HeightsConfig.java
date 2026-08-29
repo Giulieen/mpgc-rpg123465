@@ -53,10 +53,10 @@ public record HeightsConfig(
      */
     public static HeightsConfig standard() {
         /*
-         * Novanta secondi di traversata. L'avanzamento dei tre ponti e' scalato
-         * dello stesso fattore rispetto alla versione da 150 secondi: ciascuno
-         * copre la stessa frazione del percorso nello stesso frazione di tempo,
-         * quindi la difficolta' resta quella di prima e cambia solo la durata.
+         * Novanta secondi di traversata. L'avanzamento dei tre ponti è scalato
+         * in proporzione, così ciascuno copre la stessa frazione del percorso
+         * nella stessa frazione di tempo e la difficoltà non dipende dalla
+         * durata scelta qui.
          */
         return new HeightsConfig(
                 90,

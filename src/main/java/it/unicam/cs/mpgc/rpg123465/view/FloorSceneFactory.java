@@ -70,8 +70,8 @@ public final class FloorSceneFactory {
      */
     private void registerFloors() {
         /*
-         * Il Piano I e' fatto di due momenti: prima il dilemma, che vale una
-         * sola risposta, poi la prova, che si puo' ripetere. Tenerli come due
+         * Il Piano I è fatto di due momenti: prima il dilemma, che vale una
+         * sola risposta, poi la prova, che si può ripetere. Tenerli come due
          * scene lascia a SceneFlow il compito di incatenarli.
          */
         register(FearEncounter.class, encounter -> List.of(

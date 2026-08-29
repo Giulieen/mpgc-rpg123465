@@ -46,7 +46,7 @@ public final class WindowFrame {
     /*
      * BorderPane e non VBox: il centro di un BorderPane riceve per definizione
      * tutto lo spazio che avanza sotto la barra. Con un VBox lo spazio dipende
-     * dall'altezza preferita del figlio, e una schermata che ne chiede piu' del
+     * dall'altezza preferita del figlio, e una schermata che ne chiede più del
      * dovuto si ritrova scentrata.
      */
     private final BorderPane root = new BorderPane();
@@ -98,7 +98,7 @@ public final class WindowFrame {
     public void setContent(Parent content) {
         /*
          * Nessuna schermata deve poter allargare la finestra: qui riceve lo
-         * spazio che c'e', non quello che chiederebbe.
+         * spazio che c'è, non quello che chiederebbe.
          */
         if (content instanceof Region region) {
             region.setMinSize(0, 0);

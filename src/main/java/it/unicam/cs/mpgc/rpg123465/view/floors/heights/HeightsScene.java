@@ -306,8 +306,8 @@ public class HeightsScene implements FloorScene {
         bg.setFitHeight(STAGE_H);
 
         /*
-         * Il fondale e' fermo ma viene ridisegnato di continuo sotto la freccia:
-         * in cache il ridisegno costa meno, sugli schermi ad alta densita' e
+         * Il fondale è fermo ma viene ridisegnato di continuo sotto la freccia:
+         * in cache il ridisegno costa meno, sugli schermi ad alta densità e
          * sulle schede grafiche integrate.
          */
         bg.setCache(true);

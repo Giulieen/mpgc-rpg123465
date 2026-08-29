@@ -13,9 +13,8 @@ import java.util.Properties;
  *
  * <p>
  * Un file di testo con una riga per prova basta e avanza: i record sono pochi,
- * piccoli e leggibili anche a mano. La scelta di tenerne uno solo, invece di un
- * file per piano, evita che ogni livello si scriva il proprio pezzo di
- * filesystem — che è esattamente come era nato il record delle Altezze.
+ * piccoli e leggibili anche a mano. Tenerne uno solo, invece di un file per
+ * piano, evita che ogni livello si scriva il proprio pezzo di filesystem.
  *
  * <p>
  * I record sono una comodità, non parte della partita: un errore di lettura o

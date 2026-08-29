@@ -214,8 +214,8 @@ public final class CountdownClock {
 
             /*
              * Cambiare il ritmo attraversa il motore audio del sistema: farlo a
-             * ogni fotogramma costa molto piu' di quanto si senta, perche' una
-             * variazione minima e' impercettibile. Lo aggiorniamo solo quando
+             * ogni fotogramma costa molto più di quanto si senta, perché una
+             * variazione minima è impercettibile. Lo aggiorniamo solo quando
              * supera un gradino udibile.
              */
             if (Math.abs(rate - lastHeartbeatRate) >= 0.02) {
@@ -281,7 +281,7 @@ public final class CountdownClock {
 
         /*
          * Il file diventa pronto in un momento qualsiasi, anche mentre
-         * l'orologio e' gia' in pausa perche' e' comparso un dilemma: senza
+         * l'orologio è già in pausa perché è comparso un dilemma: senza
          * questo controllo il battito partirebbe comunque, con un colpo
          * isolato fuori contesto.
          */

@@ -14,11 +14,6 @@ import javafx.scene.input.KeyEvent;
  * proprio filtro da una scena all'altra, e ricordarsi di toglierlo quando il
  * piano finisce — altrimenti il gestore resta appeso a una scena che non si
  * vede più e continua a ricevere i tasti.
- *
- * <p>
- * È una responsabilità piccola ma autonoma, e identica per ogni prova: prima
- * viveva copiata in {@code RatMazeScene} e in {@code HeightsScene}, in quattro
- * blocchi uguali.
  */
 public final class KeyboardBinding {
 

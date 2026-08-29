@@ -39,7 +39,7 @@ public final class JavaFxSoundPlayer implements SoundPlayer {
 
     /*
      * Gli effetti con ritardo sono programmati e non ancora partiti: vanno
-     * tenuti, perche' un cambio di scena deve poterli annullare. Senza questo
+     * tenuti, perché un cambio di scena deve poterli annullare. Senza questo
      * elenco l'urlo della caduta suonerebbe sopra il menu se il giocatore
      * uscisse entro i tre quarti di secondo che lo separano dal tonfo.
      */

@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  * Mostra una domanda "Preferiresti" con due sole risposte e registra il tratto
  * associato, che resta invisibile al giocatore. Data la risposta, introduce la
  * prova e cede il passo alla stanza dei Topi: il dilemma vale una sola volta,
- * mentre la prova si puo' ripetere.
+ * mentre la prova si può ripetere.
  */
 public class FearEncounterScreen implements FloorScene {
 
@@ -186,8 +186,8 @@ public class FearEncounterScreen implements FloorScene {
     /**
      * Annuncia la prova che segue.
      *
-     * La scelta e' gia' stata registrata: da qui in poi il Piano I non tocca
-     * piu' il profilo, qualunque cosa succeda nel labirinto.
+     * La scelta è già stata registrata: da qui in poi il Piano I non tocca
+     * più il profilo, qualunque cosa succeda nel labirinto.
      */
     private void showBriefing() {
         Label heading = new Label("La Torre ha raccolto la tua scelta.");

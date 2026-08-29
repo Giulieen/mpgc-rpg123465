@@ -14,9 +14,8 @@ import java.util.function.Supplier;
  *
  * <p>
  * Piano I e Piano III lo mostrano negli stessi momenti — prova superata,
- * prova fallita, caduta — e finivano per ricostruirlo ciascuno per conto suo.
- * Tenerlo in un posto solo evita che i due piani si allontanino nell'aspetto
- * a ogni ritocco.
+ * prova fallita, caduta — e tenerlo in un posto solo evita che si allontanino
+ * nell'aspetto a ogni ritocco.
  */
 public final class ResultOverlay {
 
@@ -74,10 +73,10 @@ public final class ResultOverlay {
 
     /**
      * Come {@link #show(String, String, Label, String, Runnable)}, ma con il
-     * velo regolabile: una presentazione puo' volerlo piu' leggero, per
+     * velo regolabile: una presentazione può volerlo più leggero, per
      * lasciar intravedere la scena a cui il giocatore sta per entrare.
      *
-     * @param title titolo dell'esito, oppure null se l'esito parla da se'
+     * @param title titolo dell'esito, oppure null se l'esito parla da sé
      * @param message testo dell'esito
      * @param stats riga di riepilogo, oppure null se l'esito non ne ha una
      * @param buttonText testo del pulsante

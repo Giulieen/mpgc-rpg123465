@@ -22,11 +22,7 @@ public class FogOverlay {
 
     private static final Image FOG = loadFog();
 
-    /**
-     * Densità dei due veli sovrapposti. Sono le medie dei valori fra cui
-     * l'opacità oscillava quando la nebbia respirava, così il velo fermo ha
-     * la stessa consistenza che aveva in media prima.
-     */
+    /** Densità dei due veli sovrapposti. */
     private static final double FAR_DENSITY = 0.36;
     private static final double NEAR_DENSITY = 0.435;
 

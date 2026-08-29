@@ -13,9 +13,9 @@ import javafx.util.Duration;
 
 /**
  * I tre fari dei ponti — sinistra, centro, destra — su un'unica riga in fondo
- * alla scena. Sono solo grafica: dentro il {@code Group} scalato dello sfondo il
- * picking dei nodi è inaffidabile, così il click non è gestito dai nodi ma dalla
- * scena per vicinanza (vedi {@link #at}).
+ * alla scena. Sono solo grafica: dentro il palco scalato dello sfondo il picking
+ * dei nodi è inaffidabile, così il click non è gestito dai nodi ma dalla scena
+ * per vicinanza (vedi {@link #at}).
  * <p>
  * Il componente sa mostrarli tutti accesi (scelta iniziale) oppure oscurare la
  * scena e far pulsare solo quello giusto (reroute), e dice a quale faro è vicino

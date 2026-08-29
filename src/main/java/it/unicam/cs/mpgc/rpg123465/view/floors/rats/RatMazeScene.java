@@ -142,9 +142,9 @@ public final class RatMazeScene implements FloorScene {
     private Timeline clockTimeline;
 
     /*
-     * Quanto dura la prova. Il cronometro e' una Timeline come le altre, cosi'
-     * si ferma da se' quando la prova viene sospesa per salvare e quando
-     * l'esito e' deciso: il tempo misurato e' solo quello giocato.
+     * Quanto dura la prova. Il cronometro è una Timeline come le altre, così
+     * si ferma da sé quando la prova viene sospesa per salvare e quando
+     * l'esito è deciso: il tempo misurato è solo quello giocato.
      */
     private int elapsedSeconds;
     private final ResultOverlay overlay = new ResultOverlay(root, () -> headerView);
@@ -184,7 +184,7 @@ public final class RatMazeScene implements FloorScene {
         this.encounter = encounter;
         this.controller = new RatMazeController(maze, game);
 
-        /* Sui Topi si misura quanto ci si mette: vince il tempo piu' basso. */
+        /* Sui Topi si misura quanto ci si mette: vince il tempo più basso. */
         this.record = TrialRecord.lowerIsBetter(records, RECORD_KEY);
 
         this.onSave = onSave;
@@ -754,10 +754,10 @@ public final class RatMazeScene implements FloorScene {
     }
 
     /**
-     * Riepilogo della prova: quanti topi sono stati presi, quanto ci si e'
+     * Riepilogo della prova: quanti topi sono stati presi, quanto ci si è
      * messi e il miglior tempo mai registrato su questa installazione.
      *
-     * @param best record da mostrare, zero se la prova non e' mai stata
+     * @param best record da mostrare, zero se la prova non è mai stata
      *             superata
      */
     private Label trialStats(int best) {
